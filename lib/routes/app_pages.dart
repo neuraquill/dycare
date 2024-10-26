@@ -1,7 +1,21 @@
 // lib/routes/app_pages.dart
 
+import 'package:dycare/presentation/appointments/appointment_details/bindings/appointment_details_binding.dart';
+import 'package:dycare/presentation/appointments/book_appointment/bindings/book_appointment_binding.dart';
+import 'package:dycare/presentation/appointments/my_appointments/bindings/my_appointments_binding.dart';
+import 'package:dycare/presentation/auth/forgot_password/bindings/forgot_password_binding.dart';
+import 'package:dycare/presentation/auth/otp/bindings/otp_binding.dart';
+import 'package:dycare/presentation/auth/reset_password/bindings/reset_password_binding.dart';
+import 'package:dycare/presentation/auth/signup/bindings/signup_binding.dart';
+import 'package:dycare/presentation/home/bindings/home_binding.dart';
+import 'package:dycare/presentation/nurses/nurse_details/bindings/nurse_detials_binding.dart';
+import 'package:dycare/presentation/nurses/nurse_list/bindings/nurse_list_binding.dart';
+import 'package:dycare/presentation/nurses/nurse_reviews/bindings/nurse_reviews_binding.dart';
+import 'package:dycare/presentation/profile/edit_profile/bindings/edit_profile_binding.dart';
+import 'package:dycare/presentation/profile/view_profile/bindings/view_profile_binding.dart';
 import 'package:get/get.dart';
 import 'package:dycare/presentation/auth/login/login_screen.dart';
+import 'package:dycare/presentation/auth/login/bindings/login_binding.dart';
 import 'package:dycare/presentation/auth/signup/signup_screen.dart';
 import 'package:dycare/presentation/auth/forgot_password/forgot_password_screen.dart';
 import 'package:dycare/presentation/auth/otp/otp_screen.dart';
@@ -14,9 +28,6 @@ import 'package:dycare/presentation/nurses/nurse_list/nurse_list_screen.dart';
 import 'package:dycare/presentation/nurses/nurse_details/nurse_details_screen.dart';
 import 'package:dycare/presentation/nurses/nurse_reviews/nurse_reviews_screen.dart';
 import 'package:dycare/presentation/chat/chat_list/chat_list_screen.dart';
-import 'package:dycare/presentation/chat/chat_detail/chat_detail_screen.dart';
-import 'package:dycare/presentation/calls/audio_call/audio_call_screen.dart';
-import 'package:dycare/presentation/calls/video_call/video_call_screen.dart';
 import 'package:dycare/presentation/profile/view_profile/view_profile_screen.dart';
 import 'package:dycare/presentation/profile/edit_profile/edit_profile_screen.dart';
 
@@ -85,26 +96,6 @@ class AppPages {
       name: Routes.NURSE_REVIEWS,
       page: () => NurseReviewsScreen(),
       binding: NurseReviewsBinding(),
-    ),
-    GetPage(
-      name: Routes.CHAT_LIST,
-      page: () => ChatListScreen(),
-      binding: ChatListBinding(),
-    ),
-    GetPage(
-      name: Routes.CHAT_DETAIL,
-      page: () => ChatDetailScreen(),
-      binding: ChatDetailBinding(),
-    ),
-    GetPage(
-      name: Routes.AUDIO_CALL,
-      page: () => AudioCallScreen(),
-      binding: AudioCallBinding(),
-    ),
-    GetPage(
-      name: Routes.VIDEO_CALL,
-      page: () => VideoCallScreen(),
-      binding: VideoCallBinding(),
     ),
     GetPage(
       name: Routes.VIEW_PROFILE,

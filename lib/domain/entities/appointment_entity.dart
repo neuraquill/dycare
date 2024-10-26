@@ -17,6 +17,24 @@ class AppointmentEntity {
     this.notes,
   });
 
+  AppointmentEntity copyWith({
+    String? id,
+    String? patientId,
+    String? nurseId,
+    DateTime? dateTime,
+    String? status,
+    String? notes,
+  }) {
+    return AppointmentEntity(
+      id: id ?? this.id,
+      patientId: patientId ?? this.patientId,
+      nurseId: nurseId ?? this.nurseId,
+      dateTime: dateTime ?? this.dateTime,
+      status: status ?? this.status,
+      notes: notes ?? this.notes,
+    );
+  }
+
   factory AppointmentEntity.fromJson(Map<String, dynamic> json) {
     return AppointmentEntity(
       id: json['id'],
@@ -38,4 +56,5 @@ class AppointmentEntity {
       'notes': notes,
     };
   }
+  
 }

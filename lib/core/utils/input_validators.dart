@@ -49,4 +49,6 @@ class InputValidators {
     }
     return null;
   }
+
+  static validateConfirmPassword(String? value, String text) {}
 }

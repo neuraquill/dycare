@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/routes/app_pages.dart';
 import 'package:dycare/theme/theme_helper.dart';
-import 'package:dycare/localization/app_translations.dart';
 import 'package:dycare/core/constants/app_constants.dart';
 
 void main() async {
@@ -26,7 +25,6 @@ class DyCareApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       defaultTransition: Transition.fade,
-      translations: AppTranslations(),
       locale: Get.deviceLocale,
       fallbackLocale: const Locale('en', 'US'),
     );

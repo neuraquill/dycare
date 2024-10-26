@@ -4,7 +4,6 @@ import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/domain/auth/auth_repository.dart';
-import 'package:dycare/routes/app_routes.dart';
 
 class ForgotPasswordController extends GetxController {
   final AuthRepository _authRepository = AuthRepository();
@@ -15,7 +14,7 @@ class ForgotPasswordController extends GetxController {
   void resetPassword() async {
     if (formKey.currentState!.validate()) {
       try {
-        bool success = await _authRepository.resetPassword(emailController.text);
+        bool success = await _authRepository.resetPassword(emailController.text, "admin");
 
         if (success) {
           Get.snackbar(

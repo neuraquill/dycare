@@ -21,4 +21,6 @@ abstract class Routes {
   static const VIDEO_CALL = '/video-call';
   static const VIEW_PROFILE = '/view-profile';
   static const EDIT_PROFILE = '/edit-profile';
+
+  static String ADD_REVIEW = '/add-review';
 }

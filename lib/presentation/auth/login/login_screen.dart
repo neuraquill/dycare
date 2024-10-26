@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:dycare/core/constants/app_constants.dart';
 import 'package:dycare/theme/custom_text_style.dart';
 import 'package:dycare/theme/custom_button_style.dart';
-import 'package:dycare/routes/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
   @override

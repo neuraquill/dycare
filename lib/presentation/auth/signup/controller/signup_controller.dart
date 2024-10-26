@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/domain/auth/auth_repository.dart';
 import 'package:dycare/domain/entities/user_entity.dart';
-import 'package:dycare/routes/app_routes.dart';
 
 import '../../../../routes/app_pages.dart';
 

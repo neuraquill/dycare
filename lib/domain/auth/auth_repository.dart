@@ -26,7 +26,7 @@ class AuthRepository {
     return _authHelper.currentUser;
   }
 
-  Future<bool> resetPassword(String email) async {
+  Future<bool> resetPassword(String email, String newPassword) async {
     return await _authHelper.resetPassword(email);
   }
 }

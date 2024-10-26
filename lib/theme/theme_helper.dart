@@ -1,6 +1,6 @@
 // lib/theme/theme_helper.dart
 
-import 'package:dycare/theme/custom_theme_style.dart';
+import 'package:dycare/theme/custom_text_style.dart' as customThemeStyle;
 import 'package:flutter/material.dart';
 import 'package:dycare/theme/app_colors.dart';
 import 'package:dycare/theme/custom_text_style.dart';
@@ -14,7 +14,7 @@ class ThemeHelper {
     appBarTheme: AppBarTheme(
       color: AppColors.primary,
       iconTheme: IconThemeData(color: AppColors.white),
-      titleTextStyle: CustomTextStyle.titleLarge(color: AppColors.white),
+      titleTextStyle: customThemeStyle.CustomTextStyle.titleLarge(color: AppColors.white),
     ),
     colorScheme: ColorScheme.light(
       primary: AppColors.primary,

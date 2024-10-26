@@ -1,6 +1,6 @@
 // lib/presentation/auth/otp/otp_screen.dart
 
-import 'package:dycare/theme/custom_theme_style.dart';
+import 'package:dycare/theme/custom_text_style.dart' as customTheme;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/core/utils/app_export.dart';
@@ -27,7 +27,7 @@ class OtpScreen extends GetWidget<OtpController> {
               SizedBox(height: 20),
               Text(
                 'Enter the 6-digit code sent to your email',
-                style: CustomTextStyle.bodyLarge(),
+                style: customTheme.CustomTextStyle.bodyLarge(),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 30),
