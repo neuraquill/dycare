@@ -19,4 +19,4 @@ Project Wireframe: [Figma link](https://www.figma.com/design/TSFIzrygyKv70w03ldI
 - [ ] Adjustable settings (where font size can be changed, since elderly people need bigger fonts, and easy-on-the-eye colors)
 - [ ] Multiple languages (English, Hindi, Marathi, ...) 
 
-
+*Makes changes/improvements to this list as seem fit, and whenever a task is completed, check it.*
