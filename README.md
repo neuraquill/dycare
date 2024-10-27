@@ -4,19 +4,19 @@ Project Wireframe: [Figmae link](https://www.figma.com/design/TSFIzrygyKv70w03ld
 
 ## UI/UX To-Do: Main
 
-- [] Overall Design
-- [] Google Maps Embed (Figure out the design, and what features to embed)
-- [] Calender UI for appointments
-- [] Back/Home button
-- [] Call feature (upon clicking, should invoke a call)
-- [] Payment gateway
+- [ ] Overall Design
+- [ ] Google Maps Embed (Figure out the design, and what features to embed)
+- [ ] Calender UI for appointments
+- [ ] Back/Home button
+- [ ] Call feature (upon clicking, should invoke a call)
+- [ ] Payment gateway
 
 ## UI/UX To-Do: Secondary
 
-- [] Make button animations
-- [] Smoother screen changes
-- [] Loading animations
-- [] Adjustable settings (where font size can be changed, since elderly people need bigger fonts, and easy-on-the-eye colors)
-- [] Multiple languages (English, Hindi, Marathi, ...) 
+- [ ] Make button animations
+- [ ] Smoother screen changes
+- [ ] Loading animations
+- [ ] Adjustable settings (where font size can be changed, since elderly people need bigger fonts, and easy-on-the-eye colors)
+- [ ] Multiple languages (English, Hindi, Marathi, ...) 
 
 
