@@ -1,6 +1,6 @@
 # Dycare: Connect to your caretakers 
 
-Project Wireframe: [Figmae link](https://www.figma.com/design/TSFIzrygyKv70w03ldI4vg/Wire-frame-for-appointment-booking-app-(Community)-(Copy)?node-id=0-1&t=0AEdnBjAVzdbQkqM-1)
+Project Wireframe: [Figma link](https://www.figma.com/design/TSFIzrygyKv70w03ldI4vg/Wire-frame-for-appointment-booking-app-(Community)-(Copy)?node-id=0-1&t=0AEdnBjAVzdbQkqM-1)
 
 ## UI/UX To-Do: Main
 
