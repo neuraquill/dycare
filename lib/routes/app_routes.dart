@@ -15,10 +15,6 @@ abstract class Routes {
   static const NURSE_LIST = '/nurse-list';
   static const NURSE_DETAILS = '/nurse-details';
   static const NURSE_REVIEWS = '/nurse-reviews';
-  static const CHAT_LIST = '/chat-list';
-  static const CHAT_DETAIL = '/chat-detail';
-  static const AUDIO_CALL = '/audio-call';
-  static const VIDEO_CALL = '/video-call';
   static const VIEW_PROFILE = '/view-profile';
   static const EDIT_PROFILE = '/edit-profile';
 

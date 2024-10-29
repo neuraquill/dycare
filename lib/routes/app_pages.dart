@@ -27,7 +27,6 @@ import 'package:dycare/presentation/appointments/my_appointments/my_appointments
 import 'package:dycare/presentation/nurses/nurse_list/nurse_list_screen.dart';
 import 'package:dycare/presentation/nurses/nurse_details/nurse_details_screen.dart';
 import 'package:dycare/presentation/nurses/nurse_reviews/nurse_reviews_screen.dart';
-import 'package:dycare/presentation/chat/chat_list/chat_list_screen.dart';
 import 'package:dycare/presentation/profile/view_profile/view_profile_screen.dart';
 import 'package:dycare/presentation/profile/edit_profile/edit_profile_screen.dart';
 
