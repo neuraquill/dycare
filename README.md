@@ -5,6 +5,7 @@ Project Wireframe: [Figma link](https://www.figma.com/design/TSFIzrygyKv70w03ldI
 ## UI/UX To-Do: Main
 
 - [ ] Overall Design
+- [ ] Multi OS Support, Responsive
 - [ ] Google Maps Embed (Figure out the design, and what features to embed)
 - [ ] Calender UI for appointments
 - [ ] Back/Home button
