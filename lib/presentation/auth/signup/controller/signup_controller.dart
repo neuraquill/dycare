@@ -51,3 +51,7 @@ class SignupController extends GetxController {
     super.onClose();
   }
 }
+
+final RxBool isPasswordVisible = RxBool(true);
+
+void togglePasswordVisibility() => isPasswordVisible.value = !isPasswordVisible.value;

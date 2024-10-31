@@ -32,16 +32,8 @@ class LoginController extends GetxController {
         passwordController.text,
       );
 
-      if (user != null) {
-        Get.offAllNamed(Routes.HOME);
-      } else {
-        Get.snackbar(
-          'Error',
-          'Invalid email or password',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
-    } catch (e) {
+      Get.offAllNamed(Routes.HOME);
+        } catch (e) {
       Get.snackbar(
         'Error',
         'An error occurred during login',

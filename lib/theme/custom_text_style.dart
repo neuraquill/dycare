@@ -1,9 +1,8 @@
-// lib/theme/custom_text_style.dart
-
 import 'package:flutter/material.dart';
 import 'package:dycare/theme/app_colors.dart';
 
 class CustomTextStyle {
+  // Display Styles
   static TextStyle displayLarge({Color? color}) {
     return TextStyle(
       fontSize: 57,
@@ -29,6 +28,7 @@ class CustomTextStyle {
     );
   }
 
+  // Headline Styles
   static TextStyle headlineLarge({Color? color}) {
     return TextStyle(
       fontSize: 32,
@@ -53,10 +53,11 @@ class CustomTextStyle {
     );
   }
 
+  // Title Styles
   static TextStyle titleLarge({Color? color}) {
     return TextStyle(
       fontSize: 22,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600, // Slightly increased weight for emphasis
       color: color ?? AppColors.textPrimary,
     );
   }
@@ -79,6 +80,7 @@ class CustomTextStyle {
     );
   }
 
+  // Body Styles
   static TextStyle bodyLarge({Color? color}) {
     return TextStyle(
       fontSize: 16,
@@ -106,6 +108,7 @@ class CustomTextStyle {
     );
   }
 
+  // Label Styles
   static TextStyle labelLarge({Color? color}) {
     return TextStyle(
       fontSize: 14,
@@ -133,11 +136,11 @@ class CustomTextStyle {
     );
   }
 
-  // Custom styles for specific use cases
+  // Custom Styles for Specific Use Cases
   static TextStyle buttonText({Color? color}) {
     return TextStyle(
       fontSize: 14,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600, // Increased weight for buttons
       letterSpacing: 0.1,
       color: color ?? Colors.white,
     );
@@ -146,7 +149,7 @@ class CustomTextStyle {
   static TextStyle appBarTitle({Color? color}) {
     return TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0.15,
       color: color ?? Colors.white,
     );
@@ -171,7 +174,7 @@ class CustomTextStyle {
   static TextStyle inputLabel({Color? color}) {
     return TextStyle(
       fontSize: 16,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500, // Emphasized for labels
       color: color ?? AppColors.textSecondary,
     );
   }
@@ -189,6 +192,15 @@ class CustomTextStyle {
       fontSize: 12,
       fontWeight: FontWeight.w400,
       color: color ?? AppColors.error,
+    );
+  }
+
+  // Subtitle Style (new addition based on design)
+  static TextStyle subTitle({Color? color}) {
+    return TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: color ?? AppColors.textSecondary,
     );
   }
 }
