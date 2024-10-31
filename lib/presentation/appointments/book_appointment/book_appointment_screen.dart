@@ -62,7 +62,23 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                 });
               },
               firstDay: DateTime.now(),
-              lastDay: DateTime.now().add(Duration(days: 30)), // 30 days ahead
+              lastDay: DateTime.now().add(Duration(days: 365)), // 30 days ahead
+              headerStyle: HeaderStyle(
+                titleTextStyle: TextStyle(
+                  color: Colors.black, // Color for the month and year text at the top
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                formatButtonVisible: false, // Hide format button if not needed
+                leftChevronIcon: Icon(
+                  Icons.chevron_left,
+                  color: Colors.black, // Color for left arrow
+                ),
+                rightChevronIcon: Icon(
+                  Icons.chevron_right,
+                  color: Colors.black, // Color for right arrow
+                ),
+              ),
               calendarStyle: CalendarStyle(
                 selectedDecoration: BoxDecoration(
                   color: Colors.black, // Primary color for selected date
@@ -75,6 +91,15 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                 defaultDecoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.transparent,
+                ),
+                defaultTextStyle: TextStyle(
+                  color: Colors.black, // Color for default dates
+                ),
+                outsideTextStyle: TextStyle(
+                  color: Colors.grey, // Color for dates outside current month
+                ),
+                weekendTextStyle: TextStyle(
+                  color: Colors.red, // Color for weekend dates, if needed
                 ),
               ),
             ),
