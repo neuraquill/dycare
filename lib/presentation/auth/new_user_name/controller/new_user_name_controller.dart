@@ -1,33 +1,35 @@
-// lib/presentation/auth/forgot_password/controller/forgot_password_controller.dart
+// lib/presentation/auth/new_user_name/controller/new_user_name_controller.dart
 
 import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/domain/auth/auth_repository.dart';
 
-class ForgotPasswordController extends GetxController {
-  final AuthRepository _authRepository = AuthRepository();
+class NewUserNameController extends GetxController {
+  final AuthRepository _authRepository = Get.find<AuthRepository>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
-  void resetPassword() async {
+  Future<void> submitName() async {
     if (formKey.currentState!.validate()) {
       try {
-        bool success = await _authRepository.resetPassword(emailController.text, "admin");
+        final success = await _authRepository.updateUserName(
+          nameController.text.trim(),
+        );
 
         if (success) {
           Get.snackbar(
-            'Success',
-            'Password reset instructions have been sent to your email.',
+            'Welcome!',
+            'Your profile has been created successfully.',
             backgroundColor: Colors.green,
             colorText: Colors.white,
           );
-          Get.offAllNamed(Routes.LOGIN);
+          Get.offAllNamed(Routes.HOME);
         } else {
           Get.snackbar(
             'Error',
-            'Failed to send reset instructions. Please try again.',
+            'Failed to save your name. Please try again.',
             backgroundColor: Colors.red,
             colorText: Colors.white,
           );
@@ -45,7 +47,7 @@ class ForgotPasswordController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
+    nameController.dispose();
     super.onClose();
   }
 }

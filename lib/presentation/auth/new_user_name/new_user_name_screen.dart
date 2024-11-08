@@ -1,10 +1,12 @@
+// lib/presentation/auth/new_user_name/view/new_user_name_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/core/utils/app_export.dart';
-import 'package:dycare/presentation/auth/forgot_password/controller/forgot_password_controller.dart';
+import 'package:dycare/presentation/auth/new_user_name/controller/new_user_name_controller.dart';
 
-class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
-  const ForgotPasswordScreen({super.key});
+class NewUserNameScreen extends GetView<NewUserNameController> {
+  const NewUserNameScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +42,10 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                     height: screenHeight * 0.5,
                     width: double.infinity,
                     color: Colors.grey[200],
-                    child: Column(
+                    child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.black,
-                            size: screenHeight * 0.024,
-                          ),
-                          onPressed: () => Get.back(),
-                        ),
-                        
+                        // Add your welcome illustration here
                       ],
                     ),
                   ),
@@ -65,7 +59,7 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Forgot\nyour Password?',
+                          "Welcome!\nWhat's your name?",
                           style: TextStyle(
                             fontSize: fontSizes.xlarge,
                             fontWeight: FontWeight.w600,
@@ -74,36 +68,28 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                             height: 1.2,
                           ),
                         ),
-                        SizedBox(height: verticalSpacing * 1.5),
-                        
-                        Text(
-                          'Please enter your mobile number to receive password reset instructions',
-                          style: TextStyle(
-                            fontSize: fontSizes.small,
-                            color: Colors.grey[600],
-                            height: 1.5,
-                          ),
-                        ),
                         SizedBox(height: verticalSpacing * 2),
 
+                        // Name Field
                         AuthTextField(
-                          controller: controller.emailController,
-                          label: 'Mobile Number',
+                          controller: controller.nameController,
+                          label: 'Full Name',
                           fontSize: fontSizes,
-                          keyboardType: TextInputType.phone,
+                          keyboardType: TextInputType.name,
+                          textCapitalization: TextCapitalization.words,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your mobile number';
+                              return 'Please enter your name';
                             }
-                            if (!GetUtils.isPhoneNumber(value)) {
-                              return 'Please enter a valid mobile number';
+                            if (value.trim().split(' ').length < 2) {
+                              return 'Please enter your full name';
                             }
                             return null;
                           },
                         ),
                         SizedBox(height: verticalSpacing * 3),
 
-                        // Submit Button
+                        // Continue Button
                         SizedBox(
                           width: double.infinity,
                           height: buttonHeight,
@@ -115,9 +101,9 @@ class ForgotPasswordScreen extends GetView<ForgotPasswordController> {
                                 borderRadius: BorderRadius.circular(screenWidth * 0.02),
                               ),
                             ),
-                            onPressed: controller.resetPassword,
+                            onPressed: controller.submitName,
                             child: Text(
-                              'Submit',
+                              'Continue',
                               style: TextStyle(
                                 fontSize: fontSizes.medium,
                                 fontWeight: FontWeight.w500,
@@ -146,6 +132,7 @@ class AuthTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool obscureText;
   final Widget? suffixIcon;
+  final TextCapitalization textCapitalization;
 
   const AuthTextField({
     required this.controller,
@@ -155,6 +142,7 @@ class AuthTextField extends StatelessWidget {
     this.keyboardType,
     this.obscureText = false,
     this.suffixIcon,
+    this.textCapitalization = TextCapitalization.none,
     super.key,
   });
 
@@ -165,6 +153,7 @@ class AuthTextField extends StatelessWidget {
       validator: validator,
       keyboardType: keyboardType,
       obscureText: obscureText,
+      textCapitalization: textCapitalization,
       style: TextStyle(
         fontSize: fontSize.medium,
         color: Colors.black87,
@@ -197,7 +186,6 @@ class AuthTextField extends StatelessWidget {
     );
   }
 }
-
 class ResponsiveFontSizes {
   final double tiny;
   final double small;
