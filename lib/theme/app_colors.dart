@@ -27,6 +27,12 @@ class AppColors {
   static const Color error = Color(0xFFD32F2F);
   static const Color errorDark = Color(0xFFEF5350);
 
+  // Accent colors
+  static const Color accentPink = Color(0xFFFFC1E3); // New accent color
+
+  // Custom colors
+  static const Color booked = Color(0xFFE1E2E1); // New custom color
+
   // Success colors
   static const Color success = Color(0xFF388E3C);
   static const Color successDark = Color(0xFF4CAF50);
