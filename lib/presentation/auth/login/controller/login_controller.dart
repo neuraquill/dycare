@@ -1,10 +1,9 @@
+// And update the controller
 // lib/presentation/auth/login/controller/login_controller.dart
-
 import 'package:dycare/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:dycare/domain/repositories/user_repository.dart';
-import 'package:dycare/core/utils/input_validators.dart';
 
 class LoginController extends GetxController {
   final UserRepository _userRepository;
@@ -12,39 +11,27 @@ class LoginController extends GetxController {
   LoginController(this._userRepository);
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   final RxBool isLoading = false.obs;
-  final RxBool isPasswordVisible = false.obs;
 
-  void togglePasswordVisibility() {
-    isPasswordVisible.value = !isPasswordVisible.value;
-  }
-
-  Future<void> login() async {
+  Future<void> sendOTP() async {
     if (!formKey.currentState!.validate()) return;
 
     try {
       isLoading.value = true;
-      final user = await _userRepository.login(
-        emailController.text.trim(),
-        passwordController.text,
+      // Here you would typically make an API call to send OTP
+      await Future.delayed(const Duration(seconds: 1)); // Simulating API call
+      
+      // Navigate to OTP screen
+      Get.toNamed(
+        Routes.OTP,
+        arguments: {'phoneNumber': phoneController.text.trim()}
       );
-
-      if (user != null) {
-        Get.offAllNamed(Routes.HOME);
-      } else {
-        Get.snackbar(
-          'Error',
-          'Invalid email or password',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
     } catch (e) {
       Get.snackbar(
         'Error',
-        'An error occurred during login',
+        'Failed to send OTP. Please try again.',
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -52,26 +39,19 @@ class LoginController extends GetxController {
     }
   }
 
-  void navigateToForgotPassword() {
-    Get.toNamed(Routes.FORGOT_PASSWORD);
-  }
-
-  void navigateToSignUp() {
-    Get.toNamed(Routes.SIGNUP);
-  }
-
-  String? validateEmail(String? value) {
-    return InputValidators.validateEmail(value);
-  }
-
-  String? validatePassword(String? value) {
-    return InputValidators.validatePassword(value);
+  String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Phone number is required';
+    }
+    if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+      return 'Please enter a valid 10-digit phone number';
+    }
+    return null;
   }
 
   @override
   void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
+    phoneController.dispose();
     super.onClose();
   }
 }

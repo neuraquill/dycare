@@ -3,10 +3,7 @@
 import 'package:dycare/presentation/appointments/appointment_details/bindings/appointment_details_binding.dart';
 import 'package:dycare/presentation/appointments/book_appointment/bindings/book_appointment_binding.dart';
 import 'package:dycare/presentation/appointments/my_appointments/bindings/my_appointments_binding.dart';
-import 'package:dycare/presentation/auth/forgot_password/bindings/forgot_password_binding.dart';
 import 'package:dycare/presentation/auth/otp/bindings/otp_binding.dart';
-import 'package:dycare/presentation/auth/reset_password/bindings/reset_password_binding.dart';
-import 'package:dycare/presentation/auth/signup/bindings/signup_binding.dart';
 import 'package:dycare/presentation/home/bindings/home_binding.dart';
 import 'package:dycare/presentation/nurses/nurse_details/bindings/nurse_detials_binding.dart';
 import 'package:dycare/presentation/nurses/nurse_list/bindings/nurse_list_binding.dart';
@@ -16,10 +13,7 @@ import 'package:dycare/presentation/profile/view_profile/bindings/view_profile_b
 import 'package:get/get.dart';
 import 'package:dycare/presentation/auth/login/login_screen.dart';
 import 'package:dycare/presentation/auth/login/bindings/login_binding.dart';
-import 'package:dycare/presentation/auth/signup/signup_screen.dart';
-import 'package:dycare/presentation/auth/forgot_password/forgot_password_screen.dart';
 import 'package:dycare/presentation/auth/otp/otp_screen.dart';
-import 'package:dycare/presentation/auth/reset_password/reset_password_screen.dart';
 import 'package:dycare/presentation/home/home_screen.dart';
 import 'package:dycare/presentation/appointments/book_appointment/book_appointment_screen.dart';
 import 'package:dycare/presentation/appointments/appointment_details/appointment_details_screen.dart';
@@ -42,24 +36,9 @@ class AppPages {
       binding: LoginBinding(),
     ),
     GetPage(
-      name: Routes.SIGNUP,
-      page: () => SignupScreen(),
-      binding: SignupBinding(),
-    ),
-    GetPage(
-      name: Routes.FORGOT_PASSWORD,
-      page: () => ForgotPasswordScreen(),
-      binding: ForgotPasswordBinding(),
-    ),
-    GetPage(
       name: Routes.OTP,
       page: () => OtpScreen(),
       binding: OtpBinding(),
-    ),
-    GetPage(
-      name: Routes.RESET_PASSWORD,
-      page: () => ResetPasswordScreen(),
-      binding: ResetPasswordBinding(),
     ),
     GetPage(
       name: Routes.HOME,

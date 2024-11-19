@@ -1,5 +1,3 @@
-// lib/presentation/auth/otp/controller/otp_controller.dart
-
 import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,9 +9,9 @@ class OtpController extends GetxController {
   final TextEditingController otpController = TextEditingController();
 
   final RxBool isResendActive = false.obs;
-  final RxInt resendCountdown = 30.obs;
-
+  final RxString timerText = "".obs;
   Timer? _resendTimer;
+  int _totalSeconds = 30; // Changed to 30 seconds
 
   @override
   void onInit() {
@@ -23,10 +21,14 @@ class OtpController extends GetxController {
 
   void startResendTimer() {
     isResendActive.value = false;
-    resendCountdown.value = 30;
-    _resendTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (resendCountdown.value > 0) {
-        resendCountdown.value--;
+    _totalSeconds = 30;
+    updateTimerText();
+    
+    _resendTimer?.cancel();
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_totalSeconds > 0) {
+        _totalSeconds--;
+        updateTimerText();
       } else {
         isResendActive.value = true;
         timer.cancel();
@@ -34,12 +36,16 @@ class OtpController extends GetxController {
     });
   }
 
+  void updateTimerText() {
+    String seconds = (_totalSeconds % 60).toString().padLeft(2, '0');
+    timerText.value = '00:${seconds}sec';
+  }
+
   void verifyOtp() async {
-    if (otpController.text.length == 6) {
+    if (otpController.text.length == 4) {
       try {
         // In a real app, you would call an API to verify the OTP
-        // For now, we'll just simulate a successful verification
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
         Get.snackbar(
           'Success',
           'OTP verified successfully',
@@ -58,7 +64,7 @@ class OtpController extends GetxController {
     } else {
       Get.snackbar(
         'Error',
-        'Please enter a valid 6-digit OTP',
+        'Please enter a valid 4-digit OTP',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -68,8 +74,7 @@ class OtpController extends GetxController {
   void resendOtp() async {
     try {
       // In a real app, you would call an API to resend the OTP
-      // For now, we'll just simulate a successful resend
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       Get.snackbar(
         'Success',
         'OTP resent successfully',
