@@ -201,20 +201,48 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
   }
 
   Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: 'Services'),
-        BottomNavigationBarItem(icon: Icon(Icons.access_time), label: 'Appointments'),
-        BottomNavigationBarItem(icon: Icon(Icons.description), label: 'Documents'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-      ],
-      selectedItemColor: AppColors.primary,
-      unselectedItemColor: AppColors.booked,
-      currentIndex: 2, // Assumes 'Appointments' is selected
-      onTap: (index) {
-        // Handle navigation
-      },
-    );
-  }
+  return BottomNavigationBar(
+    type: BottomNavigationBarType.fixed,
+    selectedItemColor: Colors.black,
+    unselectedItemColor: const Color(0xFF757575),
+    currentIndex: 2, // Assumes 'Appointments' is selected by default
+    onTap: (index) {
+      switch (index) {
+        case 0:
+          Get.toNamed(Routes.HOME);
+          break;
+        case 1:
+          Get.toNamed(Routes.SEARCH);
+          break;
+        case 2:
+          Get.toNamed(Routes.MY_APPOINTMENTS);
+          break;
+        case 3:
+          Get.toNamed(Routes.VIEW_PROFILE);
+          break;
+        default:
+          break;
+      }
+    },
+    items: const [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Home',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.grid_view),
+        label: 'Categories',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.schedule),
+        label: 'Appointments',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        label: 'Profile',
+      ),
+    ],
+  );
+}
+
 }

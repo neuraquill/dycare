@@ -17,6 +17,7 @@ abstract class Routes {
   static const NURSE_REVIEWS = '/nurse-reviews';
   static const VIEW_PROFILE = '/view-profile';
   static const EDIT_PROFILE = '/edit-profile';
+  static const SEARCH = '/search';
 
   static String ADD_REVIEW = '/add-review';
 }

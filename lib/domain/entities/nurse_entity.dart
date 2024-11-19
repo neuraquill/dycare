@@ -8,6 +8,8 @@ class NurseEntity {
   final String? profilePicture;
   final List<String> availableDays;
 
+  var status;
+
   NurseEntity({
     required this.id,
     required this.name,
