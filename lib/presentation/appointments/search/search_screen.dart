@@ -1,3 +1,4 @@
+import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/presentation/appointments/search/controller/search_controller.dart' as local;
@@ -104,7 +105,7 @@ class SearchScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    nurse.specialization,
+                                    nurse.specialization ?? 'No specialization',
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
@@ -166,6 +167,58 @@ class SearchScreen extends StatelessWidget {
                   },
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.black,
+          unselectedItemColor: const Color(0xFF757575),
+          backgroundColor: Colors.white,
+          currentIndex: 1, // Set the Search tab as active
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                Get.toNamed(Routes.HOME);
+                break;
+              case 1:
+                Get.toNamed(Routes.SEARCH);
+                break;
+              case 2:
+                Get.toNamed(Routes.MY_APPOINTMENTS);
+                break;
+              case 3:
+                Get.toNamed(Routes.VIEW_PROFILE);
+                break;
+              default:
+                break;
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.grid_view),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.schedule),
+              label: 'Appointments',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
             ),
           ],
         ),

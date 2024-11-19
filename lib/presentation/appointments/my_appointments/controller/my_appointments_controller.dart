@@ -13,6 +13,11 @@ class MyAppointmentsController extends GetxController {
   final RxBool isLoading = true.obs;
   final RxMap<String, String> nurseNames = <String, String>{}.obs;
 
+  // New variables for filtering
+  final RxList<AppointmentEntity> filteredAppointments = <AppointmentEntity>[].obs;
+  final RxString selectedStatus = ''.obs;
+  final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
+
   @override
   void onInit() {
     super.onInit();
@@ -25,6 +30,7 @@ class MyAppointmentsController extends GetxController {
       final userId = _userRepository.getCurrentUser();
       appointments.value = await _appointmentRepository.getAppointmentsByUserId(userId as String);
       await _loadNurseNames();
+      applyFilters(); // Apply filters initially
     } catch (e) {
       Get.snackbar('Error', 'Failed to load appointments');
     } finally {
@@ -51,5 +57,25 @@ class MyAppointmentsController extends GetxController {
 
   void refreshAppointments() {
     loadAppointments();
+  }
+
+  // New methods for filtering
+  void setSelectedStatus(String status) {
+    selectedStatus.value = status;
+    applyFilters();
+  }
+
+  void setSelectedDate(DateTime? date) {
+    selectedDate.value = date;
+    applyFilters();
+  }
+
+  void applyFilters() {
+    filteredAppointments.value = appointments.where((appointment) {
+      final matchesStatus = selectedStatus.isEmpty || appointment.status == selectedStatus.value;
+      final matchesDate = selectedDate.value == null || 
+                          appointment.dateTime.toLocal().isAtSameMomentAs(selectedDate.value!);
+      return matchesStatus && matchesDate;
+    }).toList();
   }
 }
