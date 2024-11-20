@@ -4,40 +4,41 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/core/utils/app_export.dart';
 import 'package:dycare/presentation/profile/edit_profile/controller/edit_profile_controller.dart';
+import 'package:dycare/theme/app_colors.dart';
 
 class EditProfileScreen extends GetWidget<EditProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Set background color to white
+      backgroundColor: AppColors.background, // Background color from AppColors
       appBar: AppBar(
         title: Text(
           'Edit Profile',
           style: TextStyle(
-            color: Colors.black, // Use black color for the title
-            fontSize: 20, // Adjust font size
-            fontWeight: FontWeight.bold, // Bold title for emphasis
+            color: AppColors.textPrimary, // Primary text color
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black), // Set icon color to black
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary), // Primary text color for icons
           onPressed: () => Get.back(),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.save, color: Colors.black), // Set icon color to black
+            icon: Icon(Icons.save, color: AppColors.textPrimary), // Primary text color for icons
             onPressed: controller.saveProfile,
           ),
         ],
-        backgroundColor: Colors.white, // Set AppBar background to white
-        elevation: 0, // Remove elevation for a flat AppBar
+        backgroundColor: AppColors.background, // Background color for AppBar
+        elevation: 0, // Flat AppBar
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(child: CircularProgressIndicator());
         } else {
           return SingleChildScrollView(
-            padding: EdgeInsets.all(16), // Standard padding
+            padding: EdgeInsets.all(16),
             child: Form(
               key: controller.formKey,
               child: Column(
@@ -59,10 +60,10 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                           bottom: 0,
                           right: 0,
                           child: CircleAvatar(
-                            backgroundColor: Colors.black, // Black button for edit
+                            backgroundColor: AppColors.primaryDark, // Primary dark color for button
                             radius: 20,
                             child: IconButton(
-                              icon: Icon(Icons.camera_alt, color: Colors.white),
+                              icon: Icon(Icons.camera_alt, color: AppColors.white),
                               onPressed: controller.pickImage,
                             ),
                           ),
@@ -76,14 +77,18 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                     controller: controller.nameController,
                     decoration: InputDecoration(
                       labelText: 'Full Name',
-                      labelStyle: TextStyle(color: Colors.black), // Black label text
-                      prefixIcon: Icon(Icons.person, color: Colors.black), // Black icon
+                      labelStyle: TextStyle(color: AppColors.textPrimary),
+                      prefixIcon: Icon(Icons.person, color: AppColors.textPrimary),
                       filled: true,
-                      fillColor: Colors.grey[200], // Light grey background for fields
-                      hintStyle: TextStyle(color: Colors.black), // Black hint text
+                      fillColor: AppColors.inputFill,
+                      hintStyle: TextStyle(color: AppColors.textSecondary),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.inputBorder),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     validator: InputValidators.validateName,
-                    style: TextStyle(color: Colors.black), // Black text for input
+                    style: TextStyle(color: AppColors.textPrimary),
                   ),
                   SizedBox(height: 16),
                   // Email Field (Non-editable)
@@ -91,15 +96,18 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                     controller: controller.emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      labelStyle: TextStyle(color: Colors.black),
-                      prefixIcon: Icon(Icons.email, color: Colors.black),
+                      labelStyle: TextStyle(color: AppColors.textPrimary),
+                      prefixIcon: Icon(Icons.email, color: AppColors.textPrimary),
                       filled: true,
-                      fillColor: Colors.grey[200],
-                      hintStyle: TextStyle(color: Colors.black),
+                      fillColor: AppColors.inputFill,
+                      hintStyle: TextStyle(color: AppColors.textSecondary),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.inputBorder),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     validator: InputValidators.validateEmail,
-                    enabled: false,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: AppColors.textPrimary),
                   ),
                   SizedBox(height: 16),
                   // Phone Number Field
@@ -107,14 +115,18 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                     controller: controller.phoneController,
                     decoration: InputDecoration(
                       labelText: 'Phone Number',
-                      labelStyle: TextStyle(color: Colors.black),
-                      prefixIcon: Icon(Icons.phone, color: Colors.black),
+                      labelStyle: TextStyle(color: AppColors.textPrimary),
+                      prefixIcon: Icon(Icons.phone, color: AppColors.textPrimary),
                       filled: true,
-                      fillColor: Colors.grey[200],
-                      hintStyle: TextStyle(color: Colors.black),
+                      fillColor: AppColors.inputFill,
+                      hintStyle: TextStyle(color: AppColors.textSecondary),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.inputBorder),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     validator: InputValidators.validatePhoneNumber,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: AppColors.textPrimary),
                   ),
                   SizedBox(height: 16),
                   // Address Field
@@ -122,15 +134,19 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                     controller: controller.addressController,
                     decoration: InputDecoration(
                       labelText: 'Address',
-                      labelStyle: TextStyle(color: Colors.black),
-                      prefixIcon: Icon(Icons.home, color: Colors.black),
+                      labelStyle: TextStyle(color: AppColors.textPrimary),
+                      prefixIcon: Icon(Icons.home, color: AppColors.textPrimary),
                       filled: true,
-                      fillColor: Colors.grey[200],
-                      hintStyle: TextStyle(color: Colors.black),
+                      fillColor: AppColors.inputFill,
+                      hintStyle: TextStyle(color: AppColors.textSecondary),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.inputBorder),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     validator: (value) => InputValidators.validateNotEmpty(value ?? '', 'Address'),
                     maxLines: 3,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: AppColors.textPrimary),
                   ),
                   SizedBox(height: 16),
                   // Conditional Field for Patient (Date of Birth)
@@ -139,43 +155,33 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                       controller: controller.dateOfBirthController,
                       decoration: InputDecoration(
                         labelText: 'Date of Birth',
-                        labelStyle: TextStyle(color: Colors.black),
-                        prefixIcon: Icon(Icons.cake, color: Colors.black),
+                        labelStyle: TextStyle(color: AppColors.textPrimary),
+                        prefixIcon: Icon(Icons.cake, color: AppColors.textPrimary),
                         filled: true,
-                        fillColor: Colors.grey[200],
-                        hintStyle: TextStyle(color: Colors.black),
+                        fillColor: AppColors.inputFill,
+                        hintStyle: TextStyle(color: AppColors.textSecondary),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.inputBorder),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       readOnly: true,
                       onTap: () => controller.selectDateOfBirth(context),
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: AppColors.textPrimary),
                     ),
-                  // Conditional Field for Nurse (Specialization)
-                  if (controller.user.value?.role == UserRole.nurse)
-                    TextFormField(
-                      controller: controller.specializationController,
-                      decoration: InputDecoration(
-                        labelText: 'Specialization',
-                        labelStyle: TextStyle(color: Colors.black),
-                        prefixIcon: Icon(Icons.work, color: Colors.black),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                      validator: (value) => InputValidators.validateNotEmpty(value ?? '', 'Specialization'),
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  SizedBox(height: 24),
+                  SizedBox(height: 16),
                   // Save Button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: Colors.black, // White text
+                      foregroundColor: AppColors.white,
+                      backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       minimumSize: Size(double.infinity, 48),
                     ),
                     onPressed: controller.saveProfile,
-                    child: Text('Save Changes', style: TextStyle(color: Colors.white)),
+                    child: Text('Save Changes', style: TextStyle(color: AppColors.white)),
                   ),
                 ],
               ),

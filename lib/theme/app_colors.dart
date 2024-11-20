@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  // Transparent Color
+  static const Color transparent = Color(0x00000000);
+
   // Primary colors
   static const Color primary = Color(0xFF1E88E5);
   static const Color primaryDark = Color(0xFF1565C0);
@@ -16,6 +19,9 @@ class AppColors {
   // Background colors
   static const Color background = Color(0xFFF5F5F5);
   static const Color backgroundDark = Color(0xFF121212);
+
+  // Calender Colors
+  static const Color weekends = Color.fromARGB(255, 200, 50, 50);
 
   // Text colors
   static const Color textPrimary = Color(0xFF212121);
@@ -44,7 +50,6 @@ class AppColors {
   // Other colors
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
-  static const Color transparent = Color(0x00000000);
 
   // Input colors
   static const Color inputFill = Color(0xFFF5F5F5);

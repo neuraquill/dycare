@@ -41,13 +41,12 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.toNamed(Routes.BOOK_APPOINTMENT),
         backgroundColor: AppColors.primary,
-        child: Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: AppColors.white),
       ),
     );
   }
 
   Widget _buildDateSelectionStrip() {
-    // Generate the next 7 days for date selection
     final dates = List.generate(7, (index) => DateTime.now().add(Duration(days: index)));
 
     return SingleChildScrollView(
@@ -70,14 +69,14 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
                     Text(
                       DateTimeUtils.formatDate(date),
                       style: AppTypography.bodyLarge.copyWith(
-                        color: isSelected ? Colors.white : AppColors.textPrimary,
+                        color: isSelected ? AppColors.white : AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       DateTimeUtils.formatDate(date),
                       style: AppTypography.bodyMedium.copyWith(
-                        color: isSelected ? Colors.white : AppColors.textSecondary,
+                        color: isSelected ? AppColors.white : AppColors.textSecondary,
                       ),
                     ),
                   ],
@@ -118,7 +117,7 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
           child: Text(
             title,
             style: AppTypography.bodyMedium.copyWith(
-              color: isSelected ? Colors.white : AppColors.textSecondary,
+              color: isSelected ? AppColors.white : AppColors.textSecondary,
             ),
           ),
         ),
@@ -201,56 +200,56 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
 
   Widget _buildBottomNavigationBar() {
     return Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            top: BorderSide(color: Colors.grey.shade300, width: 1),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border(
+          top: BorderSide(color: AppColors.inputBorder, width: 1),
+        ),
+      ),
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppColors.textPrimary,
+        unselectedItemColor: AppColors.textSecondary,
+        backgroundColor: AppColors.white,
+        currentIndex: 1, // Set the Search tab as active
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Get.toNamed(Routes.HOME);
+              break;
+            case 1:
+              Get.toNamed(Routes.SEARCH);
+              break;
+            case 2:
+              Get.toNamed(Routes.MY_APPOINTMENTS);
+              break;
+            case 3:
+              Get.toNamed(Routes.VIEW_PROFILE);
+              break;
+            default:
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
-        ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: const Color(0xFF757575),
-          backgroundColor: Colors.white,
-          currentIndex: 1, // Set the Search tab as active
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                Get.toNamed(Routes.HOME);
-                break;
-              case 1:
-                Get.toNamed(Routes.SEARCH);
-                break;
-              case 2:
-                Get.toNamed(Routes.MY_APPOINTMENTS);
-                break;
-              case 3:
-                Get.toNamed(Routes.VIEW_PROFILE);
-                break;
-              default:
-                break;
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.schedule),
-              label: 'Appointments',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-        ),
-      );
+          BottomNavigationBarItem(
+            icon: Icon(Icons.grid_view),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.schedule),
+            label: 'Appointments',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+      ),
+    );
   }
 }

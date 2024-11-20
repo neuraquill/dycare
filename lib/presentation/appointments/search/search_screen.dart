@@ -2,6 +2,7 @@ import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/presentation/appointments/search/controller/search_controller.dart' as local;
+import 'package:dycare/theme/app_colors.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -11,12 +12,12 @@ class SearchScreen extends StatelessWidget {
     final local.SearchController controller = Get.find<local.SearchController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Background color
+      backgroundColor: AppColors.background, // Background color
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),
           onPressed: () => Get.back(),
         ),
         title: const Text(
@@ -24,7 +25,7 @@ class SearchScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF1A1A1A),
+            color: AppColors.textPrimary,
           ),
         ),
         centerTitle: true,
@@ -39,10 +40,10 @@ class SearchScreen extends StatelessWidget {
               onChanged: controller.filterNurses,
               decoration: InputDecoration(
                 hintText: 'Search',
-                prefixIcon: const Icon(Icons.search, color: Color(0xFF757575)),
-                suffixIcon: const Icon(Icons.mic, color: Color(0xFF757575)),
+                prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
+                suffixIcon: const Icon(Icons.mic, color: AppColors.textSecondary),
                 filled: true,
-                fillColor: const Color(0xFFF5F5F5),
+                fillColor: AppColors.inputFill,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -57,7 +58,7 @@ class SearchScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF1A1A1A),
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 16), // Spacing
@@ -82,12 +83,12 @@ class SearchScreen extends StatelessWidget {
                               width: 48,
                               height: 48,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE0E0E0),
+                                color: AppColors.inputBorder,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: nurse.profilePicture != null
                                   ? Image.network(nurse.profilePicture!)
-                                  : const Icon(Icons.person, color: Colors.white),
+                                  : const Icon(Icons.person, color: AppColors.white),
                             ),
                             const SizedBox(width: 16), // Spacing
                             // Nurse Details
@@ -100,7 +101,7 @@ class SearchScreen extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
-                                      color: Color(0xFF1A1A1A),
+                                      color: AppColors.textPrimary,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -109,7 +110,7 @@ class SearchScreen extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
-                                      color: Color(0xFF757575),
+                                      color: AppColors.textSecondary,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -118,7 +119,7 @@ class SearchScreen extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
-                                      color: Color(0xFF757575),
+                                      color: AppColors.textSecondary,
                                     ),
                                   ),
                                 ],
@@ -132,8 +133,8 @@ class SearchScreen extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: controller.isAvailable(nurse.availableDays)
-                                        ? const Color(0xFF4CAF50)
-                                        : const Color(0xFFE0E0E0),
+                                        ? AppColors.success
+                                        : AppColors.inputBorder,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
@@ -141,7 +142,7 @@ class SearchScreen extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.white,
+                                      color: AppColors.white,
                                     ),
                                   ),
                                 ),
@@ -149,8 +150,8 @@ class SearchScreen extends StatelessWidget {
                                 ElevatedButton(
                                   onPressed: controller.isAvailable(nurse.availableDays) ? () {} : null,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black,
-                                    foregroundColor: Colors.white,
+                                    backgroundColor: AppColors.black,
+                                    foregroundColor: AppColors.white,
                                     minimumSize: const Size(80, 36),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
@@ -174,16 +175,16 @@ class SearchScreen extends StatelessWidget {
       bottomNavigationBar: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           border: Border(
-            top: BorderSide(color: Colors.grey.shade300, width: 1),
+            top: BorderSide(color: AppColors.inputBorder, width: 1),
           ),
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: const Color(0xFF757575),
-          backgroundColor: Colors.white,
+          selectedItemColor: AppColors.black,
+          unselectedItemColor: AppColors.textSecondary,
+          backgroundColor: AppColors.white,
           currentIndex: 1, // Set the Search tab as active
           onTap: (index) {
             switch (index) {

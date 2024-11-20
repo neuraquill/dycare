@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/routes/app_pages.dart';
+import 'package:dycare/theme/app_colors.dart'; // Import AppColors
 
 class ViewProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Background color
+      backgroundColor: AppColors.background, // Background color
       appBar: AppBar(
         title: Text(
           'Profile',
-          style: TextStyle(color: Colors.black), // Black text for title
+          style: TextStyle(color: AppColors.textPrimary), // Text primary color
         ),
-        backgroundColor: const Color(0xFFF5F5F5), // Match background
+        backgroundColor: AppColors.background, // Match background
         elevation: 0, // Remove shadow
-        iconTheme: IconThemeData(color: Colors.black), // Black icons
+        iconTheme: IconThemeData(color: AppColors.textPrimary), // Icon color
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -26,7 +27,7 @@ class ViewProfileScreen extends StatelessWidget {
               child: CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage('assets/images/profile_pic.png'),
-                backgroundColor: Colors.grey[200], // Fallback color
+                backgroundColor: AppColors.inputFill, // Fallback color
               ),
             ),
             const SizedBox(height: 16),
@@ -37,7 +38,7 @@ class ViewProfileScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1A1A1A), // Primary text color
+                  color: AppColors.textPrimary, // Primary text color
                 ),
               ),
             ),
@@ -49,7 +50,7 @@ class ViewProfileScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xFF757575), // Secondary text color
+                  color: AppColors.textSecondary, // Secondary text color
                 ),
               ),
             ),
@@ -60,8 +61,8 @@ class ViewProfileScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, // Primary button background
-                    foregroundColor: Colors.white, // White text
+                    backgroundColor: AppColors.primary, // Primary button background
+                    foregroundColor: AppColors.white, // Button text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -75,8 +76,8 @@ class ViewProfileScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -90,8 +91,8 @@ class ViewProfileScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -105,8 +106,8 @@ class ViewProfileScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.black), // Border color
-                    foregroundColor: Colors.black,
+                    side: BorderSide(color: AppColors.textPrimary), // Border color
+                    foregroundColor: AppColors.textPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -124,9 +125,9 @@ class ViewProfileScreen extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: const Color(0xFF757575),
-        backgroundColor: Colors.white,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textSecondary,
+        backgroundColor: AppColors.white,
         currentIndex: 1, // Set the Search tab as active
         onTap: (index) {
           switch (index) {

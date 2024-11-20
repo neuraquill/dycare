@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dycare/core/constants/app_constants.dart';
 import 'package:table_calendar/table_calendar.dart'; // Importing TableCalendar package for the calendar widget
+import 'package:dycare/theme/app_colors.dart'; // Importing AppColors for color constants
 
 class BookAppointmentScreen extends StatefulWidget {
   @override
@@ -37,7 +38,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background, // Background color
       appBar: AppBar(
         title: Text(AppConstants.BOOK_APPOINTMENT_TITLE),
         leading: IconButton(
@@ -65,41 +66,41 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
               lastDay: DateTime.now().add(Duration(days: 365)), // 30 days ahead
               headerStyle: HeaderStyle(
                 titleTextStyle: TextStyle(
-                  color: Colors.black, // Color for the month and year text at the top
+                  color: AppColors.textPrimary, // Color for the month and year text at the top
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
                 formatButtonVisible: false, // Hide format button if not needed
                 leftChevronIcon: Icon(
                   Icons.chevron_left,
-                  color: Colors.black, // Color for left arrow
+                  color: AppColors.primary, // Color for left arrow
                 ),
                 rightChevronIcon: Icon(
                   Icons.chevron_right,
-                  color: Colors.black, // Color for right arrow
+                  color: AppColors.primary, // Color for right arrow
                 ),
               ),
               calendarStyle: CalendarStyle(
                 selectedDecoration: BoxDecoration(
-                  color: Colors.black, // Primary color for selected date
+                  color: AppColors.primary, // Primary color for selected date
                   shape: BoxShape.circle,
                 ),
                 todayDecoration: BoxDecoration(
-                  color: Colors.grey.shade300, // Color for today's date
+                  color: AppColors.textSecondary, // Color for today's date
                   shape: BoxShape.circle,
                 ),
                 defaultDecoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.transparent,
+                  color: AppColors.transparent,
                 ),
                 defaultTextStyle: TextStyle(
-                  color: Colors.black, // Color for default dates
+                  color: AppColors.textPrimary, // Color for default dates
                 ),
                 outsideTextStyle: TextStyle(
-                  color: Colors.grey, // Color for dates outside current month
+                  color: AppColors.textSecondaryDark, // Color for dates outside current month
                 ),
                 weekendTextStyle: TextStyle(
-                  color: Colors.red, // Color for weekend dates, if needed
+                  color: AppColors.weekends, // Color for weekend dates, if needed
                 ),
               ),
             ),
@@ -123,8 +124,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                     child: Card(
                       elevation: 2,
                       color: _selectedTimeSlot == index
-                          ? Colors.black // Highlight selected time slot
-                          : Colors.white,
+                          ? AppColors.textPrimary// Highlight selected time slot
+                          : AppColors.textPrimaryDark,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -135,8 +136,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: _selectedTimeSlot == index
-                                ? Colors.white // Text color for selected slot
-                                : Colors.black, // Text color for unselected slot
+                                ? AppColors.textPrimaryDark // Text color for selected slot
+                                : AppColors.textPrimary, // Text color for unselected slot
                           ),
                         ),
                       ),

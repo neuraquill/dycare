@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/routes/app_pages.dart';
+import 'package:dycare/theme/app_colors.dart';
 import 'package:dycare/core/constants/app_constants.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           AppConstants.HOME_TITLE,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF1A1A1A),
+            color: AppColors.textPrimary,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
       ),
       body: Padding(
@@ -29,17 +30,17 @@ class HomeScreen extends StatelessWidget {
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search for nurses, caretakers...',
-                prefixIcon: Icon(Icons.search, color: const Color(0xFF757575)),
-                suffixIcon: Icon(Icons.mic, color: const Color(0xFF757575)),
+                prefixIcon: Icon(Icons.search, color: AppColors.textSecondary),
+                suffixIcon: Icon(Icons.mic, color: AppColors.textSecondary),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: AppColors.white,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
               ),
-              style: TextStyle(fontSize: 14, color: const Color(0xFF757575)),
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 24),
 
@@ -49,7 +50,7 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF1A1A1A),
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 16),
@@ -61,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                 mainAxisSpacing: 16,
                 children: List.generate(4, (index) {
                   return Card(
-                    color: const Color(0xFFFFE4E6),
+                    color: AppColors.accentPink,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -69,14 +70,14 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.local_hospital, size: 48, color: const Color(0xFF2196F3)),
+                          Icon(Icons.local_hospital, size: 48, color: AppColors.primary),
                           const SizedBox(height: 8),
                           Text(
                             'Category ${index + 1}',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: const Color(0xFF757575),
+                              color: AppColors.textSecondary,
                             ),
                           ),
                         ],
@@ -94,7 +95,7 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color.fromARGB(255, 2, 0, 0),
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 16),
@@ -104,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                 itemCount: 5,
                 itemBuilder: (context, index) {
                   return Card(
-                    color: Colors.white,
+                    color: AppColors.white,
                     elevation: 2.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -128,7 +129,7 @@ class HomeScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF1A1A1A),
+                                    color: AppColors.textPrimary,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -136,7 +137,7 @@ class HomeScreen extends StatelessWidget {
                                   'Cardiologist',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: const Color(0xFF757575),
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -144,7 +145,7 @@ class HomeScreen extends StatelessWidget {
                                   'Experienced in advanced cardiology treatments.',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: const Color(0xFF757575),
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
                               ],
@@ -152,8 +153,8 @@ class HomeScreen extends StatelessWidget {
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white,
+                              backgroundColor: AppColors.primaryDark,
+                              foregroundColor: AppColors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -183,17 +184,17 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white, // Background color for the bar
+          color: AppColors.white,
           border: Border(
-            top: BorderSide(color: Colors.grey.shade300, width: 1), // Optional border at the top
+            top: BorderSide(color: AppColors.inputBorder, width: 1),
           ),
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: const Color(0xFF757575),
-          backgroundColor: Colors.white,
-          currentIndex: 0, // Set the default selected tab (optional)
+          selectedItemColor: AppColors.primary,
+          unselectedItemColor: AppColors.textSecondary,
+          backgroundColor: AppColors.white,
+          currentIndex: 0,
           onTap: (index) {
             switch (index) {
               case 0:
@@ -232,8 +233,6 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-
-
     );
   }
 }

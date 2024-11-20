@@ -139,7 +139,7 @@ class CustomTextStyle {
       fontSize: 14,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
-      color: color ?? Colors.white,
+      color: color ?? AppColors.textPrimaryDark,
     );
   }
 
@@ -148,7 +148,7 @@ class CustomTextStyle {
       fontSize: 20,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.15,
-      color: color ?? Colors.white,
+      color: color ?? AppColors.textPrimaryDark,
     );
   }
 
