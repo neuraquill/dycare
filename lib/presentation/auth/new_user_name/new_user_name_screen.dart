@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/core/utils/app_export.dart';
+import 'package:dycare/theme/app_colors.dart';
 import 'package:dycare/presentation/auth/new_user_name/controller/new_user_name_controller.dart';
 
 class NewUserNameScreen extends GetView<NewUserNameController> {
@@ -12,11 +13,11 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     final verticalSpacing = screenHeight * 0.02;
     final horizontalPadding = screenWidth * 0.06;
     final buttonHeight = screenHeight * 0.065;
-    
+
     final fontSizes = ResponsiveFontSizes(
       tiny: screenHeight * 0.014,
       small: screenHeight * 0.016,
@@ -26,7 +27,7 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -41,7 +42,7 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                   Container(
                     height: screenHeight * 0.5,
                     width: double.infinity,
-                    color: Colors.grey[200],
+                    color: AppColors.backgroundDark,
                     child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -63,7 +64,7 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                           style: TextStyle(
                             fontSize: fontSizes.xlarge,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                            color: AppColors.textPrimary,
                             letterSpacing: -0.5,
                             height: 1.2,
                           ),
@@ -95,10 +96,11 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                           height: buttonHeight,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[800],
-                              foregroundColor: Colors.white,
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.textPrimaryDark,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                                borderRadius:
+                                    BorderRadius.circular(screenWidth * 0.02),
                               ),
                             ),
                             onPressed: controller.submitName,
@@ -156,27 +158,27 @@ class AuthTextField extends StatelessWidget {
       textCapitalization: textCapitalization,
       style: TextStyle(
         fontSize: fontSize.medium,
-        color: Colors.black87,
+        color: AppColors.textPrimary,
       ),
-      cursorColor: Colors.black87,
+      cursorColor: AppColors.textPrimary,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-          color: Colors.grey[600],
+          color: AppColors.textSecondary,
           fontSize: fontSize.small,
         ),
         floatingLabelStyle: TextStyle(
-          color: Colors.grey[600],
+          color: AppColors.textSecondaryDark,
           fontSize: fontSize.tiny,
         ),
         border: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black12),
+          borderSide: BorderSide(color: AppColors.inputBorder),
         ),
         enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black12),
+          borderSide: BorderSide(color: AppColors.inputBorder),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black87),
+          borderSide: BorderSide(color: AppColors.primary),
         ),
         contentPadding: const EdgeInsets.only(bottom: 8),
         isDense: true,
@@ -186,6 +188,7 @@ class AuthTextField extends StatelessWidget {
     );
   }
 }
+
 class ResponsiveFontSizes {
   final double tiny;
   final double small;
