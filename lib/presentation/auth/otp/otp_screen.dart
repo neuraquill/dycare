@@ -28,140 +28,152 @@ class OtpScreen extends GetWidget<OtpController> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Top container for illustration
-            Container(
-              height: screenHeight * 0.45,
-              width: double.infinity,
-              color: AppColors.secondaryLight,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: AppColors.textPrimary,
-                      size: screenHeight * 0.024,
-                    ),
-                    onPressed: () => Get.back(),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: verticalSpacing * 2,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Enter OTP',
-                    style: TextStyle(
-                      fontSize: fontSizes.xlarge,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  SizedBox(height: verticalSpacing),
-                  Text(
-                    'Enter 4 digit verification code sent to your registered mobile number.',
-                    style: TextStyle(
-                      fontSize: fontSizes.small,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  SizedBox(height: verticalSpacing * 2),
-
-                  // OTP Input Fields
-                  PinCodeTextField(
-                    appContext: context,
-                    length: 4,
-                    obscureText: false,
-                    animationType: AnimationType.fade,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(8),
-                      fieldHeight: 56,
-                      fieldWidth: 56,
-                      activeFillColor: AppColors.inputFill,
-                      inactiveFillColor: AppColors.inputFill,
-                      selectedFillColor: AppColors.inputFill,
-                      activeColor: AppColors.inputBorder,
-                      inactiveColor: AppColors.inputBorder,
-                      selectedColor: AppColors.primary,
-                    ),
-                    animationDuration: Duration(milliseconds: 300),
-                    backgroundColor: AppColors.transparent,
-                    enableActiveFill: true,
-                    controller: controller.otpController,
-                    onCompleted: (v) => controller.verifyOtp(),
-                    onChanged: (value) {
-                      // Handle changes if needed
-                    },
-                    beforeTextPaste: (text) => true,
-                  ),
-                  SizedBox(height: verticalSpacing * 2),
-
-                  // Resend Timer/Button
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Obx(
-                      () => controller.isResendActive.value
-                          ? GestureDetector(
-                              onTap: controller.resendOtp,
-                              child: Text(
-                                'Resend Code',
-                                style: TextStyle(
-                                  fontSize: fontSizes.small,
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            )
-                          : Text(
-                              'Resend code in ${controller.timerText}',
-                              style: TextStyle(
-                                fontSize: fontSizes.small,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                    ),
-                  ),
-                  SizedBox(height: verticalSpacing * 2),
-
-                  // Submit Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: buttonHeight,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(screenWidth * 0.02),
+        child: SingleChildScrollView(
+          child: SizedBox(
+            // Ensure minimum full screen height
+            height: screenHeight - MediaQuery.of(context).padding.top,
+            child: Column(
+              children: [
+                // Top container for illustration
+                Container(
+                  height: screenHeight * 0.45,
+                  width: double.infinity,
+                  color: AppColors.secondaryLight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          color: AppColors.textPrimary,
+                          size: screenHeight * 0.024,
                         ),
+                        onPressed: () => Get.back(),
                       ),
-                      onPressed: controller.verifyOtp,
-                      child: Text(
-                        'Submit',
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: horizontalPadding,
+                    vertical: verticalSpacing * 2,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Enter OTP',
                         style: TextStyle(
-                          fontSize: fontSizes.medium,
-                          fontWeight: FontWeight.w500,
+                          fontSize: fontSizes.xlarge,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                          letterSpacing: -0.5,
                         ),
                       ),
-                    ),
+                      SizedBox(height: verticalSpacing),
+                      Text(
+                        'Enter 4 digit verification code sent to your registered mobile number.',
+                        style: TextStyle(
+                          fontSize: fontSizes.small,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      SizedBox(height: verticalSpacing * 2),
+
+                      // OTP Input Fields
+                      PinCodeTextField(
+                        appContext: context,
+                        length: 4,
+                        obscureText: false,
+                        animationType: AnimationType.fade,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        pinTheme: PinTheme(
+                          shape: PinCodeFieldShape.box,
+                          borderRadius: BorderRadius.circular(8),
+                          fieldHeight: 56,
+                          fieldWidth: 56,
+                          activeFillColor: AppColors.inputFill,
+                          inactiveFillColor: AppColors.inputFill,
+                          selectedFillColor: AppColors.inputFill,
+                          activeColor: AppColors.inputBorder,
+                          inactiveColor: AppColors.inputBorder,
+                          selectedColor: AppColors.primary,
+                        ),
+                        animationDuration: Duration(milliseconds: 300),
+                        backgroundColor: AppColors.transparent,
+                        enableActiveFill: true,
+                        controller: controller.otpController,
+                        onCompleted: (v) => controller.verifyOtp(),
+                        onChanged: (value) {
+                          // Handle changes if needed
+                        },
+                        textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                        beforeTextPaste: (text) => true,
+                      ),
+                      SizedBox(height: verticalSpacing * 2),
+
+                      // Resend Timer/Button
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Obx(
+                          () => controller.isResendActive.value
+                              ? GestureDetector(
+                                  onTap: controller.resendOtp,
+                                  child: Text(
+                                    'Resend Code',
+                                    style: TextStyle(
+                                      fontSize: fontSizes.small,
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w500,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  'Resend code in ${controller.timerText}',
+                                  style: TextStyle(
+                                    fontSize: fontSizes.small,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      SizedBox(height: verticalSpacing * 2),
+
+                      // Submit Button
+                      SizedBox(
+                        width: double.infinity,
+                        height: buttonHeight,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: AppColors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                            ),
+                          ),
+                          onPressed: controller.verifyOtp,
+                          child: Text(
+                            'Submit',
+                            style: TextStyle(
+                              fontSize: fontSizes.medium,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Add some bottom padding for better scrolling
+                      SizedBox(height: verticalSpacing * 2),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

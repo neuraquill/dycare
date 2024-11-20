@@ -21,49 +21,49 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search Bar with Voice Input
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search for nurses, caretakers...',
-                prefixIcon: Icon(Icons.search, color: AppColors.textSecondary),
-                suffixIcon: Icon(Icons.mic, color: AppColors.textSecondary),
-                filled: true,
-                fillColor: AppColors.white,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search Bar with Voice Input
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search for nurses, caretakers...',
+                  prefixIcon: Icon(Icons.search, color: AppColors.textSecondary),
+                  suffixIcon: Icon(Icons.mic, color: AppColors.textSecondary),
+                  filled: true,
+                  fillColor: AppColors.white,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              ),
+              const SizedBox(height: 24),
+
+              // Categories Section (Fixed Grid)
+              Text(
+                'Categories',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
                 ),
               ),
-              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 24),
-
-            // Categories Section (Grid)
-            Text(
-              'Categories',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              flex: 1,
-              child: GridView.count(
+              const SizedBox(height: 16),
+              GridView.count(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: List.generate(4, (index) {
                   return GestureDetector(
                     onTap: () {
-                      // Redirect to Appointment Details Screen when a card is clicked
                       Get.toNamed(Routes.SEARCH);
                     },
                     child: Card(
@@ -92,28 +92,23 @@ class HomeScreen extends StatelessWidget {
                   );
                 }),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            // Doctor Cards Section (Scrollable List)
-            Text(
-              'Available Nurses',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+              // Doctor Cards Section (Part of main scroll)
+              Text(
+                'Available Nurses',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              flex: 2,
-              child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index) {
+              const SizedBox(height: 16),
+              Column(
+                children: List.generate(5, (index) {
                   return GestureDetector(
                     onTap: () {
-                      // Handle the tap event, like navigating to a detailed nurse profile
-                      Get.toNamed(Routes.APPOINTMENT_DETAILS);  // Replace with your desired route
+                      Get.toNamed(Routes.APPOINTMENT_DETAILS);
                     },
                     child: Card(
                       color: AppColors.white,
@@ -171,7 +166,6 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                               onPressed: () {
-                                // Redirect to Book Appointment screen when the button is clicked
                                 Get.toNamed(Routes.BOOK_APPOINTMENT);
                               },
                               child: Text(
@@ -187,14 +181,12 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   );
-                },
+                }),
               ),
-
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-      // Bottom Navigation Bar
       bottomNavigationBar: Container(
         width: double.infinity,
         decoration: BoxDecoration(
