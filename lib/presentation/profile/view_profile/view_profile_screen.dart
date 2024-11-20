@@ -128,7 +128,7 @@ class ViewProfileScreen extends StatelessWidget {
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textSecondary,
         backgroundColor: AppColors.white,
-        currentIndex: 1, // Set the Search tab as active
+        currentIndex: 3, // Set the Search tab as active
         onTap: (index) {
           switch (index) {
             case 0:

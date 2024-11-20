@@ -191,4 +191,12 @@ class CustomTextStyle {
       color: color ?? AppColors.error,
     );
   }
+  static TextStyle buttonLarge({Color? color}) {
+    return TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.5,
+      color: color ?? AppColors.textPrimaryDark,
+    );
+  }
 }

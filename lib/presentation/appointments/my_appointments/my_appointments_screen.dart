@@ -209,10 +209,10 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
       ),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.textPrimary,
+        selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textSecondary,
         backgroundColor: AppColors.white,
-        currentIndex: 1, // Set the Search tab as active
+        currentIndex: 2, // Set the Search tab as active
         onTap: (index) {
           switch (index) {
             case 0:

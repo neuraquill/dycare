@@ -62,106 +62,126 @@ class SearchScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16), // Spacing
-            Obx(
-              () => Expanded(
-                child: ListView.builder(
+            Expanded(
+              child: Obx(
+                () => ListView.builder(
                   itemCount: controller.filteredNurses.length,
                   itemBuilder: (context, index) {
                     final nurse = controller.filteredNurses[index];
-                    return Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            // Nurse Image Placeholder (if profilePicture is provided)
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: AppColors.inputBorder,
-                                borderRadius: BorderRadius.circular(12),
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigate to appointment details on card tap
+                        Get.toNamed(Routes.APPOINTMENT_DETAILS);
+                      },
+                      child: Card(
+                        color: AppColors.white, // Set explicit background color
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              // Nurse Image Placeholder (if profilePicture is provided)
+                              Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: AppColors.inputBorder,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: nurse.profilePicture != null
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.network(
+                                          nurse.profilePicture!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : const Icon(Icons.person, color: AppColors.black),
                               ),
-                              child: nurse.profilePicture != null
-                                  ? Image.network(nurse.profilePicture!)
-                                  : const Icon(Icons.person, color: AppColors.white),
-                            ),
-                            const SizedBox(width: 16), // Spacing
-                            // Nurse Details
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              const SizedBox(width: 16), // Spacing
+                              // Nurse Details
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      nurse.name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      nurse.specialization ?? 'No specialization',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Rating: ${nurse.rating}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 16), // Spacing
+                              // Availability & Action Button
+                              Column(
                                 children: [
-                                  Text(
-                                    nurse.name,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.textPrimary,
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: controller.isAvailable(nurse.availableDays)
+                                          ? AppColors.success
+                                          : AppColors.inputBorder,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      controller.isAvailable(nurse.availableDays) ? 'Available' : 'Not Available',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.white,
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    nurse.specialization ?? 'No specialization',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.textSecondary,
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: controller.isAvailable(nurse.availableDays)
+                                        ? () {
+                                            // Redirect to Book Appointment
+                                            Get.toNamed(Routes.BOOK_APPOINTMENT);
+                                          }
+                                        : null,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: controller.isAvailable(nurse.availableDays)
+                                          ? AppColors.primary
+                                          : AppColors.inputBorder,
+                                      foregroundColor: AppColors.white,
+                                      minimumSize: const Size(80, 36),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Rating: ${nurse.rating}',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.textSecondary,
-                                    ),
+                                    child: const Text('Book'),
                                   ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(width: 16), // Spacing
-                            // Availability & Action Button
-                            Column(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: controller.isAvailable(nurse.availableDays)
-                                        ? AppColors.success
-                                        : AppColors.inputBorder,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    controller.isAvailable(nurse.availableDays) ? 'Available' : 'Not Available',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.white,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                ElevatedButton(
-                                  onPressed: controller.isAvailable(nurse.availableDays) ? () {} : null,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.black,
-                                    foregroundColor: AppColors.white,
-                                    minimumSize: const Size(80, 36),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: const Text('Book'),
-                                ),
-                              ],
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -182,7 +202,7 @@ class SearchScreen extends StatelessWidget {
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: AppColors.black,
+          selectedItemColor: AppColors.primary,
           unselectedItemColor: AppColors.textSecondary,
           backgroundColor: AppColors.white,
           currentIndex: 1, // Set the Search tab as active

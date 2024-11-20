@@ -9,14 +9,18 @@ class AppointmentDetailsController extends GetxController {
 
   final Rx<AppointmentEntity?> appointment = Rx<AppointmentEntity?>(null);
   final RxBool isLoading = true.obs;
-  final RxString nurseName = ''.obs;
-  final RxString patientName = ''.obs;
+  final RxString nurseName = 'Unknown Nurse'.obs; // Default value
+  final RxString patientName = 'Unknown Patient'.obs; // Default value
 
   @override
   void onInit() {
     super.onInit();
-    final String appointmentId = Get.arguments as String;
-    loadAppointmentDetails(appointmentId);
+    final String? appointmentId = Get.arguments as String?;
+    if (appointmentId != null && appointmentId.isNotEmpty) {
+      loadAppointmentDetails(appointmentId);
+    } else {
+      Get.snackbar('Error', 'Invalid Appointment ID');
+    }
   }
 
   Future<void> loadAppointmentDetails(String appointmentId) async {
@@ -25,6 +29,8 @@ class AppointmentDetailsController extends GetxController {
       appointment.value = await _appointmentRepository.getAppointmentById(appointmentId);
       if (appointment.value != null) {
         await _loadNurseAndPatientNames();
+      } else {
+        Get.snackbar('Error', 'Appointment not found');
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to load appointment details');
