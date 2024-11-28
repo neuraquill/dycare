@@ -29,7 +29,8 @@ class DyCareApp extends StatelessWidget {
       darkTheme: ThemeHelper.darkTheme,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      defaultTransition: Transition.fade,
+      defaultTransition: Transition.cupertino,
+      transitionDuration: Duration(milliseconds: 400),
       locale: Get.deviceLocale,
       fallbackLocale: const Locale('en', 'US'),
     );

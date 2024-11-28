@@ -5,6 +5,8 @@ import 'package:dycare/presentation/appointments/book_appointment/bindings/book_
 import 'package:dycare/presentation/appointments/my_appointments/bindings/my_appointments_binding.dart';
 import 'package:dycare/presentation/appointments/search/bindings/search_bindings.dart';
 import 'package:dycare/presentation/appointments/search/search_screen.dart';
+import 'package:dycare/presentation/auth/new_user_name/bindings/new_user_name_bindings.dart';
+import 'package:dycare/presentation/auth/new_user_name/new_user_name_screen.dart';
 import 'package:dycare/presentation/auth/otp/bindings/otp_binding.dart';
 import 'package:dycare/presentation/home/bindings/home_binding.dart';
 import 'package:dycare/presentation/nurses/nurse_reviews/bindings/nurse_reviews_binding.dart';
@@ -37,6 +39,11 @@ class AppPages {
       name: Routes.OTP,
       page: () => OtpScreen(),
       binding: OtpBinding(),
+    ),
+    GetPage(
+      name: Routes.NEW_USER_NAME,
+      page: () => NewUserNameScreen(),
+      binding:NewUserNameBinding(),
     ),
     GetPage(
       name: Routes.HOME,

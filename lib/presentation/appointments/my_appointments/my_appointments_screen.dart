@@ -6,8 +6,47 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/presentation/appointments/my_appointments/controller/my_appointments_controller.dart';
 import 'package:dycare/domain/entities/appointment_entity.dart';
+import 'package:shimmer/shimmer.dart';
 
-class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
+class MyAppointmentsScreen extends StatefulWidget {
+  @override
+  _MyAppointmentsScreenState createState() => _MyAppointmentsScreenState();
+}
+
+class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
+    with SingleTickerProviderStateMixin {
+  final MyAppointmentsController controller = Get.find<MyAppointmentsController>();
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_handleTabSelection);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _handleTabSelection() {
+    if (_tabController.indexIsChanging) {
+      switch (_tabController.index) {
+        case 0:
+          controller.setSelectedStatus("Upcoming");
+          break;
+        case 1:
+          controller.setSelectedStatus("Completed");
+          break;
+        case 2:
+          controller.setSelectedStatus("Cancelled");
+          break;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,25 +56,20 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.offNamed(Routes.HOME),
         ),
         title: Text(
           'My Appointments',
           style: AppTypography.heading1,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDateSelectionStrip(),
-            const SizedBox(height: 16),
-            _buildStatusFilterTabs(),
-            const SizedBox(height: 16),
-            Expanded(child: _buildAppointmentList()),
-          ],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildStatusFilterTabs(),
+          const SizedBox(height: 16),
+          Expanded(child: _buildAppointmentTabView()),
+        ],
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
       floatingActionButton: FloatingActionButton(
@@ -46,155 +80,182 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
     );
   }
 
-  Widget _buildDateSelectionStrip() {
-    final dates = List.generate(7, (index) => DateTime.now().add(Duration(days: index)));
+  Widget _buildStatusFilterTabs() {
+    return TabBar(
+      controller: _tabController,
+      indicatorColor: AppColors.primary,
+      unselectedLabelColor: AppColors.textSecondary,
+      labelColor: AppColors.white,
+      tabs: [
+        _buildStatusTab("Upcoming"),
+        _buildStatusTab("Completed"),
+        _buildStatusTab("Cancelled"),
+      ],
+    );
+  }
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: dates.map((date) {
-          final isSelected = date.day == DateTime.now().day;
-          return GestureDetector(
-            onTap: () => controller.setSelectedDate(date),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : AppColors.accentPink,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      DateTimeUtils.formatDate(date),
-                      style: AppTypography.bodyLarge.copyWith(
-                        color: isSelected ? AppColors.white : AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      DateTimeUtils.formatDate(date),
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: isSelected ? AppColors.white : AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }).toList(),
+  Widget _buildStatusTab(String status) {
+    return Tab(
+      child: Text(
+        status,
+        style: AppTypography.bodyMedium.copyWith(
+          color: _tabController.index == ["Upcoming", "Completed", "Cancelled"].indexOf(status)
+              ? AppColors.primary
+              : AppColors.textSecondary,
+        ),
       ),
     );
   }
 
-  Widget _buildStatusFilterTabs() {
-    return Obx(() {
-      final selectedStatus = controller.selectedStatus.value;
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildStatusTab("Upcoming", selectedStatus == "Upcoming"),
-          _buildStatusTab("Completed", selectedStatus == "Completed"),
-          _buildStatusTab("Cancelled", selectedStatus == "Cancelled"),
-        ],
-      );
-    });
-  }
 
-  Widget _buildStatusTab(String title, bool isSelected) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => controller.setSelectedStatus(title),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : AppColors.booked,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            title,
-            style: AppTypography.bodyMedium.copyWith(
-              color: isSelected ? AppColors.white : AppColors.textSecondary,
-            ),
-          ),
-        ),
-      ), 
+  Widget _buildAppointmentTabView() {
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        _buildAppointmentList("Upcoming"),
+        _buildAppointmentList("Completed"),
+        _buildAppointmentList("Cancelled"),
+      ],
     );
   }
 
-  Widget _buildAppointmentList() {
+  Widget _buildAppointmentList(String status) {
     return Obx(() {
+      final filteredAppointments = controller.getFilteredAppointments(status);
       if (controller.isLoading.value) {
-        return Center(child: CircularProgressIndicator());
-      } else if (controller.filteredAppointments.isEmpty) {
-        return Center(child: Text('No appointments found', style: AppTypography.bodyLarge));
+        return Center(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: CircularProgressIndicator(
+              key: ValueKey('loading_indicator'),
+            ),
+          ),
+        );
+      } else if (filteredAppointments.isEmpty) {
+        return Center(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              'No $status appointments found',
+              style: AppTypography.bodyLarge,
+              key: ValueKey('no_appointments_text'),
+            ),
+          ),
+        );
       } else {
-        return ListView.builder(
-          padding: const EdgeInsets.only(top: 16),
-          itemCount: controller.filteredAppointments.length,
-          itemBuilder: (context, index) {
-            return _buildAppointmentCard(controller.filteredAppointments[index]);
-          },
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: ListView.builder(
+              key: ValueKey('appointment_list_$status'),
+              itemCount: filteredAppointments.length,
+              itemBuilder: (context, index) {
+                return _buildAppointmentCard(filteredAppointments[index]);
+              },
+            ),
+          ),
         );
       }
     });
   }
 
+  Widget _buildProfileImage(AppointmentEntity appointment) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.network(
+        'https://via.placeholder.com/48',
+        width: 48,
+        height: 48,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: 48,
+            height: 48,
+            color: AppColors.background,
+            child: Icon(Icons.error, color: AppColors.textSecondary),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildAppointmentCard(AppointmentEntity appointment) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              DateTimeUtils.formatTime(appointment.dateTime),
-              style: AppTypography.bodyLarge,
-            ),
-            const SizedBox(width: 16),
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(Icons.person, color: AppColors.primary),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
+      child: Card(
+        color: AppColors.white, // Explicit background color
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04), // Relative padding
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Dr. ${controller.getNurseName(appointment.nurseId)}',
-                    style: AppTypography.heading2,
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: _buildProfileImage(appointment),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    appointment.notes ?? '',
-                    style: AppTypography.bodyMedium,
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                  Expanded(
+                    child: _buildAppointmentDetails(appointment),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      DateTimeUtils.formatTime(appointment.dateTime),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-            OutlinedButton(
-              onPressed: () => Get.toNamed(Routes.APPOINTMENT_DETAILS, arguments: appointment.id),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: BorderSide(color: AppColors.primary),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Align(
+                alignment: Alignment.centerRight,
+                child: _buildViewButton(appointment),
               ),
-              child: const Text("View"),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+
+
+  Widget _buildAppointmentDetails(AppointmentEntity appointment) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Dr. ${controller.getNurseName(appointment.nurseId)}',
+          style: AppTypography.bodyMedium.copyWith(
+            fontSize: MediaQuery.of(context).size.width * 0.035, // Smaller relative font size
+            fontWeight: FontWeight.w600, // Optional for better emphasis
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          appointment.notes ?? '',
+          style: AppTypography.bodyMedium,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildViewButton(AppointmentEntity appointment) {
+    return OutlinedButton(
+      onPressed: () => Get.toNamed(Routes.APPOINTMENT_DETAILS, arguments: appointment.id),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.primary,
+        side: BorderSide(color: AppColors.primary),
+      ),
+      child: const Text("View"),
     );
   }
 
@@ -212,17 +273,17 @@ class MyAppointmentsScreen extends GetWidget<MyAppointmentsController> {
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textSecondary,
         backgroundColor: AppColors.white,
-        currentIndex: 2, // Set the Search tab as active
+        currentIndex: 2, // Set the Appointments tab as active
         onTap: (index) {
           switch (index) {
             case 0:
-              Get.toNamed(Routes.HOME);
+              Get.offNamed(Routes.HOME);
               break;
             case 1:
               Get.toNamed(Routes.SEARCH);
               break;
             case 2:
-              Get.toNamed(Routes.MY_APPOINTMENTS);
+              Get.offNamed(Routes.MY_APPOINTMENTS);
               break;
             case 3:
               Get.toNamed(Routes.VIEW_PROFILE);

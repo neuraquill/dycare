@@ -35,6 +35,7 @@ dependencies:
   pin_code_fields: any
   image_picker: any
   table_calendar: any
+  shimmer: any
 
 
   # The following adds the Cupertino Icons font to your application.

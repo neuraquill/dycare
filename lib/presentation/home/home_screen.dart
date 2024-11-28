@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Search for nurses, caretakers...',
                   prefixIcon: Icon(Icons.search, color: AppColors.textSecondary),
-                  suffixIcon: Icon(Icons.mic, color: AppColors.textSecondary),
+                  //suffixIcon: Icon(Icons.mic, color: AppColors.textSecondary),
                   filled: true,
                   fillColor: AppColors.white,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -67,9 +67,10 @@ class HomeScreen extends StatelessWidget {
                       Get.toNamed(Routes.SEARCH);
                     },
                     child: Card(
-                      color: AppColors.accentPink,
+                      color: AppColors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: AppColors.primary, width: 1),
                       ),
                       child: Center(
                         child: Column(

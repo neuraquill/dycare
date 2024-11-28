@@ -5,6 +5,7 @@ part of 'app_pages.dart';
 abstract class Routes {
   static const LOGIN = '/login';
   static const OTP = '/otp';
+  static const NEW_USER_NAME = '/new-user-name';
   static const HOME = '/home';
   static const BOOK_APPOINTMENT = '/book-appointment';
   static const APPOINTMENT_DETAILS = '/appointment-details';

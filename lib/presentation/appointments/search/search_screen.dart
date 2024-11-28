@@ -40,8 +40,9 @@ class SearchScreen extends StatelessWidget {
               onChanged: controller.filterNurses,
               decoration: InputDecoration(
                 hintText: 'Search',
+                hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
-                suffixIcon: const Icon(Icons.mic, color: AppColors.textSecondary),
+                //suffixIcon: const Icon(Icons.mic, color: AppColors.textSecondary),
                 filled: true,
                 fillColor: AppColors.inputFill,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
