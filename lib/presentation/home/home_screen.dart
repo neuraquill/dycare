@@ -27,23 +27,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Search Bar with Voice Input
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search for nurses, caretakers...',
-                  prefixIcon: Icon(Icons.search, color: AppColors.textSecondary),
-                  //suffixIcon: Icon(Icons.mic, color: AppColors.textSecondary),
-                  filled: true,
-                  fillColor: AppColors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-              ),
-              const SizedBox(height: 24),
+
 
               // Categories Section (Fixed Grid)
               Text(

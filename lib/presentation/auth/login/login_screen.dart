@@ -90,22 +90,20 @@ class LoginScreen extends GetView<LoginController> {
               physics: const ClampingScrollPhysics(),
               child: Column(
                 children: [
+                  // Image section
                   Container(
-                    height: screenHeight * 0.55,
                     width: double.infinity,
+                    height: screenHeight * 0.6,
                     color: AppColors.primaryLight,
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: AppColors.primaryDark,
-                          size: screenHeight * 0.024,
-                        ),
-                        onPressed: () => Get.back(),
+                    child: Center(
+                      child: Image.asset(
+                        'images/login_image.png', // Adjust the path to your local image
+                        fit: BoxFit.fitWidth,
                       ),
                     ),
                   ),
+                  
+                  // Login form
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: horizontalPadding,

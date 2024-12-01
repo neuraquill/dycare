@@ -3,6 +3,20 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  // COlor Pallete
+  static const Color vanilla = Color(0xFFE5D2B8);
+  static const Color chai = Color(0xFFD2AB80);
+  static const Color pistache = Color(0xFFB3B792);
+  static const Color carob = Color(0xFF725C3A);
+  static const Color almond = Color(0xFFE5E0D8);
+  static const Color matcha = Color(0xFF809671);
+
+  static const Color navy = Color(0xFF2F4156);
+  static const Color skyBlue = Color(0xFFC8D9E6);
+  static const Color beige = Color(0xFFF5EFE8);
+  static const Color teal = Color(0xFF567CBD);
+
+
   // Transparent Color
   static const Color transparent = Color(0x00000000);
 

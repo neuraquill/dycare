@@ -28,36 +28,47 @@ class OtpScreen extends GetWidget<OtpController> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            // Ensure minimum full screen height
-            height: screenHeight - MediaQuery.of(context).padding.top,
-            child: Column(
-              children: [
-                // Top container for illustration
-                Container(
-                  height: screenHeight * 0.45,
-                  width: double.infinity,
-                  color: AppColors.secondaryLight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: AppColors.textPrimary,
-                          size: screenHeight * 0.024,
-                        ),
-                        onPressed: () => Get.back(),
+        child: Column(
+          children: [
+            // Image section
+            Expanded(
+              flex: 50,
+              child: Container(
+                width: double.infinity,
+                color: AppColors.secondaryLight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: AppColors.textPrimary,
+                        size: screenHeight * 0.024,
                       ),
-                    ],
-                  ),
+                      onPressed: () => Get.back(),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Image.asset(
+                          'images/otp_image.png', // Adjust the path to your local image
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: horizontalPadding,
-                    vertical: verticalSpacing * 2,
-                  ),
+              ),
+            ),
+
+            // OTP form
+            Expanded(
+              flex: 50,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: horizontalPadding,
+                  vertical: verticalSpacing * 2,
+                ),
+                child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -171,14 +182,15 @@ class OtpScreen extends GetWidget<OtpController> {
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 }
+
 
 class ResponsiveFontSizes {
   final double tiny;
