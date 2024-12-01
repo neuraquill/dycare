@@ -50,7 +50,7 @@ class OtpScreen extends GetWidget<OtpController> {
                     Expanded(
                       child: Center(
                         child: Image.asset(
-                          'images/otp_image.png', // Adjust the path to your local image
+                          'assets/images/otp_image.png', // Adjust the path to your local image
                           fit: BoxFit.fitWidth,
                         ),
                       ),

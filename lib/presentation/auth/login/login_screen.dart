@@ -97,7 +97,7 @@ class LoginScreen extends GetView<LoginController> {
                     color: AppColors.primaryLight,
                     child: Center(
                       child: Image.asset(
-                        'images/login_image.png', // Adjust the path to your local image
+                        'assets/images/login_image.png', // Adjust the path to your local image
                         fit: BoxFit.fitWidth,
                       ),
                     ),
