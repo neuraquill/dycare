@@ -1,9 +1,9 @@
-// And update the controller
-// lib/presentation/auth/login/controller/login_controller.dart
 import 'package:dycare/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:dycare/domain/repositories/user_repository.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginController extends GetxController {
   final UserRepository _userRepository;
@@ -16,41 +16,80 @@ class LoginController extends GetxController {
   final RxBool isLoading = false.obs;
 
   Future<void> sendOTP() async {
-    if (!formKey.currentState!.validate()) return;
+    print("sendOTP() called"); // Debugging print statement
+
+    if (!formKey.currentState!.validate()) {
+      print("Form validation failed"); // Debugging print statement
+      return;
+    }
 
     try {
+      print("Form validation succeeded. Preparing to send OTP...");
+
       isLoading.value = true;
-      // Here you would typically make an API call to send OTP
-      await Future.delayed(const Duration(seconds: 1)); // Simulating API call
-      
-      // Navigate to OTP screen
-      Get.toNamed(
-        Routes.OTP,
-        arguments: {'phoneNumber': phoneController.text.trim()}
+
+      // Send OTP request to backend
+      print("Sending OTP request to backend...");
+      final response = await http.post(
+        Uri.parse('http://192.168.29.9:3000/otp/send'), // Replace with your actual backend URL
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'number': phoneController.text.trim(),
+        }),
       );
+
+      print("Response received from backend. Parsing response...");
+      final responseBody = json.decode(response.body);
+      print("Response body: $responseBody"); // Debugging response body
+
+      if (responseBody['status'] == 200) {
+        print("OTP sent successfully. Navigating to OTP screen...");
+        Get.toNamed(
+          Routes.OTP,
+          arguments: {'phoneNumber': phoneController.text.trim()},
+        );
+      } else {
+        print("Failed to send OTP. Showing error message...");
+        Get.snackbar(
+          'Error',
+          responseBody['message'] ?? 'Failed to send OTP. Please try again.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } catch (e) {
+      print("An error occurred: $e"); // Print the caught exception
       Get.snackbar(
         'Error',
-        'Failed to send OTP. Please try again.',
+        'Failed to send OTP. Please check your internet connection.',
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
+      print("Resetting loading state...");
       isLoading.value = false;
     }
   }
 
   String? validatePhone(String? value) {
+    print("Validating phone number: $value"); // Debugging print statement
+
     if (value == null || value.isEmpty) {
+      print("Validation failed: Phone number is empty");
       return 'Phone number is required';
     }
     if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+      print("Validation failed: Invalid phone number format");
       return 'Please enter a valid 10-digit phone number';
     }
+
+    print("Phone number validation succeeded");
     return null;
   }
 
   @override
   void onClose() {
+    print("Closing LoginController. Disposing resources...");
     phoneController.dispose();
     super.onClose();
   }
