@@ -7,13 +7,28 @@ import 'package:dycare/core/constants/app_constants.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final horizontalPadding = screenWidth * 0.04;
+    final verticalSpacing = screenHeight * 0.02;
+    final cardRadius = screenWidth * 0.03;
+
+    final fontSizes = ResponsiveFontSizes(
+      tiny: screenHeight * 0.014,
+      small: screenHeight * 0.016,
+      medium: screenHeight * 0.018,
+      large: screenHeight * 0.024,
+      xlarge: screenHeight * 0.032,
+    );
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           AppConstants.HOME_TITLE,
           style: TextStyle(
-            fontSize: 24,
+            fontSize: fontSizes.large,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
@@ -23,28 +38,26 @@ class HomeScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(horizontalPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-
               // Categories Section (Fixed Grid)
               Text(
                 'Categories',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: fontSizes.medium,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: verticalSpacing),
               GridView.count(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+                crossAxisSpacing: horizontalPadding,
+                mainAxisSpacing: horizontalPadding,
                 children: List.generate(4, (index) {
                   return GestureDetector(
                     onTap: () {
@@ -53,19 +66,19 @@ class HomeScreen extends StatelessWidget {
                     child: Card(
                       color: AppColors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(cardRadius),
                         side: BorderSide(color: AppColors.primary, width: 1),
                       ),
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.local_hospital, size: 48, color: AppColors.primary),
-                            const SizedBox(height: 8),
+                            Icon(Icons.local_hospital, size: screenWidth * 0.12, color: AppColors.primary),
+                            SizedBox(height: screenHeight * 0.01),
                             Text(
                               'Category ${index + 1}',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: fontSizes.small,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textSecondary,
                               ),
@@ -77,18 +90,18 @@ class HomeScreen extends StatelessWidget {
                   );
                 }),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: verticalSpacing * 1.2),
 
               // Doctor Cards Section (Part of main scroll)
               Text(
                 'Available Nurses',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: fontSizes.medium,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: verticalSpacing),
               Column(
                 children: List.generate(5, (index) {
                   return GestureDetector(
@@ -99,18 +112,18 @@ class HomeScreen extends StatelessWidget {
                       color: AppColors.white,
                       elevation: 2.0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(cardRadius),
                       ),
-                      margin: const EdgeInsets.only(bottom: 16),
+                      margin: EdgeInsets.only(bottom: verticalSpacing),
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(horizontalPadding),
                         child: Row(
                           children: [
                             CircleAvatar(
-                              radius: 30,
+                              radius: screenWidth * 0.075,
                               backgroundImage: NetworkImage('https://via.placeholder.com/150'),
                             ),
-                            const SizedBox(width: 16),
+                            SizedBox(width: horizontalPadding),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,24 +131,24 @@ class HomeScreen extends StatelessWidget {
                                   Text(
                                     'John Doe',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: fontSizes.small,
                                       fontWeight: FontWeight.w600,
                                       color: AppColors.textPrimary,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: screenHeight * 0.005),
                                   Text(
                                     'Cardiologist',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: fontSizes.tiny,
                                       color: AppColors.textSecondary,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: screenHeight * 0.005),
                                   Text(
                                     'Experienced in advanced cardiology treatments.',
                                     style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: fontSizes.tiny,
                                       color: AppColors.textSecondary,
                                     ),
                                   ),
@@ -147,8 +160,9 @@ class HomeScreen extends StatelessWidget {
                                 backgroundColor: AppColors.primaryDark,
                                 foregroundColor: AppColors.white,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(cardRadius),
                                 ),
+                                minimumSize: Size(screenWidth * 0.2, screenHeight * 0.045),
                               ),
                               onPressed: () {
                                 Get.toNamed(Routes.BOOK_APPOINTMENT);
@@ -156,7 +170,7 @@ class HomeScreen extends StatelessWidget {
                               child: Text(
                                 'Book',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: fontSizes.tiny,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -226,4 +240,20 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class ResponsiveFontSizes {
+  final double tiny;
+  final double small;
+  final double medium;
+  final double large;
+  final double xlarge;
+
+  ResponsiveFontSizes({
+    required this.tiny,
+    required this.small,
+    required this.medium,
+    required this.large,
+    required this.xlarge,
+  });
 }

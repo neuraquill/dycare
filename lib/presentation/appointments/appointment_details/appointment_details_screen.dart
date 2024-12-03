@@ -13,6 +13,13 @@ class AppointmentDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final verticalSpacing = screenHeight * 0.02;
+    final horizontalPadding = screenWidth * 0.04;
+    final imageSize = screenWidth * 0.25;
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -33,42 +40,42 @@ class AppointmentDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDoctorSection(),
-            _buildBiographySection(),
-            _buildBottomSection(),
+            _buildDoctorSection(screenWidth, screenHeight, imageSize, verticalSpacing, horizontalPadding),
+            _buildBiographySection(horizontalPadding, verticalSpacing),
+            _buildBottomSection(screenWidth, screenHeight),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDoctorSection() {
+  Widget _buildDoctorSection(double screenWidth, double screenHeight, double imageSize, double verticalSpacing, double horizontalPadding) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(horizontalPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 100,
-            height: 100,
+            width: imageSize,
+            height: imageSize,
             decoration: BoxDecoration(
               color: AppColors.inputFill,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(screenWidth * 0.02),
             ),
             child: Icon(
               Icons.image,
               color: AppColors.textSecondary,
-              size: 40,
+              size: screenWidth * 0.1,
             ),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: verticalSpacing),
           Text(
             doctorInfo['name']!,
             style: customTheme.CustomTextStyle.titleLarge(
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: verticalSpacing * 0.5),
           Text(
             doctorInfo['description']!,
             style: customTheme.CustomTextStyle.bodyMedium(
@@ -80,9 +87,9 @@ class AppointmentDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBiographySection() {
+  Widget _buildBiographySection(double horizontalPadding, double verticalSpacing) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(horizontalPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -92,7 +99,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: verticalSpacing),
           Text(
             doctorInfo['biography']!,
             style: customTheme.CustomTextStyle.bodyMedium(
@@ -104,19 +111,21 @@ class AppointmentDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomSection() {
+  Widget _buildBottomSection(double screenWidth, double screenHeight) {
+    final buttonHeight = screenHeight * 0.065;
+
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(screenWidth * 0.04),
       child: Column(
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
-            height: 48,
+            height: buttonHeight,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.backgroundDark,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
                 ),
               ),
               onPressed: () {

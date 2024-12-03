@@ -7,38 +7,54 @@ import 'package:dycare/presentation/profile/edit_profile/controller/edit_profile
 import 'package:dycare/theme/app_colors.dart';
 
 class EditProfileScreen extends GetWidget<EditProfileController> {
+  const EditProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final verticalSpacing = screenHeight * 0.02;
+    final horizontalPadding = screenWidth * 0.06;
+
+    final fontSizes = ResponsiveFontSizes(
+      tiny: screenHeight * 0.014,
+      small: screenHeight * 0.016,
+      medium: screenHeight * 0.018,
+      large: screenHeight * 0.024,
+      xlarge: screenHeight * 0.032,
+    );
+
     return Scaffold(
-      backgroundColor: AppColors.background, // Background color from AppColors
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           'Edit Profile',
           style: TextStyle(
-            color: AppColors.textPrimary, // Primary text color
-            fontSize: 20,
+            color: AppColors.textPrimary,
+            fontSize: fontSizes.medium,
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary), // Primary text color for icons
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Get.back(),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.save, color: AppColors.textPrimary), // Primary text color for icons
+            icon: Icon(Icons.save, color: AppColors.textPrimary),
             onPressed: controller.saveProfile,
           ),
         ],
-        backgroundColor: AppColors.background, // Background color for AppBar
-        elevation: 0, // Flat AppBar
+        backgroundColor: AppColors.background,
+        elevation: 0,
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else {
           return SingleChildScrollView(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(screenWidth * 0.04),
             child: Form(
               key: controller.formKey,
               child: Column(
@@ -49,7 +65,7 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                     child: Stack(
                       children: [
                         CircleAvatar(
-                          radius: 60,
+                          radius: screenWidth * 0.15,
                           backgroundImage: controller.profileImage.value != null
                               ? FileImage(controller.profileImage.value!)
                               : (controller.user.value?.profilePicture != null
@@ -60,8 +76,8 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                           bottom: 0,
                           right: 0,
                           child: CircleAvatar(
-                            backgroundColor: AppColors.primaryDark, // Primary dark color for button
-                            radius: 20,
+                            backgroundColor: AppColors.primaryDark,
+                            radius: screenWidth * 0.05,
                             child: IconButton(
                               icon: Icon(Icons.camera_alt, color: AppColors.white),
                               onPressed: controller.pickImage,
@@ -71,117 +87,74 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: verticalSpacing * 1.2),
                   // Full Name Field
-                  TextFormField(
+                  _buildTextField(
                     controller: controller.nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Full Name',
-                      labelStyle: TextStyle(color: AppColors.textPrimary),
-                      prefixIcon: Icon(Icons.person, color: AppColors.textPrimary),
-                      filled: true,
-                      fillColor: AppColors.inputFill,
-                      hintStyle: TextStyle(color: AppColors.textSecondary),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.inputBorder),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    labelText: 'Full Name',
+                    prefixIcon: Icons.person,
                     validator: InputValidators.validateName,
-                    style: TextStyle(color: AppColors.textPrimary),
+                    fontSizes: fontSizes,
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: verticalSpacing),
                   // Email Field (Non-editable)
-                  TextFormField(
+                  _buildTextField(
                     controller: controller.emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: AppColors.textPrimary),
-                      prefixIcon: Icon(Icons.email, color: AppColors.textPrimary),
-                      filled: true,
-                      fillColor: AppColors.inputFill,
-                      hintStyle: TextStyle(color: AppColors.textSecondary),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.inputBorder),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    labelText: 'Email',
+                    prefixIcon: Icons.email,
                     validator: InputValidators.validateEmail,
-                    style: TextStyle(color: AppColors.textPrimary),
+                    fontSizes: fontSizes,
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: verticalSpacing),
                   // Phone Number Field
-                  TextFormField(
+                  _buildTextField(
                     controller: controller.phoneController,
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      labelStyle: TextStyle(color: AppColors.textPrimary),
-                      prefixIcon: Icon(Icons.phone, color: AppColors.textPrimary),
-                      filled: true,
-                      fillColor: AppColors.inputFill,
-                      hintStyle: TextStyle(color: AppColors.textSecondary),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.inputBorder),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    labelText: 'Phone Number',
+                    prefixIcon: Icons.phone,
                     validator: InputValidators.validatePhoneNumber,
-                    style: TextStyle(color: AppColors.textPrimary),
+                    fontSizes: fontSizes,
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: verticalSpacing),
                   // Address Field
-                  TextFormField(
+                  _buildTextField(
                     controller: controller.addressController,
-                    decoration: InputDecoration(
-                      labelText: 'Address',
-                      labelStyle: TextStyle(color: AppColors.textPrimary),
-                      prefixIcon: Icon(Icons.home, color: AppColors.textPrimary),
-                      filled: true,
-                      fillColor: AppColors.inputFill,
-                      hintStyle: TextStyle(color: AppColors.textSecondary),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.inputBorder),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    labelText: 'Address',
+                    prefixIcon: Icons.home,
                     validator: (value) => InputValidators.validateNotEmpty(value ?? '', 'Address'),
                     maxLines: 3,
-                    style: TextStyle(color: AppColors.textPrimary),
+                    fontSizes: fontSizes,
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: verticalSpacing),
                   // Conditional Field for Patient (Date of Birth)
                   if (controller.user.value?.role == UserRole.patient)
-                    TextFormField(
+                    _buildTextField(
                       controller: controller.dateOfBirthController,
-                      decoration: InputDecoration(
-                        labelText: 'Date of Birth',
-                        labelStyle: TextStyle(color: AppColors.textPrimary),
-                        prefixIcon: Icon(Icons.cake, color: AppColors.textPrimary),
-                        filled: true,
-                        fillColor: AppColors.inputFill,
-                        hintStyle: TextStyle(color: AppColors.textSecondary),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.inputBorder),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                      labelText: 'Date of Birth',
+                      prefixIcon: Icons.cake,
                       readOnly: true,
                       onTap: () => controller.selectDateOfBirth(context),
-                      style: TextStyle(color: AppColors.textPrimary),
+                      fontSizes: fontSizes,
+                      validator: null, // Added to resolve the error
                     ),
-                  SizedBox(height: 16),
+                  SizedBox(height: verticalSpacing),
                   // Save Button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: AppColors.white,
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(screenWidth * 0.03),
                       ),
-                      minimumSize: Size(double.infinity, 48),
+                      minimumSize: Size(double.infinity, screenHeight * 0.06),
                     ),
                     onPressed: controller.saveProfile,
-                    child: Text('Save Changes', style: TextStyle(color: AppColors.white)),
+                    child: Text(
+                      'Save Changes', 
+                      style: TextStyle(
+                        color: AppColors.white, 
+                        fontSize: fontSizes.medium
+                      )
+                    ),
                   ),
                 ],
               ),
@@ -191,4 +164,58 @@ class EditProfileScreen extends GetWidget<EditProfileController> {
       }),
     );
   }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData prefixIcon,
+    String? Function(String?)? validator,
+    ResponsiveFontSizes? fontSizes,
+    int maxLines = 1,
+    bool readOnly = false,
+    VoidCallback? onTap,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: TextStyle(
+          color: AppColors.textPrimary, 
+          fontSize: fontSizes?.small
+        ),
+        prefixIcon: Icon(prefixIcon, color: AppColors.textPrimary),
+        filled: true,
+        fillColor: AppColors.inputFill,
+        hintStyle: TextStyle(color: AppColors.textSecondary),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.inputBorder),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      validator: validator,
+      maxLines: maxLines,
+      readOnly: readOnly,
+      onTap: onTap,
+      style: TextStyle(
+        color: AppColors.textPrimary, 
+        fontSize: fontSizes?.medium
+      ),
+    );
+  }
+}
+
+class ResponsiveFontSizes {
+  final double tiny;
+  final double small;
+  final double medium;
+  final double large;
+  final double xlarge;
+
+  ResponsiveFontSizes({
+    required this.tiny,
+    required this.small,
+    required this.medium,
+    required this.large,
+    required this.xlarge,
+  });
 }

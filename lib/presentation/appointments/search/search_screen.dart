@@ -10,9 +10,24 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local.SearchController controller = Get.find<local.SearchController>();
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final horizontalPadding = screenWidth * 0.04;
+    final verticalSpacing = screenHeight * 0.02;
+    final cardRadius = screenWidth * 0.03;
+    final avatarSize = screenWidth * 0.12;
+
+    final fontSizes = ResponsiveFontSizes(
+      tiny: screenHeight * 0.014,
+      small: screenHeight * 0.016,
+      medium: screenHeight * 0.018,
+      large: screenHeight * 0.024,
+      xlarge: screenHeight * 0.032,
+    );
 
     return Scaffold(
-      backgroundColor: AppColors.background, // Background color
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
@@ -20,10 +35,10 @@ class SearchScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: AppColors.black),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
+        title: Text(
           'Nurses & Caretakers',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: fontSizes.large,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
@@ -31,7 +46,7 @@ class SearchScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(horizontalPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -40,29 +55,28 @@ class SearchScreen extends StatelessWidget {
               onChanged: controller.filterNurses,
               decoration: InputDecoration(
                 hintText: 'Search',
-                hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                hintStyle: TextStyle(fontSize: fontSizes.small, color: AppColors.textSecondary),
                 prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
-                //suffixIcon: const Icon(Icons.mic, color: AppColors.textSecondary),
                 filled: true,
                 fillColor: AppColors.inputFill,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: screenHeight * 0.015),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(cardRadius),
                   borderSide: BorderSide.none,
                 ),
               ),
             ),
-            const SizedBox(height: 24), // Spacing
+            SizedBox(height: verticalSpacing * 1.2),
             // Nurse List
-            const Text(
+            Text(
               'List of Nurses',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: fontSizes.medium,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 16), // Spacing
+            SizedBox(height: verticalSpacing),
             Expanded(
               child: Obx(
                 () => ListView.builder(
@@ -71,31 +85,30 @@ class SearchScreen extends StatelessWidget {
                     final nurse = controller.filteredNurses[index];
                     return GestureDetector(
                       onTap: () {
-                        // Navigate to appointment details on card tap
                         Get.toNamed(Routes.APPOINTMENT_DETAILS);
                       },
                       child: Card(
-                        color: AppColors.white, // Set explicit background color
+                        color: AppColors.white,
                         elevation: 2,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(cardRadius),
                         ),
-                        margin: const EdgeInsets.only(bottom: 16),
+                        margin: EdgeInsets.only(bottom: verticalSpacing),
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(horizontalPadding),
                           child: Row(
                             children: [
-                              // Nurse Image Placeholder (if profilePicture is provided)
+                              // Nurse Image Placeholder
                               Container(
-                                width: 48,
-                                height: 48,
+                                width: avatarSize,
+                                height: avatarSize,
                                 decoration: BoxDecoration(
                                   color: AppColors.inputBorder,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(cardRadius),
                                 ),
                                 child: nurse.profilePicture != null
                                     ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(cardRadius),
                                         child: Image.network(
                                           nurse.profilePicture!,
                                           fit: BoxFit.cover,
@@ -103,7 +116,7 @@ class SearchScreen extends StatelessWidget {
                                       )
                                     : const Icon(Icons.person, color: AppColors.black),
                               ),
-                              const SizedBox(width: 16), // Spacing
+                              SizedBox(width: horizontalPadding),
                               // Nurse Details
                               Expanded(
                                 child: Column(
@@ -111,26 +124,26 @@ class SearchScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       nurse.name,
-                                      style: const TextStyle(
-                                        fontSize: 16,
+                                      style: TextStyle(
+                                        fontSize: fontSizes.small,
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.textPrimary,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    SizedBox(height: screenHeight * 0.005),
                                     Text(
                                       nurse.specialization ?? 'No specialization',
-                                      style: const TextStyle(
-                                        fontSize: 14,
+                                      style: TextStyle(
+                                        fontSize: fontSizes.tiny,
                                         fontWeight: FontWeight.w400,
                                         color: AppColors.textSecondary,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    SizedBox(height: screenHeight * 0.005),
                                     Text(
                                       'Rating: ${nurse.rating}',
-                                      style: const TextStyle(
-                                        fontSize: 14,
+                                      style: TextStyle(
+                                        fontSize: fontSizes.tiny,
                                         fontWeight: FontWeight.w400,
                                         color: AppColors.textSecondary,
                                       ),
@@ -138,32 +151,31 @@ class SearchScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 16), // Spacing
+                              SizedBox(width: horizontalPadding),
                               // Availability & Action Button
                               Column(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding * 0.75, vertical: screenHeight * 0.005),
                                     decoration: BoxDecoration(
                                       color: controller.isAvailable(nurse.availableDays)
                                           ? AppColors.success
                                           : AppColors.inputBorder,
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(cardRadius),
                                     ),
                                     child: Text(
                                       controller.isAvailable(nurse.availableDays) ? 'Available' : 'Not Available',
-                                      style: const TextStyle(
-                                        fontSize: 12,
+                                      style: TextStyle(
+                                        fontSize: fontSizes.tiny,
                                         fontWeight: FontWeight.w500,
                                         color: AppColors.white,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: screenHeight * 0.01),
                                   ElevatedButton(
                                     onPressed: controller.isAvailable(nurse.availableDays)
                                         ? () {
-                                            // Redirect to Book Appointment
                                             Get.toNamed(Routes.BOOK_APPOINTMENT);
                                           }
                                         : null,
@@ -172,12 +184,17 @@ class SearchScreen extends StatelessWidget {
                                           ? AppColors.primary
                                           : AppColors.inputBorder,
                                       foregroundColor: AppColors.white,
-                                      minimumSize: const Size(80, 36),
+                                      minimumSize: Size(screenWidth * 0.2, screenHeight * 0.045),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(cardRadius),
                                       ),
                                     ),
-                                    child: const Text('Book'),
+                                    child: Text(
+                                      'Book',
+                                      style: TextStyle(
+                                        fontSize: fontSizes.tiny,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -206,7 +223,7 @@ class SearchScreen extends StatelessWidget {
           selectedItemColor: AppColors.primary,
           unselectedItemColor: AppColors.textSecondary,
           backgroundColor: AppColors.white,
-          currentIndex: 1, // Set the Search tab as active
+          currentIndex: 1,
           onTap: (index) {
             switch (index) {
               case 0:
@@ -247,4 +264,20 @@ class SearchScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class ResponsiveFontSizes {
+  final double tiny;
+  final double small;
+  final double medium;
+  final double large;
+  final double xlarge;
+
+  ResponsiveFontSizes({
+    required this.tiny,
+    required this.small,
+    required this.medium,
+    required this.large,
+    required this.xlarge,
+  });
 }
