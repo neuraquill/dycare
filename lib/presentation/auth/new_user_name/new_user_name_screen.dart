@@ -36,42 +36,40 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Image section
+                  // Top container for illustration
                   Container(
+                    height: screenHeight * 0.5,
                     width: double.infinity,
-                    height: screenHeight * 0.45,
-                    color: AppColors.primaryLight,
-                    child: Center(
-                      child: Image.asset(
-                        'assets/images/new_user_image.png',
-                        fit: BoxFit.fitWidth,
-                      ),
+                    color: AppColors.backgroundDark,
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Add your welcome illustration here
+                      ],
                     ),
                   ),
 
-                  // User details form
                   Padding(
-                    padding: EdgeInsets.only(
-                      left: horizontalPadding,
-                      right: horizontalPadding,
-                      top: verticalSpacing,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding,
+                      vertical: verticalSpacing,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: verticalSpacing * 0.35),
-
                         Text(
-                          'Welcome!',
+                          "Welcome!\nWhat's your name?",
                           style: TextStyle(
                             fontSize: fontSizes.xlarge,
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimary,
                             letterSpacing: -0.5,
+                            height: 1.2,
                           ),
                         ),
-                        SizedBox(height: verticalSpacing * 2.5),
+                        SizedBox(height: verticalSpacing * 2),
 
                         // Name Field
                         AuthTextField(
@@ -79,6 +77,7 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                           label: 'Full Name',
                           fontSize: fontSizes,
                           keyboardType: TextInputType.name,
+                          textCapitalization: TextCapitalization.words,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your name';
@@ -91,62 +90,17 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                         ),
                         SizedBox(height: verticalSpacing * 3),
 
-                        // Age Field
-                        AuthTextField(
-                          controller: controller.ageController,
-                          label: 'Age',
-                          fontSize: fontSizes,
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your age';
-                            }
-                            final age = int.tryParse(value);
-                            if (age == null) {
-                              return 'Please enter a valid number';
-                            }
-                            if (age < 0 || age > 120) {
-                              return 'Please enter a valid age';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: verticalSpacing * 3),
-
-                        // Address Field with Geolocation
-                        Obx(() => AuthTextField(
-                          controller: controller.addressController,
-                          label: 'Address',
-                          fontSize: fontSizes,
-                          keyboardType: TextInputType.streetAddress,
-                          suffixIcon: IconButton(
-                            icon: controller.isLocating.value
-                              ? CircularProgressIndicator(
-                                  color: AppColors.primary,
-                                  strokeWidth: 2
-                                )
-                              : Icon(Icons.location_on, color: AppColors.primary),
-                            onPressed: controller.getCurrentLocation,
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your address';
-                            }
-                            return null;
-                          },
-                        )),
-                        SizedBox(height: verticalSpacing * 3),
-
                         // Continue Button
                         SizedBox(
                           width: double.infinity,
                           height: buttonHeight,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primaryDark,
-                              foregroundColor: AppColors.white,
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.textPrimaryDark,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                                borderRadius:
+                                    BorderRadius.circular(screenWidth * 0.02),
                               ),
                             ),
                             onPressed: controller.submitName,
@@ -159,7 +113,6 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                             ),
                           ),
                         ),
-                        SizedBox(height: verticalSpacing),
                       ],
                     ),
                   ),
@@ -177,20 +130,22 @@ class AuthTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final ResponsiveFontSizes fontSize;
-  final TextInputType? keyboardType;
   final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final bool obscureText;
   final Widget? suffixIcon;
-  final TextCapitalization? textCapitalization;
+  final TextCapitalization textCapitalization;
 
   const AuthTextField({
-    super.key,
     required this.controller,
     required this.label,
     required this.fontSize,
-    this.keyboardType,
     this.validator,
+    this.keyboardType,
+    this.obscureText = false,
     this.suffixIcon,
-    this.textCapitalization,
+    this.textCapitalization = TextCapitalization.none,
+    super.key,
   });
 
   @override
@@ -199,12 +154,13 @@ class AuthTextField extends StatelessWidget {
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
-      textCapitalization: textCapitalization ?? TextCapitalization.none,
+      obscureText: obscureText,
+      textCapitalization: textCapitalization,
       style: TextStyle(
         fontSize: fontSize.medium,
         color: AppColors.textPrimary,
       ),
-      cursorColor: AppColors.primary,
+      cursorColor: AppColors.textPrimary,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
@@ -212,7 +168,7 @@ class AuthTextField extends StatelessWidget {
           fontSize: fontSize.small,
         ),
         floatingLabelStyle: TextStyle(
-          color: AppColors.primaryDark,
+          color: AppColors.textSecondaryDark,
           fontSize: fontSize.tiny,
         ),
         border: const UnderlineInputBorder(

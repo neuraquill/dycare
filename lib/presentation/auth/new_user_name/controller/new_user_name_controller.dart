@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/domain/auth/auth_repository.dart';
 import 'package:http/http.dart' as http;
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
 import 'dart:convert';
 
 class NewUserNameController extends GetxController {
@@ -12,72 +10,14 @@ class NewUserNameController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  
   final RxBool isLoading = false.obs;
-  final RxBool isLocating = false.obs;
-  
   String? phoneNumber;
-  Position? currentPosition;
 
   @override
   void onInit() {
     super.onInit();
     // Retrieve phone number passed from OTP screen
     phoneNumber = Get.arguments?['phoneNumber'];
-  }
-
-  Future<void> getCurrentLocation() async {
-    isLocating.value = true;
-    try {
-      // Check location permissions
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        // Permissions are denied forever, handle appropriately
-        Get.snackbar(
-          'Location Error',
-          'Location permissions are permanently denied. Please enable them in device settings.',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
-      // Get current position
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      // Get address from coordinates
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude, 
-        position.longitude
-      );
-
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks[0];
-        String address = "${place.street}, ${place.subLocality}, "
-                         "${place.locality}, ${place.administrativeArea} "
-                         "${place.postalCode}, ${place.country}";
-        
-        addressController.text = address;
-        currentPosition = position;
-      }
-    } catch (e) {
-      Get.snackbar(
-        'Location Error',
-        'Failed to get current location. Please try again.',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLocating.value = false;
-    }
   }
 
   Future<void> submitName() async {
@@ -104,12 +44,6 @@ class NewUserNameController extends GetxController {
           body: json.encode({
             'phoneNumber': phoneNumber,
             'name': nameController.text.trim(),
-            'age': int.parse(ageController.text.trim()),
-            'address': addressController.text.trim(),
-            'location': currentPosition != null ? {
-              'latitude': currentPosition!.latitude,
-              'longitude': currentPosition!.longitude
-            } : null,
           }),
         );
 
@@ -168,11 +102,20 @@ class NewUserNameController extends GetxController {
     }
   }
 
+  String? validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Name is required';
+    }
+    if (value.trim().length < 2) {
+      return 'Name must be at least 2 characters long';
+    }
+    // Optional: Add more sophisticated name validation if needed
+    return null;
+  }
+
   @override
   void onClose() {
     nameController.dispose();
-    ageController.dispose();
-    addressController.dispose();
     super.onClose();
   }
 }
