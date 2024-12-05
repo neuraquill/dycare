@@ -34,7 +34,6 @@ class HomeController extends GetxController {
       isLoading.value = true;
       await Future.wait([
         loadCurrentUser(),
-        loadUpcomingAppointments(),
       ]);
     } catch (e) {
       Get.snackbar('Error', 'Failed to load home data');
@@ -45,13 +44,6 @@ class HomeController extends GetxController {
 
   Future<void> loadCurrentUser() async {
     currentUser.value = await _userRepository.getCurrentUser();
-  }
-
-  Future<void> loadUpcomingAppointments() async {
-    final userId = currentUser.value?.id;
-    if (userId != null) {
-      upcomingAppointments.value = await _appointmentRepository.getUpcomingAppointments(userId);
-    }
   }
   void navigateToAppointments() {
     Get.toNamed(Routes.MY_APPOINTMENTS);

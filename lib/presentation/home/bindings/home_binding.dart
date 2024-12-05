@@ -12,7 +12,7 @@ class HomeBinding extends Bindings {
       Get.lazyPut<UserRepository>(() => UserRepositoryImpl());
     }
     if (!Get.isRegistered<AppointmentRepository>()) {
-      Get.lazyPut<AppointmentRepository>(() => AppointmentRepositoryImpl());
+      Get.lazyPut<AppointmentRepository>(() => AppointmentRepositoryImpl('http://192.168.29.9:3000'));
     }
 
     // Inject the HomeController

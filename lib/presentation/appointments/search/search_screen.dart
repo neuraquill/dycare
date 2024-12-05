@@ -168,7 +168,7 @@ class SearchScreen extends StatelessWidget {
                                           onPressed: controller.isAvailable(item.schedule)  // Check availability
                                               ? () {
                                                   // Redirect to Book Appointment
-                                                  Get.toNamed(Routes.BOOK_APPOINTMENT);
+                                                  Get.toNamed(Routes.BOOK_APPOINTMENT, arguments: item.id);
                                                 }
                                               : null,
                                           style: ElevatedButton.styleFrom(

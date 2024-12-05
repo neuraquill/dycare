@@ -1,121 +1,64 @@
-// lib/domain/repositories/appointment_repository.dart
-
+//appointments_repository.dart
+import 'dart:convert';
 import 'package:dycare/domain/entities/appointment_entity.dart';
+import 'package:http/http.dart' as http;
 
 abstract class AppointmentRepository {
-  Future<List<AppointmentEntity>> getAppointmentsByUserId(String userId, {String? status, DateTime? startDate, DateTime? endDate});
-  Future<AppointmentEntity?> getAppointmentById(String appointmentId);
+  Future<List<AppointmentEntity>> getAppointmentsByUserId(String userId);
   Future<AppointmentEntity> createAppointment(AppointmentEntity appointment);
-  Future<AppointmentEntity> updateAppointment(AppointmentEntity appointment);
-  Future<void> cancelAppointment(String appointmentId);
-  Future<List<DateTime>> getAvailableSlots(String nurseId, DateTime date);
-  Future<bool> isSlotAvailable(String nurseId, DateTime dateTime);
-  Future<List<AppointmentEntity>> getUpcomingAppointments(String userId);
-  Future<List<AppointmentEntity>> getPastAppointments(String userId);
-
-  getRecentAppointments(String userId) {}
+  Future<List<DateTime>> getAvailableSlots(String workerId, DateTime date);
 }
 
 class AppointmentRepositoryImpl implements AppointmentRepository {
-  // You would typically inject dependencies here, such as an API client
-  // final ApiClient _apiClient;
+  final String baseUrl;
 
-  // AppointmentRepositoryImpl(this._apiClient);
-
-  @override
-  Future<List<AppointmentEntity>> getAppointmentsByUserId(String userId, {String? status, DateTime? startDate, DateTime? endDate}) async {
-    // TODO: Implement getAppointmentsByUserId
-    // This would typically involve an API call to fetch appointments for a user with optional filters
-    throw UnimplementedError();
-  }
+  AppointmentRepositoryImpl(this.baseUrl);
 
   @override
-  Future<AppointmentEntity?> getAppointmentById(String appointmentId) async {
-    // TODO: Implement getAppointmentById
-    // This would typically involve an API call to fetch a specific appointment
-    throw UnimplementedError();
+  Future<List<AppointmentEntity>> getAppointmentsByUserId(String userId) async {
+    final response = await _get('/appointment?userId=$userId');
+    return (response as List)
+        .map((json) => AppointmentEntity.fromJson(json))
+        .toList();
   }
 
   @override
   Future<AppointmentEntity> createAppointment(AppointmentEntity appointment) async {
-    // TODO: Implement createAppointment
-    // This would typically involve an API call to create a new appointment
-    throw UnimplementedError();
+    final response = await _post(
+      '/appointment/book',
+      body: appointment.toJson(),
+    );
+    return AppointmentEntity.fromJson(response);
   }
 
   @override
-  Future<AppointmentEntity> updateAppointment(AppointmentEntity appointment) async {
-    // TODO: Implement updateAppointment
-    // This would typically involve an API call to update an existing appointment
-    throw UnimplementedError();
+  Future<List<DateTime>> getAvailableSlots(String workerId, DateTime date) async {
+    // Returning an empty list for now
+    return [];
   }
 
-  @override
-  Future<void> cancelAppointment(String appointmentId) async {
-    // TODO: Implement cancelAppointment
-    // This would typically involve an API call to cancel an appointment
-    throw UnimplementedError();
+  // Helper methods to handle GET and POST requests
+  Future<Map<String, dynamic>> _get(String endpoint) async {
+    final response = await http.get(Uri.parse('$baseUrl$endpoint'));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load data: ${response.statusCode}');
+    }
   }
 
-  @override
-  Future<List<DateTime>> getAvailableSlots(String nurseId, DateTime date) async {
-    // TODO: Implement getAvailableSlots
-    // This would typically involve an API call to fetch available time slots for a nurse on a specific date
-    throw UnimplementedError();
-  }
+  Future<Map<String, dynamic>> _post(String endpoint, {Map<String, dynamic>? body}) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl$endpoint'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
 
-  @override
-  Future<bool> isSlotAvailable(String nurseId, DateTime dateTime) async {
-    // TODO: Implement isSlotAvailable
-    // This would typically involve an API call to check if a specific time slot is available for a nurse
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<AppointmentEntity>> getUpcomingAppointments(String userId) async {
-    // TODO: Implement getUpcomingAppointments
-    // This would typically involve an API call to fetch upcoming appointments for a user
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<AppointmentEntity>> getPastAppointments(String userId) async {
-    // TODO: Implement getPastAppointments
-    // This would typically involve an API call to fetch past appointments for a user
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<AppointmentEntity>> getRecentAppointments(String userId) async {
-    // TODO: Implement getRecentAppointments
-    // In a real application, this would typically involve an API call
-    // For now, we'll return a mock list of recent appointments
-    await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-    return [
-      AppointmentEntity(
-        id: '1',
-        patientId: userId,
-        nurseId: 'nurse1',
-        dateTime: DateTime.now().subtract(Duration(days: 2)),
-        status: 'Completed',
-        notes: 'Regular check-up',
-      ),
-      AppointmentEntity(
-        id: '2',
-        patientId: userId,
-        nurseId: 'nurse2',
-        dateTime: DateTime.now().add(Duration(days: 1)),
-        status: 'Scheduled',
-        notes: 'Follow-up appointment',
-      ),
-      AppointmentEntity(
-        id: '3',
-        patientId: userId,
-        nurseId: 'nurse3',
-        dateTime: DateTime.now().add(Duration(days: 5)),
-        status: 'Scheduled',
-        notes: 'Annual physical',
-     ),
-    ];
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to create appointment: ${response.statusCode}');
+    }
   }
 }

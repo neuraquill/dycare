@@ -19,119 +19,7 @@ class MyAppointmentsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _initializeDummyAppointments();
     loadAppointments();
-  }
-
-  void _initializeDummyAppointments() {
-    // Dummy appointments for each status
-    final dummyAppointments = [
-      // Upcoming Appointments
-      AppointmentEntity(
-        id: '1',
-        nurseId: 'nurse1',
-        dateTime: DateTime.now().add(const Duration(days: 2)),
-        notes: 'Routine checkup with Dr. Smith',
-        patientId: 'patient1',
-        status: 'Upcoming',
-      ),
-      AppointmentEntity(
-        id: '2',
-        nurseId: 'nurse2',
-        dateTime: DateTime.now().add(const Duration(days: 7)),
-        notes: 'Annual physical examination',
-        patientId: 'patient2',
-        status: 'Upcoming',
-      ),
-      AppointmentEntity(
-        id: '3',
-        nurseId: 'nurse3',
-        dateTime: DateTime.now().add(const Duration(days: 14)),
-        notes: 'Follow-up consultation',
-        patientId: 'patient3',
-        status: 'Upcoming',
-      ),
-      AppointmentEntity(
-        id: '4',
-        nurseId: 'nurse4',
-        dateTime: DateTime.now().add(const Duration(days: 21)),
-        notes: 'Vaccination update',
-        patientId: 'patient4',
-        status: 'Upcoming',
-      ),
-
-      // Completed Appointments
-      AppointmentEntity(
-        id: '5',
-        nurseId: 'nurse5',
-        dateTime: DateTime.now().subtract(const Duration(days: 10)),
-        notes: 'Regular health screening',
-        patientId: 'patient5',
-        status: 'Completed',
-      ),
-      AppointmentEntity(
-        id: '6',
-        nurseId: 'nurse6',
-        dateTime: DateTime.now().subtract(const Duration(days: 20)),
-        notes: 'Post-surgery follow-up',
-        patientId: 'patient6',
-        status: 'Completed',
-      ),
-      AppointmentEntity(
-        id: '7',
-        nurseId: 'nurse7',
-        dateTime: DateTime.now().subtract(const Duration(days: 30)),
-        notes: 'Preventive care consultation',
-        patientId: 'patient7',
-        status: 'Completed',
-      ),
-      AppointmentEntity(
-        id: '8',
-        nurseId: 'nurse8',
-        dateTime: DateTime.now().subtract(const Duration(days: 40)),
-        notes: 'Comprehensive health assessment',
-        patientId: 'patient8',
-        status: 'Completed',
-      ),
-
-      // Cancelled Appointments
-      AppointmentEntity(
-        id: '9',
-        nurseId: 'nurse9',
-        dateTime: DateTime.now().subtract(const Duration(days: 15)),
-        notes: 'Cancelled due to scheduling conflict',
-        patientId: 'patient9',
-        status: 'Cancelled',
-      ),
-      AppointmentEntity(
-        id: '10',
-        nurseId: 'nurse10',
-        dateTime: DateTime.now().subtract(const Duration(days: 25)),
-        notes: 'Patient requested rescheduling',
-        patientId: 'patient10',
-        status: 'Cancelled',
-      ),
-      AppointmentEntity(
-        id: '11',
-        nurseId: 'nurse11',
-        dateTime: DateTime.now().subtract(const Duration(days: 35)),
-        notes: 'Clinic emergency cancellation',
-        patientId: 'patient11',
-        status: 'Cancelled',
-      ),
-      AppointmentEntity(
-        id: '12',
-        nurseId: 'nurse12',
-        dateTime: DateTime.now().subtract(const Duration(days: 45)),
-        notes: 'Health facility maintenance',
-        patientId: 'patient12',
-        status: 'Cancelled',
-      ),
-    ];
-
-    appointments.value = dummyAppointments;
-    // Initial filter to show Upcoming appointments
-    setSelectedStatus('Upcoming');
   }
 
   Future loadAppointments() async {
@@ -177,13 +65,6 @@ class MyAppointmentsController extends GetxController {
   void refreshAppointments() {
     loadAppointments();
   }
-
-  // New method to get filtered appointments based on status
-  List<AppointmentEntity> getFilteredAppointments(String status) {
-    return appointments.where((appointment) => 
-      appointment.status == status).toList();
-  }
-
   // New methods for filtering
   void setSelectedStatus(String status) {
     selectedStatus.value = status;
@@ -197,10 +78,12 @@ class MyAppointmentsController extends GetxController {
 
   void applyFilters() {
     filteredAppointments.value = appointments.where((appointment) {
-      final matchesStatus = selectedStatus.isEmpty || appointment.status == selectedStatus.value;
+      final matchesStatus = selectedStatus.isEmpty;
       final matchesDate = selectedDate.value == null ||
-          appointment.dateTime.toLocal().isAtSameMomentAs(selectedDate.value!);
+          appointment.time.toLocal().isAtSameMomentAs(selectedDate.value!);
       return matchesStatus && matchesDate;
     }).toList();
   }
+
+  getFilteredAppointments(String status) {}
 }

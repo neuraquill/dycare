@@ -1,3 +1,5 @@
+//lib/presentation/appointments/appointment_details/appointment_details_screen.dart
+
 import 'package:dycare/domain/entities/nurse_entity.dart';
 import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
       ),
       body: Obx(() {
         final nurse = controller.selectedNurse.value;
+        print("Nurse Details Screen: $nurse");
         
         if (nurse == null) {
           return Center(child: Text('No nurse details found'));
@@ -42,7 +45,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
             children: [
               _buildDoctorSection(nurse),
               _buildBiographySection(nurse),
-              _buildBottomSection(),
+              _buildBottomSection(nurse),
             ],
           ),
         );
@@ -153,7 +156,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
       : 'No additional information available';
   }
 
-  Widget _buildBottomSection() {
+  Widget _buildBottomSection(NurseEntity nurse) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -163,19 +166,23 @@ class AppointmentDetailsScreen extends StatelessWidget {
             height: 48,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.backgroundDark,
+                backgroundColor: AppColors.secondary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
               onPressed: () {
-                // Redirect to Book Appointment Screen
-                Get.toNamed(Routes.BOOK_APPOINTMENT);
+                // Pass the nurse ID to the Book Appointment Screen
+                print('Nurse ID: ${nurse.id}');
+                Get.toNamed(
+                  Routes.BOOK_APPOINTMENT, 
+                  arguments: nurse.id
+                );
               },
               child: Text(
                 'Book an Appointment',
                 style: customTheme.CustomTextStyle.buttonLarge(
-                  color: AppColors.white,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ),

@@ -206,7 +206,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      DateTimeUtils.formatTime(appointment.dateTime),
+                      DateTimeUtils.formatTime(appointment.time),
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -233,16 +233,11 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Dr. ${controller.getNurseName(appointment.nurseId)}',
+          'Dr. ${controller.getNurseName(appointment.workerId)}',
           style: AppTypography.bodyMedium.copyWith(
             fontSize: MediaQuery.of(context).size.width * 0.035, // Smaller relative font size
             fontWeight: FontWeight.w600, // Optional for better emphasis
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          appointment.notes ?? '',
-          style: AppTypography.bodyMedium,
         ),
       ],
     );

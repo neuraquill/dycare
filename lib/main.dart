@@ -13,7 +13,7 @@ void main() async {
   // Initialize any services or configurations here
   // For example: await Firebase.initializeApp();
   Get.put<UserRepository>(UserRepositoryImpl());
-  Get.put<AppointmentRepository>(AppointmentRepositoryImpl());
+  Get.put<AppointmentRepository>(AppointmentRepositoryImpl('http://192.168.29.9:3000'));
 
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);

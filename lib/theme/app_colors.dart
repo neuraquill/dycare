@@ -23,7 +23,7 @@ class AppColors {
   static const Color weekends = Color.fromARGB(255, 200, 50, 50);
 
   // Text colors
-  static const Color textPrimary = Color(0xFF000000);
+  static const Color textPrimary = Color.fromARGB(255, 0, 0, 0);
   static const Color textSecondary = Color(0xFF757575);
   static const Color textPrimaryDark = Color(0xFFFFFFFF);
   static const Color textSecondaryDark = Color(0xFFB3B3B3);

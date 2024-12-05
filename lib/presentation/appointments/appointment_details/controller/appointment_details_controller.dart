@@ -11,6 +11,9 @@ class AppointmentDetailsController extends GetxController {
     super.onInit();
     // Get the nurse details passed from the previous screen
     final NurseEntity? nurse = Get.arguments;
+    print("NurseEntity: $nurse");
+    print("Nurse ID during details initilization: ${nurse?.id}");
+    print("Nurse Name during details initilization: ${nurse?.name}");
     if (nurse != null) {
       selectedNurse.value = nurse;
     } else {

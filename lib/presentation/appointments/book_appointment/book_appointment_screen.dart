@@ -1,169 +1,125 @@
+//appointment_screen.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:dycare/core/constants/app_constants.dart';
-import 'package:table_calendar/table_calendar.dart'; // Importing TableCalendar package for the calendar widget
-import 'package:dycare/theme/app_colors.dart'; // Importing AppColors for color constants
+import 'package:table_calendar/table_calendar.dart';
+import 'package:dycare/theme/app_colors.dart';
+import 'package:dycare/presentation/appointments/book_appointment/controller/book_appointment_controller.dart';
 
-class BookAppointmentScreen extends StatefulWidget {
-  @override
-  _BookAppointmentScreenState createState() => _BookAppointmentScreenState();
-}
-
-class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
-  // Calendar controller
-  late DateTime _selectedDay;
-  late DateTime _focusedDay;
-
-  // Time slot selection
-  int? _selectedTimeSlot;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDay = DateTime.now(); // Set the initial selected day to today
-    _focusedDay = _selectedDay;
-  }
-
-  // Sample time slots
-  final List<String> _timeSlots = [
-    '09:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '01:00 PM',
-    '02:00 PM',
-    '03:00 PM',
-    '04:00 PM',
-  ];
-
+class BookAppointmentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Get the nurse ID passed from the previous screen
+    final String nurseId = Get.arguments;
+    print(nurseId);
+
+    // Get the controller
+    final BookAppointmentController controller = Get.find<BookAppointmentController>();
+
+    // Set the selected nurse when the screen is first loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.selectNurseById(nurseId);
+    });
+
     return Scaffold(
-      backgroundColor: AppColors.background, // Background color
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(AppConstants.BOOK_APPOINTMENT_TITLE),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Back button to navigate back
+            Navigator.pop(context);
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0), // Standard padding
-        child: Column(
-          children: [
-            // Calendar for date selection
-            TableCalendar(
-              focusedDay: _focusedDay,
-              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay; // Update focused day
-                });
-              },
-              firstDay: DateTime.now(),
-              lastDay: DateTime.now().add(Duration(days: 365)), // 30 days ahead
-              headerStyle: HeaderStyle(
-                titleTextStyle: TextStyle(
-                  color: AppColors.textPrimary, // Color for the month and year text at the top
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                formatButtonVisible: false, // Hide format button if not needed
-                leftChevronIcon: Icon(
-                  Icons.chevron_left,
-                  color: AppColors.primary, // Color for left arrow
-                ),
-                rightChevronIcon: Icon(
-                  Icons.chevron_right,
-                  color: AppColors.primary, // Color for right arrow
-                ),
-              ),
-              calendarStyle: CalendarStyle(
-                selectedDecoration: BoxDecoration(
-                  color: AppColors.primary, // Primary color for selected date
-                  shape: BoxShape.circle,
-                ),
-                todayDecoration: BoxDecoration(
-                  color: AppColors.textSecondary, // Color for today's date
-                  shape: BoxShape.circle,
-                ),
-                defaultDecoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.transparent,
-                ),
-                defaultTextStyle: TextStyle(
-                  color: AppColors.textPrimary, // Color for default dates
-                ),
-                outsideTextStyle: TextStyle(
-                  color: AppColors.textSecondaryDark, // Color for dates outside current month
-                ),
-                weekendTextStyle: TextStyle(
-                  color: AppColors.weekends, // Color for weekend dates, if needed
-                ),
-              ),
-            ),
-            SizedBox(height: 20), // Spacing
-            // Grid view for time slots
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.0, // Spacing between columns
-                  mainAxisSpacing: 16.0, // Spacing between rows
-                ),
-                itemCount: _timeSlots.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedTimeSlot = index; // Update selected time slot
-                      });
-                    },
-                    child: Card(
-                      elevation: 2,
-                      color: _selectedTimeSlot == index
-                          ? AppColors.textPrimary// Highlight selected time slot
-                          : AppColors.textPrimaryDark,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Text(
-                          _timeSlots[index],
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: _selectedTimeSlot == index
-                                ? AppColors.textPrimaryDark // Text color for selected slot
-                                : AppColors.textPrimary, // Text color for unselected slot
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+      body: Obx(() {
+        // Check if nurse is selected and data is loading
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Calendar for date selection
+              TableCalendar(
+                focusedDay: controller.selectedDate.value ?? DateTime.now(),
+                selectedDayPredicate: (day) => 
+                  controller.selectedDate.value != null && 
+                  isSameDay(controller.selectedDate.value!, day),
+                onDaySelected: (selectedDay, focusedDay) {
+                  controller.selectDate(selectedDay);
                 },
+                firstDay: DateTime.now(),
+                lastDay: DateTime.now().add(Duration(days: 365)),
+                headerStyle: HeaderStyle(
+                  titleTextStyle: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  formatButtonVisible: false,
+                  leftChevronIcon: Icon(
+                    Icons.chevron_left,
+                    color: AppColors.primary,
+                  ),
+                  rightChevronIcon: Icon(
+                    Icons.chevron_right,
+                    color: AppColors.primary,
+                  ),
+                ),
+                calendarStyle: CalendarStyle(
+                  selectedDecoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  todayDecoration: BoxDecoration(
+                    color: AppColors.textSecondary,
+                    shape: BoxShape.circle,
+                  ),
+                  defaultDecoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.transparent,
+                  ),
+                  defaultTextStyle: TextStyle(
+                    color: AppColors.textPrimary,
+                  ),
+                  outsideTextStyle: TextStyle(
+                    color: AppColors.textSecondaryDark,
+                  ),
+                  weekendTextStyle: TextStyle(
+                    color: AppColors.weekends,
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 20), // Spacing
-            // "Book Now" button
-            ElevatedButton(
-              onPressed: () {
-                // TODO: Implement booking functionality
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.black), // Primary color
-                minimumSize: MaterialStateProperty.all(Size(double.infinity, 48)),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                )),
+              SizedBox(height: 20),
+              
+              // Book Now button
+              ElevatedButton(
+                onPressed: controller.canBookAppointment() 
+                    ? () => controller.bookAppointment() 
+                    : null,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return Colors.grey;
+                    }
+                    return Colors.black;
+                  }),
+                  minimumSize: MaterialStateProperty.all(Size(double.infinity, 48)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ))),
+                child: Text(
+                  'Book Now', 
+                  style: TextStyle(color: Colors.white)
+                ),
               ),
-              child: Text('Book Now', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

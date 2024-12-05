@@ -41,7 +41,6 @@ class ProfileController extends GetxController {
       user.value = await _userRepository.getCurrentUser();
       if (user.value != null) {
         _populateTextControllers();
-        await loadRecentAppointments();
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to load profile data');
@@ -55,17 +54,6 @@ class ProfileController extends GetxController {
     emailController.text = user.value?.email ?? '';
     phoneController.text = user.value?.phoneNumber ?? '';
     addressController.text = user.value?.address ?? '';
-  }
-
-  Future<void> loadRecentAppointments() async {
-    try {
-      final userId = user.value?.id;
-      if (userId != null) {
-        recentAppointments.value = await _appointmentRepository.getRecentAppointments(userId);
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to load recent appointments');
-    }
   }
 
   void toggleEditMode() {
