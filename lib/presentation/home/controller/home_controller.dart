@@ -12,12 +12,10 @@ import 'package:dycare/domain/repositories/nurse_repository.dart';
 class HomeController extends GetxController {
   final UserRepository _userRepository;
   final AppointmentRepository _appointmentRepository;
-  final NurseRepository _nurseRepository;
 
   HomeController(
     this._userRepository,
     this._appointmentRepository,
-    this._nurseRepository,
   );
 
   final Rx<UserEntity?> currentUser = Rx<UserEntity?>(null);
@@ -37,7 +35,6 @@ class HomeController extends GetxController {
       await Future.wait([
         loadCurrentUser(),
         loadUpcomingAppointments(),
-        loadFeaturedNurses(),
       ]);
     } catch (e) {
       Get.snackbar('Error', 'Failed to load home data');
@@ -56,11 +53,6 @@ class HomeController extends GetxController {
       upcomingAppointments.value = await _appointmentRepository.getUpcomingAppointments(userId);
     }
   }
-
-  Future<void> loadFeaturedNurses() async {
-    featuredNurses.value = await _nurseRepository.getFeaturedNurses();
-  }
-
   void navigateToAppointments() {
     Get.toNamed(Routes.MY_APPOINTMENTS);
   }

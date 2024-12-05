@@ -37,12 +37,11 @@ class SearchScreen extends StatelessWidget {
           children: [
             // Search Bar
             TextField(
-              onChanged: controller.filterNurses,
+              onChanged: controller.filterItems, // Connect to the filter method
               decoration: InputDecoration(
                 hintText: 'Search',
                 hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
-                //suffixIcon: const Icon(Icons.mic, color: AppColors.textSecondary),
                 filled: true,
                 fillColor: AppColors.inputFill,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -53,9 +52,9 @@ class SearchScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24), // Spacing
-            // Nurse List
+            // List Title
             const Text(
-              'List of Nurses',
+              'List of Nurses & Caretakers',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -65,129 +64,134 @@ class SearchScreen extends StatelessWidget {
             const SizedBox(height: 16), // Spacing
             Expanded(
               child: Obx(
-                () => ListView.builder(
-                  itemCount: controller.filteredNurses.length,
-                  itemBuilder: (context, index) {
-                    final nurse = controller.filteredNurses[index];
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigate to appointment details on card tap
-                        Get.toNamed(Routes.APPOINTMENT_DETAILS);
-                      },
-                      child: Card(
-                        color: AppColors.white, // Set explicit background color
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              // Nurse Image Placeholder (if profilePicture is provided)
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: AppColors.inputBorder,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: nurse.profilePicture != null
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Image.network(
-                                          nurse.profilePicture!,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    : const Icon(Icons.person, color: AppColors.black),
+                () => controller.isLoading.value
+                    ? const Center(child: CircularProgressIndicator())  // Show loading indicator
+                    : ListView.builder(
+                        itemCount: controller.filteredItems.length,
+                        itemBuilder: (context, index) {
+                          final item = controller.filteredItems[index];
+                          return GestureDetector(
+                            onTap: () {
+                              // Navigate to appointment details on card tap
+                              Get.toNamed(Routes.APPOINTMENT_DETAILS, arguments: item);
+                            },
+                            child: Card(
+                              color: AppColors.white, // Set explicit background color
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              const SizedBox(width: 16), // Spacing
-                              // Nurse Details
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              margin: const EdgeInsets.only(bottom: 16),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      nurse.name,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.textPrimary,
+                                    // Placeholder for Nurse/Caretaker Image
+                                    Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.inputBorder,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: item.profilePicture != null && item.profilePicture!.isNotEmpty
+                                        ? ClipRRect(
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: Image.network(
+                                              item.profilePicture!,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+                                            ),
+                                          )
+                                        : const Icon(Icons.person, color: AppColors.black),
+                                    ),
+                                    const SizedBox(width: 16), // Spacing
+                                    // Item Details
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.name,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textPrimary,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            item.specialization ?? 'No specialization',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.textSecondary,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Rating: ${item.rating ?? 'No rating'}',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.textSecondary,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      nurse.specialization ?? 'No specialization',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppColors.textSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Rating: ${nurse.rating}',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: AppColors.textSecondary,
-                                      ),
+                                    const SizedBox(width: 16), // Spacing
+                                    // Availability & Action Button
+                                    Column(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: controller.isAvailable(item.schedule)  
+                                                ? AppColors.success
+                                                : AppColors.inputBorder,
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            controller.isAvailable(item.schedule)  // Check availability
+                                                ? 'Available'
+                                                : 'Not Available',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        ElevatedButton(
+                                          onPressed: controller.isAvailable(item.schedule)  // Check availability
+                                              ? () {
+                                                  // Redirect to Book Appointment
+                                                  Get.toNamed(Routes.BOOK_APPOINTMENT);
+                                                }
+                                              : null,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: controller.isAvailable(item.schedule)  // Check availability
+                                                ? AppColors.primary
+                                                : AppColors.inputBorder,
+                                            foregroundColor: AppColors.white,
+                                            minimumSize: const Size(80, 36),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: const Text('Book'),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 16), // Spacing
-                              // Availability & Action Button
-                              Column(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: controller.isAvailable(nurse.availableDays)
-                                          ? AppColors.success
-                                          : AppColors.inputBorder,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      controller.isAvailable(nurse.availableDays) ? 'Available' : 'Not Available',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  ElevatedButton(
-                                    onPressed: controller.isAvailable(nurse.availableDays)
-                                        ? () {
-                                            // Redirect to Book Appointment
-                                            Get.toNamed(Routes.BOOK_APPOINTMENT);
-                                          }
-                                        : null,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: controller.isAvailable(nurse.availableDays)
-                                          ? AppColors.primary
-                                          : AppColors.inputBorder,
-                                      foregroundColor: AppColors.white,
-                                      minimumSize: const Size(80, 36),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    child: const Text('Book'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ),
           ],

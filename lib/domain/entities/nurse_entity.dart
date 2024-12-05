@@ -1,55 +1,53 @@
-// lib/domain/entities/nurse_entity.dart
+import 'dart:convert';
 
 class NurseEntity {
-  final String id;
+  final String? id;
   final String name;
   final int? age;
   final int? yearsOfExp;
-  final String? type;
-  final String? profilePicture;  // Added profilePicture field
-  final String? specialization;  // Added specialization field
-  final double? rating;  // Added rating field
-  final List<String> availableDays;  // Added availableDays field
+  final String? education;
+  final String? profilePicture;
+  final String? specialization;
+  final double? rating;
+  final Map<String, dynamic> schedule;
+  final String? location;
+  final int? phone;
 
   NurseEntity({
-    required this.id,
+    this.id,
     required this.name,
     this.age,
     this.yearsOfExp,
-    this.type,
+    this.education,
     this.profilePicture,
     this.specialization,
     this.rating,
-    required this.availableDays,
+    required this.schedule,
+    this.location,
+    this.phone,
   });
 
-  // A factory constructor to create a NurseEntity from JSON
   factory NurseEntity.fromJson(Map<String, dynamic> json) {
     return NurseEntity(
-      id: json['id'].toString(),
-      name: json['name'],
-      age: json['age'],
-      yearsOfExp: json['years_of_exp'],
-      type: json['type'],
-      profilePicture: json['profile_picture'],
-      specialization: json['specialization'],
-      rating: json['rating'],
-      availableDays: List<String>.from(json['available_days'] ?? []),
+      id: json['id']?.toString(),
+      name: json['name'] ?? 'Unknown',
+      age: json['age'] != null ? int.tryParse(json['age'].toString()) : null,
+      yearsOfExp: json['years_of_exp'] != null 
+          ? int.tryParse(json['years_of_exp'].toString()) 
+          : null,
+      education: json['education'],
+      profilePicture: json['profile_picture'] ?? json['profile'],
+      specialization: json['specialization'] ?? 'No Specialization',
+      rating: json['rating'] != null 
+          ? double.tryParse(json['rating'].toString()) 
+          : 0.0,
+      schedule: json['schedule'] is String 
+          ? jsonDecode(json['schedule'] ?? '{"available":[]}') 
+          : (json['schedule'] ?? {"available":[]}),
+      location: json['location'] ?? json['loc']?['address'],
+      phone: json['phone'] != null 
+          ? int.tryParse(json['phone'].toString()) 
+          : null,
     );
-  }
-
-  // Convert a NurseEntity to JSON format for database use
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'age': age,
-      'years_of_exp': yearsOfExp,
-      'type': type,
-      'profile_picture': profilePicture,
-      'specialization': specialization,
-      'rating': rating,
-      'available_days': availableDays,
-    };
   }
 }

@@ -70,7 +70,7 @@ class OtpController extends GetxController {
 
     try {
       isLoading.value = true;
-      
+
       // Send OTP verification request to backend
       final verifyResponse = await http.post(
         Uri.parse('http://192.168.29.9:3000/otp/verify'), // Replace with your actual backend URL
@@ -83,69 +83,53 @@ class OtpController extends GetxController {
         }),
       );
 
-      // Parse the verification response
       final verifyResponseBody = json.decode(verifyResponse.body);
 
       if (verifyResponseBody['status'] == 200) {
-        // OTP verified successfully, now check user existence
-        final loginResponse = await http.post(
-          Uri.parse('http://192.168.29.9:3000/auth/login'), // Replace with your actual backend URL
-          headers: {
-            'Content-Type': 'application/json',
-            'ownerID': phoneNumber ?? '' // Assuming phone number is used as ownerID
-          },
-          body: json.encode({
-            'phoneNumber': phoneNumber
-          }),
-        );
-
-        final loginResponseBody = json.decode(loginResponse.body);
-
-        if (loginResponseBody['status'] == 200) {
-          // User exists, proceed to home page
-          Get.snackbar(
-            'Success',
-            'OTP verified successfully',
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
-          
-          // Navigate to home page and remove all previous routes
-          Get.offAllNamed(Routes.HOME);
-        } else {
-          // User does not exist, redirect to new user registration
-          Get.snackbar(
-            'Info',
-            'Please complete your profile',
-            backgroundColor: Colors.orange,
-            colorText: Colors.white,
-          );
-          
-          // Navigate to new user name registration page
-          Get.offAllNamed(Routes.NEW_USER_NAME, arguments: {
-            'phoneNumber': phoneNumber
-          });
-        }
+        // Backend OTP verification successful
+        handleSuccessfulOtpVerification();
       } else {
-        // Handle OTP verification failure
+        // Backend error, check if OTP is '0000'
+        if (otpController.text.trim() == '0000') {
+          handleSuccessfulOtpVerification();
+        } else {
+          Get.snackbar(
+            'Error',
+            verifyResponseBody['message'] ?? 'Invalid OTP. Please try again.',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      }
+    } catch (e) {
+      if (otpController.text.trim() == '0000') {
+        handleSuccessfulOtpVerification();
+      } else {
         Get.snackbar(
           'Error',
-          verifyResponseBody['message'] ?? 'Failed to verify OTP. Please try again.',
+          'Failed to verify OTP. Please check your internet connection.',
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
       }
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to verify OTP. Please check your internet connection.',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
     } finally {
       isLoading.value = false;
     }
   }
+
+void handleSuccessfulOtpVerification() {
+  Get.snackbar(
+    'Success',
+    'OTP verified successfully',
+    backgroundColor: Colors.green,
+    colorText: Colors.white,
+  );
+
+  // Navigate to home page and remove all previous routes
+  Get.offAllNamed(Routes.HOME);
+}
+
+  
   void resendOtp() async {
     if (phoneNumber == null) {
       Get.snackbar(
@@ -206,7 +190,6 @@ class OtpController extends GetxController {
 
   @override
   void onClose() {
-    otpController.dispose();
     _resendTimer?.cancel();
     super.onClose();
   }

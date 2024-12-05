@@ -1,18 +1,19 @@
 // lib/presentation/search/controller/search_controller.dart
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/domain/entities/nurse_entity.dart';
-import 'package:dycare/domain/repositories/nurse_repository.dart';
+import 'package:dycare/domain/repositories/search_repository.dart'; // Adjusted for dynamic repository
 import 'package:intl/intl.dart';
 
 class SearchController extends GetxController {
-  final NurseRepository _nurseRepository;
+  final SearchRepository _searchRepository;
 
-  SearchController(this._nurseRepository);
+  SearchController(this._searchRepository);
 
   // Observable list to hold all nurses and filtered nurses
-  final RxList<NurseEntity> allNurses = <NurseEntity>[].obs;
-  final RxList<NurseEntity> filteredNurses = <NurseEntity>[].obs;
+  final RxList<NurseEntity> allItems = <NurseEntity>[].obs;
+  final RxList<NurseEntity> filteredItems = <NurseEntity>[].obs;
 
   // Observable for loading state
   final RxBool isLoading = true.obs;
@@ -20,39 +21,95 @@ class SearchController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadNurses();  // Load nurses when the controller is initialized
+    loadItems('nurses');  // Default loading 'nurses', you can dynamically change this
   }
 
-  // Function to load nurses from the repository
-  Future<void> loadNurses() async {
+  // Function to load items (nurses, caretakers, etc.) from the repository
+  Future<void> loadItems(String type) async {
     try {
       isLoading.value = true;
-      allNurses.value = await _nurseRepository.getAllNurses();
-      filteredNurses.assignAll(allNurses);  // Initially display all nurses
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to load nurses');
+      allItems.value = await _searchRepository.getAllItems(type);
+      
+      // Add extensive logging
+      print('Total items loaded: ${allItems.length}');
+      for (var item in allItems) {
+        print('Loaded item details:');
+        print('Name: ${item.name}');
+        print('Specialization: ${item.specialization}');
+        print('Schedule: ${item.schedule}');
+        print('Profile Picture: ${item.profilePicture}');
+        print('---');
+      }
+
+      filteredItems.assignAll(allItems);
+    } catch (e, stackTrace) {
+      print("LoadItems error: $e");
+      print("Stack trace: $stackTrace");
+      
+      // More detailed error handling
+      Get.snackbar(
+        'Error', 
+        'Failed to load items: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: Duration(seconds: 5)
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Function to filter nurses based on search query
-  void filterNurses(String query) {
+  // Function to filter items based on search query
+  void filterItems(String query) {
     if (query.isEmpty) {
-      filteredNurses.assignAll(allNurses);  // Show all nurses if query is empty
+      filteredItems.assignAll(allItems);  // Show all items if query is empty
     } else {
-      // Filter nurses based on name (case-insensitive)
-      filteredNurses.assignAll(
-        allNurses.where((nurse) => nurse.name.toLowerCase().contains(query.toLowerCase())).toList(),
+      // Filter items based on name (case-insensitive)
+      filteredItems.assignAll(
+        allItems.where((item) => item.name.toLowerCase().contains(query.toLowerCase())).toList(),
       );
     }
   }
-  // Method to check if the nurse is available today
-  bool isAvailable(List<String> availableDays) {
-    // Get the current day of the week (e.g., Monday, Tuesday)
-    String currentDay = DateFormat('EEEE').format(DateTime.now());
-    
-    // Check if the nurse is available on the current day
-    return availableDays.contains(currentDay);
+
+  // Method to check if the item is available today
+  bool isAvailable(Map<String, dynamic>? schedule) {
+    try {
+      // If schedule is null or empty, default to unavailable
+      if (schedule == null) {
+        print('Schedule is null');
+        return false;
+      }
+
+      // If 'available' key doesn't exist or is not a list, default to unavailable
+      final availableDays = schedule['available'];
+      if (availableDays == null || availableDays is! List) {
+        print('No available days or invalid format');
+        return false;
+      }
+
+      // If the available days list is empty, you might want to have a default behavior
+      if (availableDays.isEmpty) {
+        print('Available days list is empty');
+        
+        // Option 1: Always available (uncomment if you want this behavior)
+        // return true;
+        
+        // Option 2: Always unavailable (current behavior)
+        return false;
+      }
+
+      String currentDay = DateFormat('EEEE').format(DateTime.now());
+      bool isAvailable = List<String>.from(availableDays).contains(currentDay);
+      
+      print('Current day: $currentDay');
+      print('Available days: $availableDays');
+      print('Is available: $isAvailable');
+
+      return isAvailable;
+    } catch (e) {
+      print('Error in isAvailable: $e');
+      return false;
+    }
   }
 }

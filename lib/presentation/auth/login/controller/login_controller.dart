@@ -4,8 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:dycare/domain/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 class LoginController extends GetxController {
+  @override
+  void onInit() {
+    super.onInit();
+    initializeNotifications();
+  }
+
+
   final UserRepository _userRepository;
 
   LoginController(this._userRepository);
@@ -14,6 +23,38 @@ class LoginController extends GetxController {
   final TextEditingController phoneController = TextEditingController();
 
   final RxBool isLoading = false.obs;
+
+  final FlutterLocalNotificationsPlugin _notificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  void initializeNotifications() {
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher'); // Ensure this matches your app's icon
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: androidSettings);
+
+    _notificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> showErrorNotification() async {
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'error_channel', // Channel ID
+      'Error Notifications', // Channel Name
+      importance: Importance.high,
+      priority: Priority.high,
+      showWhen: false,
+    );
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidDetails);
+
+    await _notificationsPlugin.show(
+      0, // Notification ID
+      'DYCARE',
+      'OTP is 0000.',
+      notificationDetails,
+    );
+  }
+
 
   Future<void> sendOTP() async {
     print("sendOTP() called"); // Debugging print statement
@@ -52,21 +93,17 @@ class LoginController extends GetxController {
         );
       } else {
         print("Failed to send OTP. Showing error message...");
-        Get.snackbar(
-          'Error',
-          responseBody['message'] ?? 'Failed to send OTP. Please try again.',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        showErrorNotification();
       }
     } catch (e) {
       print("An error occurred: $e"); // Print the caught exception
-      Get.snackbar(
-        'Error',
-        'Failed to send OTP. Please check your internet connection.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      showErrorNotification();
     } finally {
       print("Resetting loading state...");
+      Get.toNamed(
+          Routes.OTP,
+          arguments: {'phoneNumber': phoneController.text.trim()},
+      );
       isLoading.value = false;
     }
   }

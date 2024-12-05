@@ -27,8 +27,6 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-
               // Categories Section (Fixed Grid)
               Text(
                 'Categories',
@@ -45,10 +43,16 @@ class HomeScreen extends StatelessWidget {
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                children: List.generate(4, (index) {
-                  return GestureDetector(
+                children: [
+                  // Nurses
+                  GestureDetector(
                     onTap: () {
-                      Get.toNamed(Routes.SEARCH);
+                      Get.snackbar(
+                        'Notification',
+                        'Functionality not decided',
+                        backgroundColor: AppColors.primary,
+                        colorText: AppColors.white,
+                      );
                     },
                     child: Card(
                       color: AppColors.white,
@@ -63,7 +67,7 @@ class HomeScreen extends StatelessWidget {
                             Icon(Icons.local_hospital, size: 48, color: AppColors.primary),
                             const SizedBox(height: 8),
                             Text(
-                              'Category ${index + 1}',
+                              'Nurses',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -74,99 +78,91 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  );
-                }),
-              ),
-              const SizedBox(height: 24),
+                  ),
 
-              // Doctor Cards Section (Part of main scroll)
-              Text(
-                'Available Nurses',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Column(
-                children: List.generate(5, (index) {
-                  return GestureDetector(
+                  // Physiotherapists
+                  GestureDetector(
                     onTap: () {
-                      Get.toNamed(Routes.APPOINTMENT_DETAILS);
+                      Get.snackbar(
+                        'Notification',
+                        'Functionality not decided',
+                        backgroundColor: AppColors.primary,
+                        colorText: AppColors.white,
+                      );
                     },
                     child: Card(
                       color: AppColors.white,
-                      elevation: 2.0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: AppColors.primary, width: 1),
                       ),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'John Doe',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Cardiologist',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Experienced in advanced cardiology treatments.',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryDark,
-                                foregroundColor: AppColors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              onPressed: () {
-                                Get.toNamed(Routes.BOOK_APPOINTMENT);
-                              },
-                              child: Text(
-                                'Book',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                            Icon(Icons.fitness_center, size: 48, color: AppColors.primary),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Physiotherapists',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  );
-                }),
+                  ),
+
+                  // Caretakers
+                  GestureDetector(
+                    onTap: () {
+                      Get.snackbar(
+                        'Notification',
+                        'Functionality not decided',
+                        backgroundColor: AppColors.primary,
+                        colorText: AppColors.white,
+                      );
+                    },
+                    child: Card(
+                      color: AppColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: AppColors.primary, width: 1),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.elderly, size: 48, color: AppColors.primary),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Caretakers',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Placeholder Section for List of Nurses
+              Text(
+                'Placeholder for list of nurses available',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
               ),
             ],
           ),

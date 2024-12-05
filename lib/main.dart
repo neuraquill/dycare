@@ -15,6 +15,12 @@ void main() async {
   Get.put<UserRepository>(UserRepositoryImpl());
   Get.put<AppointmentRepository>(AppointmentRepositoryImpl());
 
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+    print('Detailed error: ${details.exception}');
+    print('Stack trace: ${details.stack}');
+  };
+
   runApp(DyCareApp());
 }
 

@@ -10,13 +10,11 @@ class BookAppointmentBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<AppointmentRepository>(() => AppointmentRepositoryImpl());
-    Get.lazyPut<NurseRepository>(() => NurseRepositoryImpl());
     Get.lazyPut<UserRepository>(() => UserRepositoryImpl());
     
     Get.lazyPut<BookAppointmentController>(
       () => BookAppointmentController(
         Get.find<AppointmentRepository>(),
-        Get.find<NurseRepository>(),
         Get.find<UserRepository>(),
       ),
     );

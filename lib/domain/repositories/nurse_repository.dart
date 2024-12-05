@@ -1,113 +1,33 @@
-// lib/domain/repositories/nurse_repository.dart
-
 import 'package:dycare/domain/entities/nurse_entity.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-abstract class NurseRepository {
-  Future<List<NurseEntity>> getNurses({int page = 1, int limit = 20, String? specialization});
-  Future<NurseEntity?> getNurseById(String nurseId);
-  Future<NurseEntity> updateNurse(NurseEntity nurse);
-  Future<List<NurseEntity>> getFeaturedNurses();
-  Future<List<NurseEntity>> getAllNurses(); // New method added
-  Future<String> getNurseDescription(String nurseId);
-  Future<List<String>> getNurseSpecializations();
-  Future<double> getNurseRating(String nurseId);
+abstract class SearchRepository {
+  Future<List<NurseEntity>> getAllSearchResults();
 }
 
-class NurseRepositoryImpl implements NurseRepository {
-  // You would typically inject dependencies here, such as an API client
-  // final ApiClient _apiClient;
-
-  // NurseRepositoryImpl(this._apiClient);
+class SearchRepositoryImpl implements SearchRepository {
+  final String baseUrl = 'http://192.168.29.9:3000/api/list'; // Replace with actual base URL
 
   @override
-  Future<List<NurseEntity>> getNurses({int page = 1, int limit = 20, String? specialization}) async {
-    // TODO: Implement getNurses
-    throw UnimplementedError();
-  }
+  Future<List<NurseEntity>> getAllSearchResults() async {
+    final endpoints = ['nurses', 'physiotherapist', 'caretakers']; // Add more endpoints as needed
+    List<NurseEntity> allResults = [];
 
-  @override
-  Future<NurseEntity?> getNurseById(String nurseId) async {
-    // TODO: Implement getNurseById
-    throw UnimplementedError();
-  }
+    for (String endpoint in endpoints) {
+      final uri = Uri.parse('$baseUrl/$endpoint');
+      final response = await http.get(uri);
 
-  @override
-  Future<NurseEntity> updateNurse(NurseEntity nurse) async {
-    // TODO: Implement updateNurse
-    throw UnimplementedError();
-  }
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body)['data'];
+        final List<NurseEntity> results =
+            data.map((json) => NurseEntity.fromJson(json)).toList();
+        allResults.addAll(results);
+      } else {
+        throw Exception('Failed to fetch data from $endpoint');
+      }
+    }
 
-  @override
-  Future<List<NurseEntity>> getFeaturedNurses() async {
-    await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-    return [
-      NurseEntity(
-        id: '1',
-        name: 'Jane Doe',
-        specialization: 'Pediatrics',
-        rating: 4.8,
-        availableDays: ['Monday', 'Wednesday', 'Friday'],
-      ),
-      NurseEntity(
-        id: '2',
-        name: 'John Smith',
-        specialization: 'Geriatrics',
-        rating: 4.7,
-        availableDays: ['Tuesday', 'Thursday', 'Saturday'],
-      ),
-      NurseEntity(
-        id: '3',
-        name: 'Emily Johnson',
-        specialization: 'Cardiology',
-        rating: 4.9,
-        availableDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      ),
-    ];
-  }
-
-  @override
-  Future<List<NurseEntity>> getAllNurses() async {
-    await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-    return [
-      NurseEntity(
-        id: '1',
-        name: 'Alice Brown',
-        specialization: 'Orthopedics',
-        rating: 4.6,
-        availableDays: ['Monday', 'Tuesday', 'Thursday'],
-      ),
-      NurseEntity(
-        id: '2',
-        name: 'Michael Green',
-        specialization: 'Dermatology',
-        rating: 4.5,
-        availableDays: ['Wednesday', 'Friday'],
-      ),
-      NurseEntity(
-        id: '3',
-        name: 'Sophia White',
-        specialization: 'Neurology',
-        rating: 4.9,
-        availableDays: ['Tuesday', 'Thursday', 'Saturday'],
-      ),
-    ];
-  }
-
-  @override
-  Future<String> getNurseDescription(String nurseId) async {
-    // TODO: Implement getNurseDescription
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<String>> getNurseSpecializations() async {
-    // TODO: Implement getNurseSpecializations
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<double> getNurseRating(String nurseId) async {
-    // TODO: Implement getNurseRating
-    throw UnimplementedError();
+    return allResults;
   }
 }

@@ -14,16 +14,12 @@ class HomeBinding extends Bindings {
     if (!Get.isRegistered<AppointmentRepository>()) {
       Get.lazyPut<AppointmentRepository>(() => AppointmentRepositoryImpl());
     }
-    if (!Get.isRegistered<NurseRepository>()) {
-      Get.lazyPut<NurseRepository>(() => NurseRepositoryImpl());
-    }
 
     // Inject the HomeController
     Get.lazyPut<HomeController>(
       () => HomeController(
         Get.find<UserRepository>(),
         Get.find<AppointmentRepository>(),
-        Get.find<NurseRepository>(),
       ),
     );
   }

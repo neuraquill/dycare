@@ -37,6 +37,7 @@ dependencies:
   table_calendar: any
   shimmer: any
   http: any
+  flutter_local_notifications: any
 
 
   # The following adds the Cupertino Icons font to your application.

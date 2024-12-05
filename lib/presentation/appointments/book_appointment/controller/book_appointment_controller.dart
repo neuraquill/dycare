@@ -9,12 +9,10 @@ import 'package:dycare/domain/repositories/user_repository.dart';
 
 class BookAppointmentController extends GetxController {
   final AppointmentRepository _appointmentRepository;
-  final NurseRepository _nurseRepository;
   final UserRepository _userRepository;
 
   BookAppointmentController(
     this._appointmentRepository,
-    this._nurseRepository,
     this._userRepository,
   );
 
@@ -47,7 +45,7 @@ class BookAppointmentController extends GetxController {
     try {
       isLoading.value = true;
       availableSlots.value = await _appointmentRepository.getAvailableSlots(
-        selectedNurse.value!.id,
+        selectedNurse.value?.id ?? '',
         selectedDate.value!,
       );
     } catch (e) {
@@ -74,7 +72,7 @@ class BookAppointmentController extends GetxController {
       final appointment = AppointmentEntity(
         id: '', // This will be assigned by the backend
         patientId: currentUser.id,
-        nurseId: selectedNurse.value!.id,
+        nurseId: selectedNurse.value?.id ?? '',
         dateTime: DateTime(
           selectedDate.value!.year,
           selectedDate.value!.month,
