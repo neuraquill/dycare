@@ -73,7 +73,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.toNamed(Routes.BOOK_APPOINTMENT),
+        onPressed: () => Get.toNamed(Routes.SEARCH),
         backgroundColor: AppColors.primary,
         child: Icon(Icons.add, color: AppColors.white),
       ),
@@ -121,7 +121,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
 
   Widget _buildAppointmentList(String status) {
     return Obx(() {
-      final filteredAppointments = controller.getFilteredAppointments(status);
+      final filteredAppointments = controller.getFilteredAppointments(status) ?? [];
       if (controller.isLoading.value) {
         return Center(
           child: AnimatedSwitcher(
@@ -159,6 +159,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
       }
     });
   }
+
 
   Widget _buildProfileImage(AppointmentEntity appointment) {
     return ClipRRect(
@@ -233,7 +234,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Dr. ${controller.getNurseName(appointment.workerId)}',
+          '${controller.getNurseName(appointment.workerId)}',
           style: AppTypography.bodyMedium.copyWith(
             fontSize: MediaQuery.of(context).size.width * 0.035, // Smaller relative font size
             fontWeight: FontWeight.w600, // Optional for better emphasis

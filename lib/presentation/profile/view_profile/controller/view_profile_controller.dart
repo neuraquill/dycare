@@ -1,29 +1,22 @@
-// lib/presentation/profile/controller/profile_controller.dart
-
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:dycare/domain/entities/user_entity.dart';
-import 'package:dycare/domain/entities/appointment_entity.dart';
 import 'package:dycare/domain/repositories/user_repository.dart';
-import 'package:dycare/domain/repositories/appointment_repository.dart';
-import 'package:dycare/core/utils/input_validators.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class ProfileController extends GetxController {
   final UserRepository _userRepository;
-  final AppointmentRepository _appointmentRepository;
 
-  ProfileController(this._userRepository, this._appointmentRepository);
+  ProfileController(this._userRepository);
 
   final Rx<UserEntity?> user = Rx<UserEntity?>(null);
-  final RxList<AppointmentEntity> recentAppointments = <AppointmentEntity>[].obs;
   final RxBool isLoading = true.obs;
   final RxBool isEditing = false.obs;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
 
@@ -38,19 +31,26 @@ class ProfileController extends GetxController {
   Future<void> loadProfileData() async {
     try {
       isLoading.value = true;
-      user.value = await _userRepository.getCurrentUser();
-      if (user.value != null) {
+      final currentUser = await _userRepository.getCurrentUser();
+      if (currentUser != null) {
+        user.value = currentUser;
         _populateTextControllers();
+      } else {
+        Get.snackbar('Error', 'No user data found');
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load profile data');
+      Get.snackbar('Error', 'Failed to load profile data: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
   void _populateTextControllers() {
-    nameController.text = user.value?.name ?? '';
+    if (user.value != null) {
+      nameController.text = user.value?.name ?? '';
+      phoneController.text = user.value?.phone ?? '';
+      ageController.text = user.value?.age.toString() ?? '';
+    }
   }
 
   void toggleEditMode() {
@@ -79,26 +79,33 @@ class ProfileController extends GetxController {
         await _userRepository.updateProfilePicture(newProfileImage.value!);
       }
 
-      user.value = await _userRepository.getCurrentUser();
+      // Updating the user data in the repository (dummy logic for now)
+      user.value = await _userRepository.updateUser(
+        UserEntity(
+          id: user.value?.id ?? '',
+          name: nameController.text,
+          phone: phoneController.text, age: int.parse(ageController.text), location: {
+            'latitude': user.value?.location['latitude'] ?? 0.0,
+            'longitude': user.value?.location['longitude'] ?? 0.0,
+          },
+        ),
+      );
+
       isEditing.value = false;
       Get.snackbar('Success', 'Profile updated successfully');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update profile');
+      Get.snackbar('Error', 'Failed to update profile: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  String? validateName(String? value) => InputValidators.validateName(value);
-  String? validatePhone(String? value) => InputValidators.validatePhoneNumber(value);
-  String? validateAddress(String? value) => InputValidators.validateNotEmpty(value, 'Address');
-
   @override
   void onClose() {
     nameController.dispose();
-    emailController.dispose();
     phoneController.dispose();
     addressController.dispose();
+    ageController.dispose();
     super.onClose();
   }
 }

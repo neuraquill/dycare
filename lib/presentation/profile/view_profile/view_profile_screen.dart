@@ -1,134 +1,184 @@
+import 'package:dycare/presentation/profile/view_profile/controller/view_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/routes/app_pages.dart';
-import 'package:dycare/theme/app_colors.dart'; // Import AppColors
+import 'package:dycare/theme/app_colors.dart';
+import 'dart:io';
 
 class ViewProfileScreen extends StatelessWidget {
+  final ProfileController controller = Get.find<ProfileController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background, // Background color
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           'Profile',
-          style: TextStyle(color: AppColors.textPrimary), // Text primary color
+          style: TextStyle(color: AppColors.textPrimary),
         ),
-        backgroundColor: AppColors.background, // Match background
-        elevation: 0, // Remove shadow
-        iconTheme: IconThemeData(color: AppColors.textPrimary), // Icon color
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        iconTheme: IconThemeData(color: AppColors.textPrimary),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Picture Section
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage('assets/images/profile_pic.png'),
-                backgroundColor: AppColors.inputFill, // Fallback color
-              ),
-            ),
-            const SizedBox(height: 16),
-            // User Name
-            Center(
-              child: Text(
-                'John Doe',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary, // Primary text color
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            // User Email
-            Center(
-              child: Text(
-                'john.doe@example.com',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textSecondary, // Secondary text color
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+      body: Obx(
+        () => controller.isLoading.value
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Profile Picture Section
+                      Center(
+                        child: GestureDetector(
+                          onTap: controller.isEditing.value ? controller.pickImage : null,
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: controller.newProfileImage.value != null
+                                ? FileImage(controller.newProfileImage.value!)
+                                    : AssetImage('assets/images/profile_pic.png') as ImageProvider,
+                            backgroundColor: AppColors.inputFill,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
 
-            // Action Buttons Section
-            Column(
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary, // Primary button background
-                    foregroundColor: AppColors.white, // Button text color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    minimumSize: const Size(double.infinity, 48),
+                      // User Name
+                      Center(
+                        child: controller.isEditing.value
+                            ? TextFormField(
+                                controller: controller.nameController,
+                                decoration: InputDecoration(labelText: 'Name'),
+                                validator: (value) => value == null || value.isEmpty
+                                    ? 'Name cannot be empty'
+                                    : null,
+                              )
+                            : Text(
+                                controller.user.value?.name ?? 'Unknown',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // User Phone
+                      Center(
+                        child: controller.isEditing.value
+                            ? TextFormField(
+                                controller: controller.phoneController,
+                                decoration: InputDecoration(labelText: 'Phone'),
+                                keyboardType: TextInputType.phone,
+                                validator: (value) => value == null || value.isEmpty
+                                    ? 'Phone cannot be empty'
+                                    : null,
+                              )
+                            : Text(
+                                controller.user.value?.phone ?? 'No phone provided',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Edit Mode Toggle and Save Button
+                      if (controller.isEditing.value)
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: AppColors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            minimumSize: const Size(double.infinity, 48),
+                          ),
+                          onPressed: controller.saveProfile,
+                          child: const Text('Save'),
+                        )
+                      else
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: AppColors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            minimumSize: const Size(double.infinity, 48),
+                          ),
+                          onPressed: controller.toggleEditMode,
+                          child: const Text('Edit Profile'),
+                        ),
+
+                      const SizedBox(height: 16),
+
+                      // Action Buttons Section
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              minimumSize: const Size(double.infinity, 48),
+                            ),
+                            onPressed: () {
+                              Get.toNamed(Routes.MY_APPOINTMENTS);
+                            },
+                            child: const Text('History'),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              minimumSize: const Size(double.infinity, 48),
+                            ),
+                            onPressed: () {
+                              Get.toNamed(Routes.HOME);
+                            },
+                            child: const Text('Settings'),
+                          ),
+                          const SizedBox(height: 16),
+                          OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: AppColors.textPrimary),
+                              foregroundColor: AppColors.textPrimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              minimumSize: const Size(double.infinity, 48),
+                            ),
+                            onPressed: () {
+                              Get.offAllNamed(Routes.LOGIN);
+                            },
+                            child: const Text('Logout'),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  onPressed: () {
-                    Get.toNamed(Routes.MY_APPOINTMENTS); // Navigate to History
-                  },
-                  child: const Text('History'),
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    minimumSize: const Size(double.infinity, 48),
-                  ),
-                  onPressed: () {
-                    Get.toNamed(Routes.EDIT_PROFILE); // Navigate to Edit Profile
-                  },
-                  child: const Text('Personal Details'),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    minimumSize: const Size(double.infinity, 48),
-                  ),
-                  onPressed: () {
-                    Get.toNamed(Routes.HOME); // Navigate to Settings
-                  },
-                  child: const Text('Settings'),
-                ),
-                const SizedBox(height: 16),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.textPrimary), // Border color
-                    foregroundColor: AppColors.textPrimary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    minimumSize: const Size(double.infinity, 48),
-                  ),
-                  onPressed: () {
-                    Get.offAllNamed(Routes.LOGIN); // Navigate to Login
-                  },
-                  child: const Text('Logout'),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textSecondary,
         backgroundColor: AppColors.white,
-        currentIndex: 3, // Set the Search tab as active
+        currentIndex: 3,
         onTap: (index) {
           switch (index) {
             case 0:
@@ -157,7 +207,7 @@ class ViewProfileScreen extends StatelessWidget {
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.schedule),
+            icon: Icon(Icons.event),
             label: 'Appointments',
           ),
           BottomNavigationBarItem(

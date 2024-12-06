@@ -18,7 +18,6 @@ class ViewProfileBinding extends Bindings {
     Get.lazyPut<ProfileController>(
       () => ProfileController(
         Get.find<UserRepository>(),
-        Get.find<AppointmentRepository>(),
       ),
     );
   }
