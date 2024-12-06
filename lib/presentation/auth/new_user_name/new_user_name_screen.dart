@@ -70,57 +70,60 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                     vertical: verticalSpacing * 2,
                   ),
                   child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Name Input
-                        AuthTextField(
-                          controller: controller.nameController,
-                          label: 'Name',
-                          fontSize: fontSizes,
-                          validator: controller.validateName,
-                        ),
-                        SizedBox(height: verticalSpacing),
+                    child: Form(
+                      key: controller.formKey, // Connect formKey here
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Name Input
+                          AuthTextField(
+                            controller: controller.nameController,
+                            label: 'Name',
+                            fontSize: fontSizes,
+                            validator: controller.validateName,
+                          ),
+                          SizedBox(height: verticalSpacing),
 
-                        // Age Input
-                        AuthTextField(
-                          controller: controller.ageController,
-                          label: 'Age',
-                          fontSize: fontSizes,
-                          keyboardType: TextInputType.number,
-                          validator: controller.validateAge,
-                        ),
-                        SizedBox(height: verticalSpacing),
+                          // Age Input
+                          AuthTextField(
+                            controller: controller.ageController,
+                            label: 'Age',
+                            fontSize: fontSizes,
+                            keyboardType: TextInputType.number,
+                            validator: controller.validateAge,
+                          ),
+                          SizedBox(height: verticalSpacing),
 
-                        // Submit Button
-                        SizedBox(
-                          width: double.infinity,
-                          height: buttonHeight,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                          // Submit Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: buttonHeight,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: AppColors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                                ),
+                              ),
+                              onPressed: controller.submitDetails,
+                              child: Obx(
+                                () => controller.isLoading.value
+                                    ? CircularProgressIndicator(color: Colors.white)
+                                    : Text(
+                                        'Register',
+                                        style: TextStyle(
+                                          fontSize: fontSizes.medium,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
                               ),
                             ),
-                            onPressed: controller.submitDetails,
-                            child: Obx(
-                              () => controller.isLoading.value
-                                  ? CircularProgressIndicator(color: Colors.white)
-                                  : Text(
-                                      'Register',
-                                      style: TextStyle(
-                                        fontSize: fontSizes.medium,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                            ),
                           ),
-                        ),
-                        // Add some bottom padding for better scrolling
-                        SizedBox(height: verticalSpacing * 2),
-                      ],
+                          // Add some bottom padding for better scrolling
+                          SizedBox(height: verticalSpacing * 2),
+                        ],
+                      ),
                     ),
                   ),
                 ),

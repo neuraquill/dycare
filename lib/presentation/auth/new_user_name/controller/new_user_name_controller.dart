@@ -79,7 +79,6 @@ class NewUserNameController extends GetxController {
           'location': {
             'latitude': latitude.value,
             'longitude': longitude.value,
-            'address': currentAddress.value,
           },
         };
 
