@@ -1,5 +1,3 @@
-// lib/presentation/auth/new_user_name/view/new_user_name_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/core/utils/app_export.dart';
@@ -31,33 +29,104 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
-          child: Form(
-            key: controller.formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: controller.nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
-                  validator: controller.validateName,
-                ),
-                TextFormField(
-                  controller: controller.ageController,
-                  decoration: InputDecoration(labelText: 'Age'),
-                  keyboardType: TextInputType.number,
-                  validator: controller.validateAge,
-                ),
-                ElevatedButton(
-                  onPressed: controller.submitDetails,
-                  child: Obx(
-                    () => controller.isLoading.value
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Register'),
+          child: Column(
+            children: [
+              // Image Section (Similar to OTP Page)
+              Expanded(
+                flex: 50,
+                child: Container(
+                  width: double.infinity,
+                  color: AppColors.secondaryLight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          color: AppColors.textPrimary,
+                          size: screenHeight * 0.024,
+                        ),
+                        onPressed: () => Get.back(),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Image.asset(
+                            'assets/images/newuser_image.png', // Adjust the image path accordingly
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          )
+              ),
 
+              // Input Section
+              Expanded(
+                flex: 50,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: horizontalPadding,
+                    vertical: verticalSpacing * 2,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Name Input
+                        AuthTextField(
+                          controller: controller.nameController,
+                          label: 'Name',
+                          fontSize: fontSizes,
+                          validator: controller.validateName,
+                        ),
+                        SizedBox(height: verticalSpacing),
+
+                        // Age Input
+                        AuthTextField(
+                          controller: controller.ageController,
+                          label: 'Age',
+                          fontSize: fontSizes,
+                          keyboardType: TextInputType.number,
+                          validator: controller.validateAge,
+                        ),
+                        SizedBox(height: verticalSpacing),
+
+                        // Submit Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: buttonHeight,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                              ),
+                            ),
+                            onPressed: controller.submitDetails,
+                            child: Obx(
+                              () => controller.isLoading.value
+                                  ? CircularProgressIndicator(color: Colors.white)
+                                  : Text(
+                                      'Register',
+                                      style: TextStyle(
+                                        fontSize: fontSizes.medium,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                        // Add some bottom padding for better scrolling
+                        SizedBox(height: verticalSpacing * 2),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

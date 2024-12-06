@@ -5,11 +5,14 @@ import 'package:get/get.dart';
 import 'package:dycare/routes/app_pages.dart';
 import 'package:dycare/theme/theme_helper.dart';
 import 'package:dycare/core/constants/app_constants.dart';
+import 'package:permission_handler/permission_handler.dart';  // Import the permission handler package
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  
+  // Request location permission before running the app
+  await _requestPermission();
+
   // Initialize any services or configurations here
   // For example: await Firebase.initializeApp();
   Get.put<UserRepository>(UserRepositoryImpl());
@@ -22,6 +25,17 @@ void main() async {
   };
 
   runApp(DyCareApp());
+}
+
+Future<void> _requestPermission() async {
+  var status = await Permission.location.request();
+  if (status.isGranted) {
+    print("Location permission granted");
+    // Proceed with geolocation tasks
+  } else {
+    print("Location permission denied");
+    // Handle permission denial (show a message, guide the user to settings, etc.)
+  }
 }
 
 class DyCareApp extends StatelessWidget {

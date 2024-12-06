@@ -11,14 +11,15 @@ class BookAppointmentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get the nurse ID passed from the previous screen
     final String nurseId = Get.arguments;
-    print(nurseId);
+    print("Nurse ID on book appointment page: $nurseId");
 
     // Get the controller
     final BookAppointmentController controller = Get.find<BookAppointmentController>();
 
     // Set the selected nurse when the screen is first loaded
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.selectNurseById(nurseId);
+      controller.setNurseId(nurseId);
+      print("Selected nurse: $nurseId");
     });
 
     return Scaffold(

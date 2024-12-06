@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OtpController extends GetxController {
   final UserRepository _userRepository = UserRepositoryImpl();
@@ -132,7 +133,7 @@ class OtpController extends GetxController {
     }
   }
 
-void handleSuccessfulOtpVerification(UserEntity user) {
+Future<void> handleSuccessfulOtpVerification(UserEntity user) async {
     Get.snackbar(
       'Success',
       'OTP verified successfully',
@@ -140,10 +141,18 @@ void handleSuccessfulOtpVerification(UserEntity user) {
       colorText: Colors.white,
     );
 
+    await storeCurrentUser(user);
+
     // Store user details or create a session
     // You might want to implement a local storage or state management solution here
     // For now, just navigate to home page
     Get.offAllNamed(Routes.HOME);
+  }
+
+  Future<void> storeCurrentUser(UserEntity user) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = json.encode(user.toJson());  // Convert UserEntity to JSON
+    await prefs.setString('current_user', userJson);  // Store it in SharedPreferences
   }
 
   

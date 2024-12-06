@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 abstract class AppointmentRepository {
   Future<List<AppointmentEntity>> getAppointmentsByUserId(String userId);
-  Future<AppointmentEntity> createAppointment(AppointmentEntity appointment);
+  Future<String> createAppointment(AppointmentEntity appointment); // Changed return type to String for status
   Future<List<DateTime>> getAvailableSlots(String workerId, DateTime date);
 }
 
@@ -23,12 +23,21 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
   }
 
   @override
-  Future<AppointmentEntity> createAppointment(AppointmentEntity appointment) async {
+  Future<String> createAppointment(AppointmentEntity appointment) async {
+    print('Creating appointment: ${appointment.toJson()}');
     final response = await _post(
-      '/appointment/book',
+      '/appointments/book',
       body: appointment.toJson(),
     );
-    return AppointmentEntity.fromJson(response);
+    print("Book Appointment response: $response");
+
+    if (response['status'] == 200) {
+      // If the status is 200, it means the appointment was successfully booked.
+      return 'Appointment booked successfully';
+    } else {
+      // If status is not 200, return the message indicating the failure.
+      return response['message'] ?? 'Unknown error occurred';
+    }
   }
 
   @override

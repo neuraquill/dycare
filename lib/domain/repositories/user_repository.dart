@@ -4,6 +4,8 @@ import 'package:dycare/domain/entities/user_entity.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 abstract class UserRepository {
   Future<UserEntity?> getCurrentUser();
   Future<UserEntity?> getUserByPhone(String phone);
@@ -86,7 +88,20 @@ class UserRepositoryImpl implements UserRepository {
 
   // Implement other methods with placeholder or mock implementations
   @override
-  Future<UserEntity?> getCurrentUser() async => null;
+  Future<UserEntity?> getCurrentUser() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('current_user');
+      if (userJson != null) {
+        final userMap = json.decode(userJson);
+        return UserEntity.fromJson(userMap);  // Convert JSON back to UserEntity
+      }
+      return null;
+    } catch (e) {
+      print('Error retrieving current user: $e');
+      return null;
+    }
+  }
 
   @override
   Future<UserEntity> updateUser(UserEntity user) async => user;
@@ -98,7 +113,10 @@ class UserRepositoryImpl implements UserRepository {
   Future<void> deleteUser(String userId) async {}
 
   @override
-  Future<void> logout() async {}
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('current_user');  // Clear the stored user data
+  }
 
   @override
   Future<bool> isLoggedIn() async => false;
