@@ -72,7 +72,7 @@ class LoginController extends GetxController {
       // Send OTP request to backend
       print("Sending OTP request to backend...");
       final response = await http.post(
-        Uri.parse('http://192.168.29.9:3000/otp/send'), // Replace with your actual backend URL
+        Uri.parse('https://hono-on-vercel-swart-one.vercel.app/api/otp/send'), // Replace with your actual backend URL
         headers: {
           'Content-Type': 'application/json',
         },

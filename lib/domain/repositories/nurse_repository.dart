@@ -7,7 +7,7 @@ abstract class SearchRepository {
 }
 
 class SearchRepositoryImpl implements SearchRepository {
-  final String baseUrl = 'http://192.168.29.9:3000/api/list'; // Replace with actual base URL
+  final String baseUrl = 'https://hono-on-vercel-swart-one.vercel.app/api/api/list'; // Replace with actual base URL
 
   @override
   Future<List<NurseEntity>> getAllSearchResults() async {

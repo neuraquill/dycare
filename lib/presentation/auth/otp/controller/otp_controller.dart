@@ -1,26 +1,26 @@
+import 'package:dycare/domain/entities/user_entity.dart';
+import 'package:dycare/domain/repositories/user_repository.dart';
 import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dycare/domain/auth/auth_repository.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class OtpController extends GetxController {
-  final AuthRepository _authRepository = AuthRepository();
+  final UserRepository _userRepository = UserRepositoryImpl();
   final TextEditingController otpController = TextEditingController();
 
   final RxBool isResendActive = false.obs;
   final RxString timerText = "".obs;
   final RxBool isLoading = false.obs;
   Timer? _resendTimer;
-  int _totalSeconds = 30; // Changed to 30 seconds
+  int _totalSeconds = 30;
   String? phoneNumber;
 
   @override
   void onInit() {
     super.onInit();
-    // Retrieve phone number passed from login screen
     phoneNumber = Get.arguments?['phoneNumber'];
     startResendTimer();
   }
@@ -71,12 +71,9 @@ class OtpController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Send OTP verification request to backend
       final verifyResponse = await http.post(
-        Uri.parse('http://192.168.29.9:3000/otp/verify'), // Replace with your actual backend URL
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        Uri.parse('https://hono-on-vercel-swart-one.vercel.app/api/otp/verify'),
+        headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'number': phoneNumber,
           'code': otpController.text.trim()
@@ -86,12 +83,25 @@ class OtpController extends GetxController {
       final verifyResponseBody = json.decode(verifyResponse.body);
 
       if (verifyResponseBody['status'] == 200) {
-        // Backend OTP verification successful
-        handleSuccessfulOtpVerification();
+        // Check if user exists
+        final existingUser = await _userRepository.getUserByPhone(phoneNumber!);
+
+        if (existingUser != null) {
+          // User exists, handle login
+          handleSuccessfulOtpVerification(existingUser as UserEntity);
+        } else {
+          // User does not exist, redirect to new user registration
+          Get.toNamed(Routes.NEW_USER_NAME, arguments: {'phoneNumber': phoneNumber});
+        }
       } else {
         // Backend error, check if OTP is '0000'
         if (otpController.text.trim() == '0000') {
-          handleSuccessfulOtpVerification();
+          final existingUser = await _userRepository.getUserByPhone(phoneNumber!);
+          if (existingUser != null) {
+            handleSuccessfulOtpVerification(existingUser as UserEntity);
+          } else {
+            Get.toNamed(Routes.NEW_USER_NAME, arguments: {'phoneNumber': phoneNumber});
+          }
         } else {
           Get.snackbar(
             'Error',
@@ -103,7 +113,12 @@ class OtpController extends GetxController {
       }
     } catch (e) {
       if (otpController.text.trim() == '0000') {
-        handleSuccessfulOtpVerification();
+        final existingUser = await _userRepository.getUserByPhone(phoneNumber!);
+        if (existingUser != null) {
+          handleSuccessfulOtpVerification(existingUser as UserEntity);
+        } else {
+          Get.toNamed(Routes.NEW_USER_NAME, arguments: {'phoneNumber': phoneNumber});
+        }
       } else {
         Get.snackbar(
           'Error',
@@ -117,17 +132,19 @@ class OtpController extends GetxController {
     }
   }
 
-void handleSuccessfulOtpVerification() {
-  Get.snackbar(
-    'Success',
-    'OTP verified successfully',
-    backgroundColor: Colors.green,
-    colorText: Colors.white,
-  );
+void handleSuccessfulOtpVerification(UserEntity user) {
+    Get.snackbar(
+      'Success',
+      'OTP verified successfully',
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
 
-  // Navigate to home page and remove all previous routes
-  Get.offAllNamed(Routes.HOME);
-}
+    // Store user details or create a session
+    // You might want to implement a local storage or state management solution here
+    // For now, just navigate to home page
+    Get.offAllNamed(Routes.HOME);
+  }
 
   
   void resendOtp() async {
@@ -146,7 +163,7 @@ void handleSuccessfulOtpVerification() {
       
       // Send OTP resend request to backend
       final response = await http.post(
-        Uri.parse('http://192.168.29.9:3000/otp/send'), // Replace with your actual backend URL
+        Uri.parse('https://hono-on-vercel-swart-one.vercel.app/api/otp/send'), // Replace with your actual backend URL
         headers: {
           'Content-Type': 'application/json',
         },

@@ -10,7 +10,7 @@ import 'package:dycare/domain/repositories/user_repository.dart';
 class BookAppointmentBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<AppointmentRepository>(() => AppointmentRepositoryImpl('http://192.168.29.9:3000'));
+    Get.lazyPut<AppointmentRepository>(() => AppointmentRepositoryImpl('https://hono-on-vercel-swart-one.vercel.app/api'));
     Get.lazyPut<UserRepository>(() => UserRepositoryImpl());
     
     Get.lazyPut<BookAppointmentController>(

@@ -1,28 +1,29 @@
-// lib/presentation/profile/edit_profile/controller/edit_profile_controller.dart
-
 import 'dart:io';
-import 'package:dycare/core/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:dycare/domain/entities/user_entity.dart';
 import 'package:dycare/domain/repositories/user_repository.dart';
 
 class EditProfileController extends GetxController {
-  final UserRepository _userRepository = Get.find<UserRepository>();
+  final UserRepository _userRepository = UserRepositoryImpl();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  final Rx<UserEntity?> user = Rx<UserEntity?>(null);
+  final Rx<UserEntity?> user = Rx(null);
   final RxBool isLoading = true.obs;
-
+  
+  // Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController dateOfBirthController = TextEditingController();
-  final TextEditingController specializationController = TextEditingController();
-
-  final Rx<File?> profileImage = Rx<File?>(null);
+  
+  final Rx<File?> profileImage = Rx(null);
+  final RxString currentAddress = RxString('');
+  final RxDouble latitude = RxDouble(0.0);
+  final RxDouble longitude = RxDouble(0.0);
 
   @override
   void onInit() {
@@ -30,12 +31,15 @@ class EditProfileController extends GetxController {
     loadUserProfile();
   }
 
-  Future<void> loadUserProfile() async {
+  Future loadUserProfile() async {
     try {
       isLoading.value = true;
       user.value = await _userRepository.getCurrentUser();
       if (user.value != null) {
         _populateFields();
+      } else {
+        // If no current user, try to get current location
+        await _getCurrentLocation();
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to load user profile');
@@ -44,67 +48,95 @@ class EditProfileController extends GetxController {
     }
   }
 
-  void _populateFields() {
-    nameController.text = user.value!.name;
-    emailController.text = user.value!.email;
-    phoneController.text = user.value!.phoneNumber ?? '';
-    addressController.text = user.value!.address ?? '';
-    if (user.value!.role == UserRole.patient) {
-      dateOfBirthController.text = DateTimeUtils.formatDate(user.value!.dateOfBirth!);
-    } else if (user.value!.role == UserRole.nurse) {
-      specializationController.text = user.value!.specialization ?? '';
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Get.snackbar('Location Error', 'Location services are disabled');
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Get.snackbar('Location Error', 'Location permissions are denied');
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Get.snackbar('Location Error', 'Location permissions are permanently denied');
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+    latitude.value = position.latitude;
+    longitude.value = position.longitude;
+
+    // Get address from coordinates
+    List<Placemark> placemarks = await placemarkFromCoordinates(latitude.value, longitude.value);
+    if (placemarks.isNotEmpty) {
+      Placemark place = placemarks[0];
+      currentAddress.value = 
+        '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+      addressController.text = currentAddress.value;
     }
   }
 
-  Future<void> pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  void _populateFields() {
+    nameController.text = user.value!.name;
+    phoneController.text = user.value!.phone;
+    addressController.text = '${user.value!.location['street'] ?? ''}, ${user.value!.location['city'] ?? ''}, ${user.value!.location['country'] ?? ''}';
+    latitude.value = user.value!.latitude;
+    longitude.value = user.value!.longitude;
+  }
+
+  Future saveProfile() async {
+    if (formKey.currentState!.validate()) {
+      try {
+        isLoading.value = true;
+        
+        final location = {
+          'street': addressController.text.split(',')[0].trim(),
+          'city': addressController.text.split(',').length > 1 
+            ? addressController.text.split(',')[1].trim() 
+            : '',
+          'country': addressController.text.split(',').length > 2 
+            ? addressController.text.split(',')[2].trim() 
+            : '',
+          'latitude': latitude.value,
+          'longitude': longitude.value,
+        };
+        Get.back(result: true);
+        Get.snackbar('Success', 'Profile updated successfully');
+      } catch (e) {
+        Get.snackbar('Error', 'Failed to update profile: $e');
+      } finally {
+        isLoading.value = false;
+      }
+    }
+  }
+
+  Future pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       profileImage.value = File(image.path);
     }
   }
 
-  Future<void> selectDateOfBirth(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+  Future selectDateOfBirth(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: user.value!.dateOfBirth ?? DateTime.now(),
+      initialDate: DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
     if (picked != null) {
-      dateOfBirthController.text = DateTimeUtils.formatDate(picked);
-    }
-  }
-
-  Future<void> saveProfile() async {
-    if (formKey.currentState!.validate()) {
-      try {
-        isLoading.value = true;
-        final updatedUser = UserEntity(
-          id: user.value!.id,
-          name: nameController.text,
-          email: emailController.text,
-          phoneNumber: phoneController.text,
-          address: addressController.text,
-          role: user.value!.role,
-          dateOfBirth: user.value!.role == UserRole.patient
-              ? DateTimeUtils.parseDate(dateOfBirthController.text)
-              : null,
-          specialization: user.value!.role == UserRole.nurse
-              ? specializationController.text
-              : null,
-        );
-        await _userRepository.updateUser(updatedUser);
-        if (profileImage.value != null) {
-          await _userRepository.updateProfilePicture(profileImage.value!);
-        }
-        Get.back(result: true);
-        Get.snackbar('Success', 'Profile updated successfully');
-      } catch (e) {
-        Get.snackbar('Error', 'Failed to update profile');
-      } finally {
-        isLoading.value = false;
-      }
+      dateOfBirthController.text = picked.toString().split(' ')[0];
     }
   }
 
@@ -115,7 +147,6 @@ class EditProfileController extends GetxController {
     phoneController.dispose();
     addressController.dispose();
     dateOfBirthController.dispose();
-    specializationController.dispose();
     super.onClose();
   }
 }

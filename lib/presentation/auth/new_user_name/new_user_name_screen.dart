@@ -33,93 +33,31 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Form(
             key: controller.formKey,
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Top container for illustration
-                  Container(
-                    height: screenHeight * 0.5,
-                    width: double.infinity,
-                    color: AppColors.backgroundDark,
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Add your welcome illustration here
-                      ],
-                    ),
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: controller.nameController,
+                  decoration: InputDecoration(labelText: 'Name'),
+                  validator: controller.validateName,
+                ),
+                TextFormField(
+                  controller: controller.ageController,
+                  decoration: InputDecoration(labelText: 'Age'),
+                  keyboardType: TextInputType.number,
+                  validator: controller.validateAge,
+                ),
+                ElevatedButton(
+                  onPressed: controller.submitDetails,
+                  child: Obx(
+                    () => controller.isLoading.value
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text('Register'),
                   ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: horizontalPadding,
-                      vertical: verticalSpacing,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Welcome!\nWhat's your name?",
-                          style: TextStyle(
-                            fontSize: fontSizes.xlarge,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                            letterSpacing: -0.5,
-                            height: 1.2,
-                          ),
-                        ),
-                        SizedBox(height: verticalSpacing * 2),
-
-                        // Name Field
-                        AuthTextField(
-                          controller: controller.nameController,
-                          label: 'Full Name',
-                          fontSize: fontSizes,
-                          keyboardType: TextInputType.name,
-                          textCapitalization: TextCapitalization.words,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your name';
-                            }
-                            if (value.trim().split(' ').length < 2) {
-                              return 'Please enter your full name';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: verticalSpacing * 3),
-
-                        // Continue Button
-                        SizedBox(
-                          width: double.infinity,
-                          height: buttonHeight,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.textPrimaryDark,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(screenWidth * 0.02),
-                              ),
-                            ),
-                            onPressed: controller.submitName,
-                            child: Text(
-                              'Continue',
-                              style: TextStyle(
-                                fontSize: fontSizes.medium,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
+          )
+
         ),
       ),
     );

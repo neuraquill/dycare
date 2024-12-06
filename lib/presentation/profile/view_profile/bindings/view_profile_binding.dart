@@ -11,7 +11,7 @@ class ViewProfileBinding extends Bindings {
       Get.lazyPut<UserRepository>(() => UserRepositoryImpl());
     }
     if (!Get.isRegistered<AppointmentRepository>()) {
-      Get.lazyPut<AppointmentRepository>(() => AppointmentRepositoryImpl('http://192.168.29.9:3000'));
+      Get.lazyPut<AppointmentRepository>(() => AppointmentRepositoryImpl('https://hono-on-vercel-swart-one.vercel.app/api'));
     }
 
     // Inject the ProfileController

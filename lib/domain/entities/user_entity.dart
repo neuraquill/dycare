@@ -1,72 +1,71 @@
 // lib/domain/entities/user_entity.dart
-
-// lib/domain/entities/user_entity.dart
-
 enum UserRole { patient, nurse, admin }
 
 class UserEntity {
   final String id;
   final String name;
-  final String email;
-  final String? phoneNumber;
+  final int age;
+  final Map location;
+  final String phone;
   final UserRole role;
   final String? profilePicture;
-  final DateTime? dateOfBirth;
-  final String? address;
 
-  var specialization;
+  // Convenience getters for latitude and longitude
+  double get latitude => location['latitude'] ?? 0.0;
+  double get longitude => location['longitude'] ?? 0.0;
 
   UserEntity({
     required this.id,
     required this.name,
-    required this.email,
-    this.phoneNumber,
-    required this.role,
+    required this.age,
+    required this.location,
+    required this.phone,
+    this.role = UserRole.patient,
     this.profilePicture,
-    this.dateOfBirth,
-    this.address, String? specialization,
   });
 
-  // You might want to add methods like copyWith, toJson, fromJson here
-
-  factory UserEntity.fromJson(Map<String, dynamic> json) {
+  factory UserEntity.fromJson(Map json) {
     return UserEntity(
       id: json['id'],
-      email: json['email'],
       name: json['name'],
-      role: UserRole.values.firstWhere((e) => e.toString() == 'UserRole.${json['role']}'),
+      age: json['age'],
+      location: json['location'] ?? {},
+      phone: json['phone'].toString(), // Convert phone to a string.
+      role: json['role'] != null 
+        ? UserRole.values.firstWhere((e) => e.toString() == 'UserRole.${json['role']}') 
+        : UserRole.patient,
       profilePicture: json['profilePicture'],
-      dateOfBirth: json['dateOfBirth'] != null ? DateTime.parse(json['dateOfBirth']) : null,
-      address: json['address'],
-      phoneNumber: json['phoneNumber'],
     );
   }
 
-  Map<String, dynamic> toJson() {
+
+  Map toJson() {
     return {
       'id': id,
-      'email': email,
       'name': name,
+      'age': age,
+      'location': location,
+      'phone': phone,
       'role': role.toString().split('.').last,
       'profilePicture': profilePicture,
-      'dateOfBirth': dateOfBirth?.toIso8601String(),
-      'address': address,
-      'phoneNumber': phoneNumber,
     };
   }
+
   UserEntity copyWith({
     String? name,
-    String? phoneNumber,
-    String? address,
+    int? age,
+    Map? location,
+    String? phone,
+    String? profilePicture,
   }) {
     return UserEntity(
       id: this.id,
       name: name ?? this.name,
-      email: this.email,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      address: address ?? this.address,
+      age: age ?? this.age,
+      location: location ?? this.location,
+      phone: phone ?? this.phone,
       role: this.role,
-      profilePicture: this.profilePicture,
-);
-}
+      profilePicture: profilePicture ?? this.profilePicture,
+    );
+  }
 }

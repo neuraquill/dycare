@@ -13,7 +13,7 @@ void main() async {
   // Initialize any services or configurations here
   // For example: await Firebase.initializeApp();
   Get.put<UserRepository>(UserRepositoryImpl());
-  Get.put<AppointmentRepository>(AppointmentRepositoryImpl('http://192.168.29.9:3000'));
+  Get.put<AppointmentRepository>(AppointmentRepositoryImpl('https://hono-on-vercel-swart-one.vercel.app/api'));
 
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);

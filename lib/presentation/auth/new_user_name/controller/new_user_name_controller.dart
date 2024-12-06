@@ -1,26 +1,63 @@
 import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dycare/domain/auth/auth_repository.dart';
 import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'dart:convert';
 
 class NewUserNameController extends GetxController {
-  final AuthRepository _authRepository = Get.find<AuthRepository>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final RxDouble latitude = RxDouble(0.0);
+  final RxDouble longitude = RxDouble(0.0);
+  final RxString currentAddress = RxString('');
   final RxBool isLoading = false.obs;
   String? phoneNumber;
 
   @override
   void onInit() {
     super.onInit();
-    // Retrieve phone number passed from OTP screen
     phoneNumber = Get.arguments?['phoneNumber'];
+    _getCurrentLocation();
   }
 
-  Future<void> submitName() async {
+  Future<void> _getCurrentLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        Get.snackbar('Location Error', 'Location services are disabled');
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        Get.snackbar('Location Error', 'Location permissions are permanently denied');
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition();
+      latitude.value = position.latitude;
+      longitude.value = position.longitude;
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude.value, longitude.value);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        currentAddress.value = 
+          '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+      }
+    } catch (e) {
+      Get.snackbar('Location Error', 'Failed to get current location');
+    }
+  }
+
+  Future<void> submitDetails() async {
     if (phoneNumber == null) {
       Get.snackbar(
         'Error',
@@ -35,53 +72,54 @@ class NewUserNameController extends GetxController {
       try {
         isLoading.value = true;
 
-        // Send request to create new user
-        final response = await http.post(
-          Uri.parse('http://192.168.29.9:3000/users/create'), // Replace with your actual backend URL
-          headers: {
-            'Content-Type': 'application/json',
+        final body = {
+          'phone': phoneNumber,
+          'name': nameController.text.trim(),
+          'age': int.parse(ageController.text.trim()),
+          'location': {
+            'latitude': latitude.value,
+            'longitude': longitude.value,
+            'address': currentAddress.value,
           },
-          body: json.encode({
-            'phoneNumber': phoneNumber,
-            'name': nameController.text.trim(),
-          }),
+        };
+
+        final response = await http.post(
+          Uri.parse('https://hono-on-vercel-swart-one.vercel.app/api/register/user'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(body),
         );
 
-        // Parse the response
         final responseBody = json.decode(response.body);
 
-        if (responseBody['status'] == 200) {
-          // User created successfully
+        if (response.statusCode == 200 && responseBody['status'] == 200) {
           Get.snackbar(
-            'Welcome!',
+            'Success',
             'Your profile has been created successfully.',
             backgroundColor: Colors.green,
             colorText: Colors.white,
           );
 
-          // Attempt to login with the new user
           final loginResponse = await http.post(
-            Uri.parse('http://192.168.29.9:3000/auth/login'), // Replace with your actual backend URL
+            Uri.parse('https://hono-on-vercel-swart-one.vercel.app/api/auth/login'),
             headers: {
               'Content-Type': 'application/json',
-              'ownerID': phoneNumber ?? ''
+              'ownerID': responseBody['data']['userID'],
             },
-            body: json.encode({
-              'phoneNumber': phoneNumber
-            }),
           );
 
           final loginResponseBody = json.decode(loginResponse.body);
 
           if (loginResponseBody['status'] == 200) {
-            // Navigate to home page
             Get.offAllNamed(Routes.HOME);
           } else {
-            // Fallback navigation if login fails
-            Get.offAllNamed(Routes.HOME);
+            Get.snackbar(
+              'Error',
+              loginResponseBody['message'] ?? 'Login failed. Please try again.',
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
           }
         } else {
-          // Handle user creation failure
           Get.snackbar(
             'Error',
             responseBody['message'] ?? 'Failed to create profile. Please try again.',
@@ -106,16 +144,17 @@ class NewUserNameController extends GetxController {
     if (value == null || value.trim().isEmpty) {
       return 'Name is required';
     }
-    if (value.trim().length < 2) {
-      return 'Name must be at least 2 characters long';
-    }
-    // Optional: Add more sophisticated name validation if needed
     return null;
   }
 
-  @override
-  void onClose() {
-    nameController.dispose();
-    super.onClose();
+  String? validateAge(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Age is required';
+    }
+    final age = int.tryParse(value);
+    if (age == null || age < 18) {
+      return 'User must be 18 or older';
+    }
+    return null;
   }
 }

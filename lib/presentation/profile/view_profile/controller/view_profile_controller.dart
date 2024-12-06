@@ -51,9 +51,6 @@ class ProfileController extends GetxController {
 
   void _populateTextControllers() {
     nameController.text = user.value?.name ?? '';
-    emailController.text = user.value?.email ?? '';
-    phoneController.text = user.value?.phoneNumber ?? '';
-    addressController.text = user.value?.address ?? '';
   }
 
   void toggleEditMode() {
@@ -77,13 +74,6 @@ class ProfileController extends GetxController {
 
     try {
       isLoading.value = true;
-      final updatedUser = user.value!.copyWith(
-        name: nameController.text,
-        phoneNumber: phoneController.text,
-        address: addressController.text,
-      );
-
-      await _userRepository.updateUser(updatedUser);
 
       if (newProfileImage.value != null) {
         await _userRepository.updateProfilePicture(newProfileImage.value!);
