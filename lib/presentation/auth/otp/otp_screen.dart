@@ -115,6 +115,7 @@ class OtpScreen extends GetWidget<OtpController> {
                         enableActiveFill: true,
                         controller: controller.otpController,
                         onCompleted: (v) => controller.verifyOtp(),
+                        enabled: !controller.isVerifying.value,
                         onChanged: (value) {
                           // Handle changes if needed
                         },
@@ -167,7 +168,7 @@ class OtpScreen extends GetWidget<OtpController> {
                               borderRadius: BorderRadius.circular(screenWidth * 0.02),
                             ),
                           ),
-                          onPressed: controller.verifyOtp,
+                          onPressed: controller.isVerifying.value ? null : controller.verifyOtp,
                           child: Text(
                             'Submit',
                             style: TextStyle(

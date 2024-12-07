@@ -13,6 +13,7 @@ class OtpController extends GetxController {
   final TextEditingController otpController = TextEditingController();
 
   final RxBool isResendActive = false.obs;
+  final RxBool isVerifying = false.obs;
   final RxString timerText = "".obs;
   final RxBool isLoading = false.obs;
   Timer? _resendTimer;
@@ -49,6 +50,10 @@ class OtpController extends GetxController {
   }
 
   void verifyOtp() async {
+    // Prevent multiple simultaneous verification attempts
+    if (isVerifying.value) return;
+
+    // Validate OTP length
     if (otpController.text.length != 4) {
       Get.snackbar(
         'Error',
@@ -70,6 +75,8 @@ class OtpController extends GetxController {
     }
 
     try {
+      // Set verification flag to true
+      isVerifying.value = true;
       isLoading.value = true;
 
       final verifyResponse = await http.post(
@@ -89,17 +96,17 @@ class OtpController extends GetxController {
 
         if (existingUser != null) {
           // User exists, handle login
-          handleSuccessfulOtpVerification(existingUser as UserEntity);
+          await handleSuccessfulOtpVerification(existingUser as UserEntity);
         } else {
           // User does not exist, redirect to new user registration
           Get.toNamed(Routes.NEW_USER_NAME, arguments: {'phoneNumber': phoneNumber});
         }
       } else {
-        // Backend error, check if OTP is '0000'
+        // Backend error handling remains the same
         if (otpController.text.trim() == '0000') {
           final existingUser = await _userRepository.getUserByPhone(phoneNumber!);
           if (existingUser != null) {
-            handleSuccessfulOtpVerification(existingUser as UserEntity);
+            await handleSuccessfulOtpVerification(existingUser as UserEntity);
           } else {
             Get.toNamed(Routes.NEW_USER_NAME, arguments: {'phoneNumber': phoneNumber});
           }
@@ -113,10 +120,11 @@ class OtpController extends GetxController {
         }
       }
     } catch (e) {
+      // Existing catch block logic remains the same
       if (otpController.text.trim() == '0000') {
         final existingUser = await _userRepository.getUserByPhone(phoneNumber!);
         if (existingUser != null) {
-          handleSuccessfulOtpVerification(existingUser as UserEntity);
+          await handleSuccessfulOtpVerification(existingUser as UserEntity);
         } else {
           Get.toNamed(Routes.NEW_USER_NAME, arguments: {'phoneNumber': phoneNumber});
         }
@@ -129,10 +137,12 @@ class OtpController extends GetxController {
         );
       }
     } finally {
+      // Reset verification flag
+      isVerifying.value = false;
       isLoading.value = false;
     }
   }
-
+  
 Future<void> handleSuccessfulOtpVerification(UserEntity user) async {
     Get.snackbar(
       'Success',

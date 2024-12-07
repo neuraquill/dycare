@@ -1,4 +1,3 @@
-//appointment_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/core/constants/app_constants.dart';
@@ -9,14 +8,11 @@ import 'package:dycare/presentation/appointments/book_appointment/controller/boo
 class BookAppointmentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Get the nurse ID passed from the previous screen
     final String nurseId = Get.arguments;
     print("Nurse ID on book appointment page: $nurseId");
 
-    // Get the controller
     final BookAppointmentController controller = Get.find<BookAppointmentController>();
 
-    // Set the selected nurse when the screen is first loaded
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.setNurseId(nurseId);
       print("Selected nurse: $nurseId");
@@ -34,7 +30,6 @@ class BookAppointmentScreen extends StatelessWidget {
         ),
       ),
       body: Obx(() {
-        // Check if nurse is selected and data is loading
         if (controller.isLoading.value) {
           return Center(child: CircularProgressIndicator());
         }
@@ -43,7 +38,6 @@ class BookAppointmentScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Calendar for date selection
               TableCalendar(
                 focusedDay: controller.selectedDate.value ?? DateTime.now(),
                 selectedDayPredicate: (day) => 
@@ -96,6 +90,33 @@ class BookAppointmentScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               
+              // Shift Selection Buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildShiftButton(
+                    context, 
+                    'Day Shift', 
+                    controller.selectedShift.value == 'Day', 
+                    () => controller.selectShift('Day')
+                  ),
+                  _buildShiftButton(
+                    context, 
+                    'Night Shift', 
+                    controller.selectedShift.value == 'Night', 
+                    () => controller.selectShift('Night')
+                  ),
+                  _buildShiftButton(
+                    context, 
+                    'Full Day', 
+                    controller.selectedShift.value == 'Full', 
+                    () => controller.selectShift('Full')
+                  ),
+                ],
+              ),
+              
+              SizedBox(height: 20),
+              
               // Book Now button
               ElevatedButton(
                 onPressed: controller.canBookAppointment() 
@@ -121,6 +142,23 @@ class BookAppointmentScreen extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  // Helper method to create shift selection buttons
+  Widget _buildShiftButton(
+    BuildContext context, 
+    String label, 
+    bool isSelected, 
+    VoidCallback onPressed
+  ) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isSelected ? AppColors.primary : AppColors.primaryLight,
+        foregroundColor: isSelected ? Colors.black : Colors.black,
+      ),
+      child: Text(label),
     );
   }
 }

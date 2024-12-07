@@ -11,7 +11,6 @@ class BookAppointmentController extends GetxController {
   final UserRepository _userRepository;
   final SearchRepository _searchRepository;
 
-  // Local Notification Instance
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -27,22 +26,23 @@ class BookAppointmentController extends GetxController {
   final Rx<DateTime?> selectedTime = Rx<DateTime?>(null);
   final RxList<DateTime> availableSlots = <DateTime>[].obs;
   final RxBool isLoading = false.obs;
+  final RxString selectedShift = ''.obs; // New shift selection state
 
-  // Initialize local notifications
   @override
   void onInit() {
     super.onInit();
     _initializeNotifications();
   }
 
-  // Initialize notification settings
   void _initializeNotifications() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-    const InitializationSettings initializationSettings =
+    final AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    
+    final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
     );
+    
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
@@ -50,8 +50,13 @@ class BookAppointmentController extends GetxController {
     nurseId = id;
     selectedDate.value = null;
     selectedTime.value = null;
+    selectedShift.value = ''; // Reset shift selection
     availableSlots.clear();
-    loadAvailableSlots(); // Optionally, load available slots right after setting the nurse ID
+    loadAvailableSlots();
+  }
+
+  void selectShift(String shift) {
+    selectedShift.value = shift;
   }
 
   Future<void> selectNurseById(String nurseId) async {
@@ -61,7 +66,6 @@ class BookAppointmentController extends GetxController {
     }
     isLoading.value = true;
     try {
-      // Fetch nurse details using the updated repository method
       NurseEntity nurse = await _searchRepository.selectNurseById(nurseId);
       selectedNurseId.value = nurse.id ?? '';
     } catch (e) {
@@ -99,12 +103,12 @@ class BookAppointmentController extends GetxController {
   }
 
   bool canBookAppointment() {
-    return selectedDate.value != null;
+    return selectedDate.value != null && selectedShift.value.isNotEmpty;
   }
 
   Future<void> bookAppointment() async {
     if (!canBookAppointment()) {
-      Get.snackbar('Error', 'Please select a date and time');
+      Get.snackbar('Error', 'Please select a date and shift');
       return;
     }
 
@@ -116,6 +120,9 @@ class BookAppointmentController extends GetxController {
         return;
       }
 
+      // Determine hours based on selected shift
+      int hours = selectedShift.value == 'Full' ? 24 : 12;
+
       final appointment = AppointmentEntity(
         userId: currentUser.id,
         workerId: nurseId,
@@ -124,18 +131,17 @@ class BookAppointmentController extends GetxController {
           selectedDate.value!.month,
           selectedDate.value!.day,
         ),
-        hours: 12,
+        hours: hours,
         id: 0,
       );
 
-      // Call the createAppointment function and handle the response
       final responseMessage = await _appointmentRepository.createAppointment(appointment);
       
       if (responseMessage == 'Appointment booked successfully') {
         _showNotification('Appointment booked', responseMessage);
-        Get.back(); // Go back after booking
+        Get.back();
       } else {
-        Get.snackbar('Error', responseMessage); // Show failure message
+        Get.snackbar('Error', responseMessage);
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to book appointment: ${e.toString()}');
@@ -144,7 +150,6 @@ class BookAppointmentController extends GetxController {
     }
   }
 
-  // Show local notification
   void _showNotification(String title, String message) async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
