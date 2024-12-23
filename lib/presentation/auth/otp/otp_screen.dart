@@ -43,7 +43,7 @@ class OtpScreen extends GetWidget<OtpController> {
                       icon: Icon(
                         Icons.arrow_back_ios,
                         color: AppColors.textPrimary,
-                        size: screenHeight * 0.024,
+                        size: screenHeight * 0.014,
                       ),
                       onPressed: () => Get.back(),
                     ),
@@ -92,41 +92,45 @@ class OtpScreen extends GetWidget<OtpController> {
                       SizedBox(height: verticalSpacing * 2),
 
                       // OTP Input Fields
-                      PinCodeTextField(
-                        appContext: context,
-                        length: 4,
-                        obscureText: false,
-                        animationType: AnimationType.fade,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        pinTheme: PinTheme(
-                          shape: PinCodeFieldShape.box,
-                          borderRadius: BorderRadius.circular(8),
-                          fieldHeight: 56,
-                          fieldWidth: 56,
-                          activeFillColor: AppColors.inputFill,
-                          inactiveFillColor: AppColors.inputFill,
-                          selectedFillColor: AppColors.inputFill,
-                          activeColor: AppColors.inputBorder,
-                          inactiveColor: AppColors.inputBorder,
-                          selectedColor: AppColors.primary,
-                        ),
-                        animationDuration: Duration(milliseconds: 300),
-                        backgroundColor: AppColors.transparent,
-                        enableActiveFill: true,
-                        controller: controller.otpController,
-                        onCompleted: (v) => controller.verifyOtp(),
-                        enabled: !controller.isVerifying.value,
-                        onChanged: (value) {
-                          // Handle changes if needed
-                        },
-                        textStyle: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                        beforeTextPaste: (text) => true,
-                      ),
-                      SizedBox(height: verticalSpacing * 2),
+                          Center(
+                            child:Container(
+                              width: screenWidth * 0.7,
+                              child: PinCodeTextField(
+                                appContext: context,
+                                length: 4,
+                                obscureText: false,
+                                animationType: AnimationType.fade,
+                                pinTheme: PinTheme(
+                                shape: PinCodeFieldShape.box,
+                                borderRadius: BorderRadius.circular(8),
+                                fieldHeight: screenHeight * 0.10,
+                                fieldWidth: screenHeight * 0.10,
+                                activeFillColor: AppColors.inputFill,
+                                inactiveFillColor: AppColors.inputFill,
+                                selectedFillColor: AppColors.inputFill,
+                                activeColor: AppColors.primary,
+                                inactiveColor: AppColors.primaryDark,
+                                selectedColor: AppColors.primaryDark,
+                                ),
+                                animationDuration: Duration(milliseconds: 300),
+                                backgroundColor: AppColors.transparent,
+                                enableActiveFill: true,
+                                controller: controller.otpController,
+                                onCompleted: (v) => controller.verifyOtp(),
+                                enabled: !controller.isVerifying.value,
+                                onChanged: (value) {
+                                // Handle changes if needed
+                                },
+                                textStyle: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                                ),
+                                beforeTextPaste: (text) => true,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: verticalSpacing * 2),
 
                       // Resend Timer/Button
                       Align(

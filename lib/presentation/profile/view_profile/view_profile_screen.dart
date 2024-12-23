@@ -26,150 +26,102 @@ class ViewProfileScreen extends StatelessWidget {
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                child: Form(
-                  key: controller.formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Profile Picture Section
-                      Center(
-                        child: GestureDetector(
-                          onTap: controller.isEditing.value ? controller.pickImage : null,
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundImage: controller.newProfileImage.value != null
-                                ? FileImage(controller.newProfileImage.value!)
-                                    : AssetImage('assets/images/profile_pic.png') as ImageProvider,
-                            backgroundColor: AppColors.inputFill,
-                          ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Profile Info Section
+                    Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 50,
+                              backgroundImage: controller.newProfileImage.value != null
+                                  ? FileImage(controller.newProfileImage.value!)
+                                  : AssetImage('assets/images/profile_pic.png') as ImageProvider,
+                              backgroundColor: AppColors.inputFill,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              controller.user.value?.name ?? 'Unknown',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '+91 ${controller.user.value?.phone ?? 'No phone provided'}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Icon(Icons.verified, color: Colors.blue, size: 16),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                    ),
 
-                      // User Name
-                      Center(
-                        child: controller.isEditing.value
-                            ? TextFormField(
-                                controller: controller.nameController,
-                                decoration: InputDecoration(labelText: 'Name'),
-                                validator: (value) => value == null || value.isEmpty
-                                    ? 'Name cannot be empty'
-                                    : null,
-                              )
-                            : Text(
-                                controller.user.value?.name ?? 'Unknown',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
+                    const SizedBox(height: 32),
+
+                    // Menu Buttons Section
+                    Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      const SizedBox(height: 8),
-
-                      // User Phone
-                      Center(
-                        child: controller.isEditing.value
-                            ? TextFormField(
-                                controller: controller.phoneController,
-                                decoration: InputDecoration(labelText: 'Phone'),
-                                keyboardType: TextInputType.phone,
-                                validator: (value) => value == null || value.isEmpty
-                                    ? 'Phone cannot be empty'
-                                    : null,
-                              )
-                            : Text(
-                                controller.user.value?.phone ?? 'No phone provided',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Edit Mode Toggle and Save Button
-                      if (controller.isEditing.value)
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: AppColors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            _buildMenuButton(
+                              'Previous Appointments',
+                              Icons.history,
+                              () => Get.toNamed(Routes.MY_APPOINTMENTS),
                             ),
-                            minimumSize: const Size(double.infinity, 48),
-                          ),
-                          onPressed: controller.saveProfile,
-                          child: const Text('Save'),
-                        )
-                      else
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: AppColors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                            _buildDivider(),
+                            _buildMenuButton(
+                              'Invoices and Bills',
+                              Icons.receipt_long,
+                              () => Get.toNamed(Routes.MY_APPOINTMENTS),
                             ),
-                            minimumSize: const Size(double.infinity, 48),
-                          ),
-                          onPressed: controller.toggleEditMode,
-                          child: const Text('Edit Profile'),
+                            _buildDivider(),
+                            _buildMenuButton(
+                              'Account',
+                              Icons.person_outline,
+                              () => Get.toNamed(Routes.EDIT_PROFILE),
+                            ),
+                            _buildDivider(),
+                            _buildMenuButton(
+                              'App Settings',
+                              Icons.settings,
+                              () => Get.toNamed(Routes.EDIT_PROFILE),
+                            ),
+                            _buildDivider(),
+                            _buildMenuButton(
+                              'Logout',
+                              Icons.logout,
+                              () => Get.offAllNamed(Routes.LOGIN),
+                              color: Colors.red,
+                            ),
+                          ],
                         ),
-
-                      const SizedBox(height: 16),
-
-                      // Action Buttons Section
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              minimumSize: const Size(double.infinity, 48),
-                            ),
-                            onPressed: () {
-                              Get.toNamed(Routes.MY_APPOINTMENTS);
-                            },
-                            child: const Text('History'),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              minimumSize: const Size(double.infinity, 48),
-                            ),
-                            onPressed: () {
-                              Get.toNamed(Routes.HOME);
-                            },
-                            child: const Text('Settings'),
-                          ),
-                          const SizedBox(height: 16),
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: AppColors.textPrimary),
-                              foregroundColor: AppColors.textPrimary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              minimumSize: const Size(double.infinity, 48),
-                            ),
-                            onPressed: () {
-                              Get.offAllNamed(Routes.LOGIN);
-                            },
-                            child: const Text('Logout'),
-                          ),
-                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
       ),
@@ -193,8 +145,6 @@ class ViewProfileScreen extends StatelessWidget {
             case 3:
               Get.toNamed(Routes.VIEW_PROFILE);
               break;
-            default:
-              break;
           }
         },
         items: const [
@@ -217,5 +167,24 @@ class ViewProfileScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildMenuButton(String title, IconData icon, VoidCallback onTap, {Color? color}) {
+    return ListTile(
+      leading: Icon(icon, color: color ?? AppColors.textPrimary),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: color ?? AppColors.textPrimary,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      trailing: Icon(Icons.chevron_right, color: AppColors.textSecondary),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildDivider() {
+    return Divider(height: 1, thickness: 1, color: AppColors.background);
   }
 }

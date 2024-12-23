@@ -1,8 +1,12 @@
+//lib/presentation/auth/new_user_name/new_user_name_screen.dart
+import 'package:dycare/presentation/auth/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/core/utils/app_export.dart';
 import 'package:dycare/theme/app_colors.dart';
 import 'package:dycare/presentation/auth/new_user_name/controller/new_user_name_controller.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class NewUserNameScreen extends GetView<NewUserNameController> {
   const NewUserNameScreen({super.key});
@@ -17,9 +21,9 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
     final buttonHeight = screenHeight * 0.065;
 
     final fontSizes = ResponsiveFontSizes(
-      tiny: screenHeight * 0.014,
-      small: screenHeight * 0.016,
-      medium: screenHeight * 0.018,
+      tiny: screenHeight * 0.016,
+      small: screenHeight * 0.018,
+      medium: screenHeight * 0.02,
       large: screenHeight * 0.024,
       xlarge: screenHeight * 0.032,
     );
@@ -29,12 +33,12 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
-          child: Column(
-            children: [
-              // Image Section (Similar to OTP Page)
-              Expanded(
-                flex: 50,
-                child: Container(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Image Section
+                Container(
+                  height: screenHeight * 0.5,
                   width: double.infinity,
                   color: AppColors.secondaryLight,
                   child: Column(
@@ -51,7 +55,7 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                       Expanded(
                         child: Center(
                           child: Image.asset(
-                            'assets/images/newuser_image.png', // Adjust the image path accordingly
+                            'assets/images/newuser_image.png',
                             fit: BoxFit.fitWidth,
                           ),
                         ),
@@ -59,76 +63,127 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
                     ],
                   ),
                 ),
-              ),
 
-              // Input Section
-              Expanded(
-                flex: 50,
-                child: Padding(
+                // Input Section
+                Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: horizontalPadding,
                     vertical: verticalSpacing * 2,
                   ),
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: controller.formKey, // Connect formKey here
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Name Input
-                          AuthTextField(
-                            controller: controller.nameController,
-                            label: 'Name',
-                            fontSize: fontSizes,
-                            validator: controller.validateName,
-                          ),
-                          SizedBox(height: verticalSpacing),
+                  child: Form(
+                    key: controller.formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Name Input
+                        AuthTextField(
+                          controller: controller.nameController,
+                          label: 'Name',
+                          fontSize: fontSizes,
+                          validator: controller.validateName,
+                          hintText: 'Enter your full name',
+                        ),
+                        SizedBox(height: verticalSpacing * 1.5),
 
-                          // Age Input
-                          AuthTextField(
-                            controller: controller.ageController,
-                            label: 'Age',
-                            fontSize: fontSizes,
-                            keyboardType: TextInputType.number,
-                            validator: controller.validateAge,
-                          ),
-                          SizedBox(height: verticalSpacing),
+                        // Age Input
+                        AuthTextField(
+                          controller: controller.ageController,
+                          label: 'Age',
+                          fontSize: fontSizes,
+                          keyboardType: TextInputType.number,
+                          validator: controller.validateAge,
+                          hintText: 'Enter your age',
+                        ),
+                        SizedBox(height: verticalSpacing * 1.5),
 
-                          // Submit Button
-                          SizedBox(
-                            width: double.infinity,
-                            height: buttonHeight,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                foregroundColor: AppColors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                        // Location Search
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AuthTextField(
+                              controller: controller.locationController,
+                              label: 'Location',
+                              fontSize: fontSizes,
+                              hintText: 'Search or allow location access',
+                              onChanged: controller.searchLocation,
+                            ),
+                            Obx(() {
+                              if (controller.isSearching.value) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+                              if (controller.locationSuggestions.isEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return Container(
+                                margin: const EdgeInsets.only(top: 8.0),
+                                constraints: BoxConstraints(maxHeight: screenHeight * 0.2),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: AppColors.inputBorder),
+                                  borderRadius: BorderRadius.circular(8.0),
                                 ),
-                              ),
-                              onPressed: controller.submitDetails,
-                              child: Obx(
-                                () => controller.isLoading.value
-                                    ? CircularProgressIndicator(color: Colors.white)
-                                    : Text(
-                                        'Register',
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: controller.locationSuggestions.length,
+                                  itemBuilder: (context, index) {
+                                    final location = controller.locationSuggestions[index];
+                                    return ListTile(
+                                      title: Text(
+                                        location.displayName,
                                         style: TextStyle(
-                                          fontSize: fontSizes.medium,
-                                          fontWeight: FontWeight.w500,
+                                          fontSize: fontSizes.small,
                                         ),
                                       ),
+                                      onTap: () {
+                                        controller.setSelectedLocation(location);
+                                        FocusScope.of(context).unfocus();
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                        SizedBox(height: verticalSpacing * 2),
+
+                        // Submit Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: buttonHeight,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(screenWidth * 0.02),
                               ),
                             ),
+                            onPressed: controller.submitDetails,
+                            child: Obx(
+                              () => controller.isLoading.value
+                                  ? const CircularProgressIndicator(color: Colors.white)
+                                  : Text(
+                                      'Register',
+                                      style: TextStyle(
+                                        fontSize: fontSizes.medium,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                            ),
                           ),
-                          // Add some bottom padding for better scrolling
-                          SizedBox(height: verticalSpacing * 2),
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: verticalSpacing * 2),
+                      ],
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -136,6 +191,28 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
   }
 }
 
+// Add this class to your models
+class LocationSuggestion {
+  final String displayName;
+  final double lat;
+  final double lon;
+
+  LocationSuggestion({
+    required this.displayName,
+    required this.lat,
+    required this.lon,
+  });
+
+  factory LocationSuggestion.fromJson(Map<String, dynamic> json) {
+    return LocationSuggestion(
+      displayName: json['display_name'] ?? '',
+      lat: double.parse(json['lat'] ?? '0'),
+      lon: double.parse(json['lon'] ?? '0'),
+    );
+  }
+}
+
+// The AuthTextField widget remains the same as in your previous code
 class AuthTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
@@ -145,6 +222,8 @@ class AuthTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final TextCapitalization textCapitalization;
+  final String? hintText;
+  final Function(String)? onChanged;
 
   const AuthTextField({
     required this.controller,
@@ -155,6 +234,8 @@ class AuthTextField extends StatelessWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.textCapitalization = TextCapitalization.none,
+    this.hintText,
+    this.onChanged,
     super.key,
   });
 
@@ -166,6 +247,7 @@ class AuthTextField extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       textCapitalization: textCapitalization,
+      onChanged: onChanged,
       style: TextStyle(
         fontSize: fontSize.medium,
         color: AppColors.textPrimary,
@@ -174,12 +256,18 @@ class AuthTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
+          color: Colors.black,
+          fontSize: fontSize.large,
+          fontWeight: FontWeight.w500,
+        ),
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontSize: fontSize.medium,
           color: AppColors.textSecondary,
-          fontSize: fontSize.small,
         ),
         floatingLabelStyle: TextStyle(
-          color: AppColors.textSecondaryDark,
-          fontSize: fontSize.tiny,
+          color: Colors.black,
+          fontSize: fontSize.medium,
         ),
         border: const UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.inputBorder),
@@ -190,27 +278,14 @@ class AuthTextField extends StatelessWidget {
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.primary),
         ),
-        contentPadding: const EdgeInsets.only(bottom: 8),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 16.0,
+          horizontal: 12.0,
+        ),
         isDense: true,
         filled: false,
         suffixIcon: suffixIcon,
       ),
     );
   }
-}
-
-class ResponsiveFontSizes {
-  final double tiny;
-  final double small;
-  final double medium;
-  final double large;
-  final double xlarge;
-
-  ResponsiveFontSizes({
-    required this.tiny,
-    required this.small,
-    required this.medium,
-    required this.large,
-    required this.xlarge,
-  });
 }

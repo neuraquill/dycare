@@ -10,6 +10,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           AppConstants.HOME_TITLE,
           style: TextStyle(
@@ -140,6 +141,42 @@ class HomeScreen extends StatelessWidget {
                             const SizedBox(height: 8),
                             Text(
                               'Caretakers',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Counsellors
+                  GestureDetector(
+                    onTap: () {
+                      Get.snackbar(
+                        'Notification',
+                        'Functionality not decided',
+                        backgroundColor: AppColors.primary,
+                        colorText: AppColors.white,
+                      );
+                    },
+                    child: Card(
+                      color: AppColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: AppColors.primary, width: 1),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.person, size: 48, color: AppColors.primary),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Counsellors',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,

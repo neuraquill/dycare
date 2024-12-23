@@ -1,5 +1,3 @@
-//lib/presentation/appointments/appointment_details/appointment_details_screen.dart
-
 import 'package:dycare/domain/entities/nurse_entity.dart';
 import 'package:dycare/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +12,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppointmentDetailsController controller = Get.find<AppointmentDetailsController>();
+    final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -24,17 +23,9 @@ class AppointmentDetailsScreen extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Get.back(),
         ),
-        title: Text(
-          'Appointment',
-          style: customTheme.CustomTextStyle.titleLarge(
-            color: AppColors.textPrimary,
-          ),
-        ),
       ),
       body: Obx(() {
         final nurse = controller.selectedNurse.value;
-        print("Nurse Details Screen: $nurse");
-        
         if (nurse == null) {
           return Center(child: Text('No nurse details found'));
         }
@@ -43,9 +34,10 @@ class AppointmentDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDoctorSection(nurse),
-              _buildBiographySection(nurse),
-              _buildBottomSection(nurse),
+              _buildProfileSection(nurse),
+              _buildSpecializationSection(nurse),
+              _buildActionButtons(nurse),
+              _buildReviewSection(),
             ],
           ),
         );
@@ -53,36 +45,24 @@ class AppointmentDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDoctorSection(NurseEntity nurse) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+  Widget _buildProfileSection(NurseEntity nurse) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              color: AppColors.inputFill,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: nurse.profilePicture != null && nurse.profilePicture!.isNotEmpty
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    nurse.profilePicture!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => 
-                      Icon(Icons.person, color: AppColors.textSecondary, size: 40),
-                  ),
-                )
-              : Icon(
-                  Icons.person,
-                  color: AppColors.textSecondary,
-                  size: 40,
-                ),
-          ),
-          SizedBox(height: 16),
           Text(
             nurse.name,
             style: customTheme.CustomTextStyle.titleLarge(
@@ -91,99 +71,151 @@ class AppointmentDetailsScreen extends StatelessWidget {
           ),
           SizedBox(height: 8),
           Text(
-            nurse.specialization ?? 'No specialization',
+            'Education: ${nurse.education ?? "BSN"}',
             style: customTheme.CustomTextStyle.bodyMedium(
               color: AppColors.textSecondary,
             ),
           ),
-          if (nurse.yearsOfExp != null)
-            Text(
-              '${nurse.yearsOfExp} years of experience',
-              style: customTheme.CustomTextStyle.bodyMedium(
-                color: AppColors.textSecondary,
-              ),
+          Text(
+            '${nurse.yearsOfExp ?? "10"} years of experience',
+            style: customTheme.CustomTextStyle.bodyMedium(
+              color: AppColors.textSecondary,
             ),
+          ),
+          Text(
+            nurse.education ?? "BSN",
+            style: customTheme.CustomTextStyle.bodyMedium(
+              color: AppColors.textSecondary,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildBiographySection(NurseEntity nurse) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+  Widget _buildSpecializationSection(NurseEntity nurse) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'About',
+            'Specialization',
+            style: customTheme.CustomTextStyle.titleMedium(
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            nurse.specialization ?? 'Pediatric Nursing',
+            style: customTheme.CustomTextStyle.bodyMedium(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(NurseEntity nurse) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton.icon(
+              icon: Icon(Icons.message, color: Colors.white),
+              label: Text(
+                'Message',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF7B96EC),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 16),
+              ),
+              onPressed: () {},
+            ),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF7B96EC),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 16),
+              ),
+              onPressed: () {
+                Get.toNamed(Routes.BOOK_APPOINTMENT, arguments: nurse.id);
+              },
+              child: Text(
+                'Book Consultation',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewSection() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Reviews',
             style: customTheme.CustomTextStyle.titleMedium(
               color: AppColors.textPrimary,
             ),
           ),
           SizedBox(height: 16),
-          Text(
-            _buildNurseBiography(nurse),
-            style: customTheme.CustomTextStyle.bodyMedium(
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _buildNurseBiography(NurseEntity nurse) {
-    List<String> biography = [];
-    
-    if (nurse.specialization != null) {
-      biography.add('Specialization: ${nurse.specialization}');
-    }
-    
-    if (nurse.education != null) {
-      biography.add('Education: ${nurse.education}');
-    }
-    
-    if (nurse.yearsOfExp != null) {
-      biography.add('Years of Experience: ${nurse.yearsOfExp}');
-    }
-    
-    if (nurse.location != null) {
-      biography.add('Location: ${nurse.location}');
-    }
-    
-    return biography.isNotEmpty 
-      ? biography.join('\n') 
-      : 'No additional information available';
-  }
-
-  Widget _buildBottomSection(NurseEntity nurse) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 48,
+          Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondary,
+                backgroundColor: Color(0xFF7B96EC),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-              ),
-              onPressed: () {
-                // Pass the nurse ID to the Book Appointment Screen
-                print('Nurse ID: ${nurse.id}');
-                Get.toNamed(
-                  Routes.BOOK_APPOINTMENT, 
-                  arguments: nurse.id
-                );
-              },
-              child: Text(
-                'Book an Appointment',
-                style: customTheme.CustomTextStyle.buttonLarge(
-                  color: AppColors.textPrimary,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
                 ),
+              ),
+              onPressed: () {},
+              child: Text(
+                'Leave a Review',
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),

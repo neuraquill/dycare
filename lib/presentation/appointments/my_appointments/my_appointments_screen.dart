@@ -41,7 +41,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
           controller.setSelectedStatus("Completed");
           break;
         case 2:
-          controller.setSelectedStatus("Cancelled");
+          controller.setSelectedStatus("History");
           break;
       }
     }
@@ -60,7 +60,11 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
         ),
         title: Text(
           'My Appointments',
-          style: AppTypography.heading1,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary
+          ),
         ),
       ),
       body: Column(
@@ -72,11 +76,6 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
         ],
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.toNamed(Routes.SEARCH),
-        backgroundColor: AppColors.primary,
-        child: Icon(Icons.add, color: AppColors.white),
-      ),
     );
   }
 
@@ -89,7 +88,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
       tabs: [
         _buildStatusTab("Upcoming"),
         _buildStatusTab("Completed"),
-        _buildStatusTab("Cancelled"),
+        _buildStatusTab("History"),
       ],
     );
   }
@@ -99,8 +98,8 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
       child: Text(
         status,
         style: AppTypography.bodyMedium.copyWith(
-          color: _tabController.index == ["Upcoming", "Completed", "Cancelled"].indexOf(status)
-              ? AppColors.primary
+          color: _tabController.index == ["Upcoming", "Completed", "History"].indexOf(status)
+              ? AppColors.textSecondary
               : AppColors.textSecondary,
         ),
       ),
@@ -114,7 +113,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
       children: [
         _buildAppointmentList("Upcoming"),
         _buildAppointmentList("Completed"),
-        _buildAppointmentList("Cancelled"),
+        _buildAppointmentList("History"),
       ],
     );
   }

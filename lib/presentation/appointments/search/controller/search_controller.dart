@@ -17,6 +17,8 @@ class SearchController extends GetxController {
 
   // Observable for loading state
   final RxBool isLoading = true.obs;
+  final RxString selectedProfession = 'all'.obs;
+
 
   @override
   void onInit() {
@@ -69,6 +71,17 @@ class SearchController extends GetxController {
       filteredItems.assignAll(
         allItems.where((item) => item.name.toLowerCase().contains(query.toLowerCase())).toList(),
       );
+    }
+  }
+  void filterByProfession(String profession) {
+    if (profession == 'all') {
+      // Show all items
+      filteredItems.value = allItems;
+    } else {
+      // Filter by profession
+      filteredItems.value = allItems.where(
+        (item) => item.specialization?.toLowerCase() == profession.toLowerCase()
+      ).toList();
     }
   }
 

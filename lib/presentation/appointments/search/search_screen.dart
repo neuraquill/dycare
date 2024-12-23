@@ -1,4 +1,5 @@
 import 'package:dycare/routes/app_pages.dart';
+import 'package:dycare/widgets/healthcare_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dycare/presentation/appointments/search/controller/search_controller.dart' as local;
@@ -12,16 +13,16 @@ class SearchScreen extends StatelessWidget {
     final local.SearchController controller = Get.find<local.SearchController>();
 
     return Scaffold(
-      backgroundColor: AppColors.background, // Background color
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          'Nurses & Caretakers',
+          'Healthcare Professionals', // Updated heading
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,
@@ -37,13 +38,17 @@ class SearchScreen extends StatelessWidget {
           children: [
             // Search Bar
             TextField(
-              onChanged: controller.filterItems, // Connect to the filter method
+              onChanged: controller.filterItems,
               decoration: InputDecoration(
                 hintText: 'Search',
                 hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
                 filled: true,
                 fillColor: AppColors.inputFill,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.primary),
+                ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -51,10 +56,58 @@ class SearchScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 24), // Spacing
+            const SizedBox(height: 16),
+            // Sort By Dropdown
+            Container(
+              width: double.infinity, // Same width as search bar
+              decoration: BoxDecoration(
+                color: AppColors.inputFill,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.primary),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: Obx(() => DropdownButton<String>(
+                  value: controller.selectedProfession.value,
+                  hint: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text('Sort by Profession'),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  borderRadius: BorderRadius.circular(12),
+                  isExpanded: true,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'all',
+                      child: Text('All Professionals'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'nurse',
+                      child: Text('Nurses'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'physiotherapist',
+                      child: Text('Physiotherapists'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'caretaker',
+                      child: Text('Caretakers'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'counsellor',
+                      child: Text('Counsellors'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    controller.selectedProfession.value = value ?? 'all';
+                    controller.filterByProfession(value ?? 'all');
+                  },
+                )),
+              ),
+            ),
+            const SizedBox(height: 24),
             // List Title
             const Text(
-              'List of Nurses & Caretakers',
+              'Available Professionals',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -67,131 +120,19 @@ class SearchScreen extends StatelessWidget {
                 () => controller.isLoading.value
                     ? const Center(child: CircularProgressIndicator())  // Show loading indicator
                     : ListView.builder(
-                        itemCount: controller.filteredItems.length,
-                        itemBuilder: (context, index) {
-                          final item = controller.filteredItems[index];
-                          return GestureDetector(
-                            onTap: () {
-                              // Navigate to appointment details on card tap
-                              Get.toNamed(Routes.APPOINTMENT_DETAILS, arguments: item);
-                            },
-                            child: Card(
-                              color: AppColors.white, // Set explicit background color
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              margin: const EdgeInsets.only(bottom: 16),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    // Placeholder for Nurse/Caretaker Image
-                                    Container(
-                                      width: 48,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.inputBorder,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: item.profilePicture != null && item.profilePicture!.isNotEmpty
-                                        ? ClipRRect(
-                                            borderRadius: BorderRadius.circular(12),
-                                            child: Image.network(
-                                              item.profilePicture!,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
-                                            ),
-                                          )
-                                        : const Icon(Icons.person, color: AppColors.black),
-                                    ),
-                                    const SizedBox(width: 16), // Spacing
-                                    // Item Details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item.name,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.textPrimary,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            item.specialization ?? 'No specialization',
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.textSecondary,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Rating: ${item.rating ?? 'No rating'}',
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.textSecondary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16), // Spacing
-                                    // Availability & Action Button
-                                    Column(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: controller.isAvailable(item.schedule)  
-                                                ? AppColors.success
-                                                : AppColors.inputBorder,
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          child: Text(
-                                            controller.isAvailable(item.schedule)  // Check availability
-                                                ? 'Available'
-                                                : 'Not Available',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        ElevatedButton(
-                                          onPressed: controller.isAvailable(item.schedule)  // Check availability
-                                              ? () {
-                                                  // Redirect to Book Appointment
-                                                  Get.toNamed(Routes.BOOK_APPOINTMENT, arguments: item.id);
-                                                }
-                                              : null,
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: controller.isAvailable(item.schedule)  // Check availability
-                                                ? AppColors.primary
-                                                : AppColors.inputBorder,
-                                            foregroundColor: AppColors.white,
-                                            minimumSize: const Size(80, 36),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                          ),
-                                          child: const Text('Book'),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+  itemCount: controller.filteredItems.length,
+  itemBuilder: (context, index) {
+    final item = controller.filteredItems[index];
+    return GestureDetector(
+      onTap: () => Get.toNamed(Routes.APPOINTMENT_DETAILS, arguments: item),
+      child: HealthcareProviderCard(
+        provider: item,
+        isAvailable: controller.isAvailable(item.schedule),
+        onTap: () => Get.toNamed(Routes.BOOK_APPOINTMENT, arguments: item.id),
+      ),
+    );
+  },
+)
               ),
             ),
           ],

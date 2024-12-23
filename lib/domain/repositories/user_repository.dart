@@ -59,7 +59,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<UserEntity> register(UserEntity user) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/user'),
+        Uri.parse('$baseUrl/register/user'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'name': user.name,
@@ -72,12 +72,15 @@ class UserRepositoryImpl implements UserRepository {
         }),
       );
 
+      print('Register user response: ${response.body}');
       if (response.statusCode == 200) {
         final data = json.decode(response.body)['data'];
-        return UserEntity.fromJson({
+        var newUser = UserEntity.fromJson({
           ...user.toJson(),
           'id': data['userID'], // Assuming userID is returned as part of data
         });
+        print('New user registered: $newUser');
+        return newUser;
       }
       throw Exception('Registration failed');
     } catch (e) {
@@ -91,7 +94,9 @@ class UserRepositoryImpl implements UserRepository {
   Future<UserEntity?> getCurrentUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      print('Getting current user from shared preferences');
       final userJson = prefs.getString('current_user');
+      print('Current user JSON: $userJson');
       if (userJson != null) {
         final userMap = json.decode(userJson);
         return UserEntity.fromJson(userMap);  // Convert JSON back to UserEntity
