@@ -29,7 +29,7 @@ class AuthTextField extends StatelessWidget {
       keyboardType: keyboardType,
       style: TextStyle(
         fontSize: fontSize.medium,
-        color: AppColors.textPrimary,
+        color: AppColors.textPrimaryDark,
       ),
       cursorColor: AppColors.primary,
       decoration: InputDecoration(
@@ -119,7 +119,7 @@ class LoginScreen extends GetView<LoginController> {
                           style: TextStyle(
                             fontSize: fontSizes.xlarge,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
+                            color: AppColors.textPrimaryDark,
                             letterSpacing: -0.5,
                           ),
                         ),

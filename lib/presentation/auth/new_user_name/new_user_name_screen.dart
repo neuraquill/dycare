@@ -21,11 +21,11 @@ class NewUserNameScreen extends GetView<NewUserNameController> {
     final buttonHeight = screenHeight * 0.065;
 
     final fontSizes = ResponsiveFontSizes(
-      tiny: screenHeight * 0.016,
-      small: screenHeight * 0.018,
-      medium: screenHeight * 0.02,
-      large: screenHeight * 0.024,
-      xlarge: screenHeight * 0.032,
+      tiny: screenHeight * 0.012,
+      small: screenHeight * 0.014,
+      medium: screenHeight * 0.015,
+      large: screenHeight * 0.016,
+      xlarge: screenHeight * 0.020,
     );
 
     return Scaffold(
@@ -250,9 +250,9 @@ class AuthTextField extends StatelessWidget {
       onChanged: onChanged,
       style: TextStyle(
         fontSize: fontSize.medium,
-        color: AppColors.textPrimary,
+        color: AppColors.textPrimaryDark,
       ),
-      cursorColor: AppColors.textPrimary,
+      cursorColor: AppColors.textPrimaryDark,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(

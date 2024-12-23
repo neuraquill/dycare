@@ -77,7 +77,7 @@ class OtpScreen extends GetWidget<OtpController> {
                         style: TextStyle(
                           fontSize: fontSizes.xlarge,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textPrimaryDark,
                           letterSpacing: -0.5,
                         ),
                       ),
@@ -94,7 +94,7 @@ class OtpScreen extends GetWidget<OtpController> {
                       // OTP Input Fields
                           Center(
                             child:Container(
-                              width: screenWidth * 0.7,
+                              width: screenWidth*0.7,
                               child: PinCodeTextField(
                                 appContext: context,
                                 length: 4,
@@ -103,11 +103,11 @@ class OtpScreen extends GetWidget<OtpController> {
                                 pinTheme: PinTheme(
                                 shape: PinCodeFieldShape.box,
                                 borderRadius: BorderRadius.circular(8),
-                                fieldHeight: screenHeight * 0.10,
-                                fieldWidth: screenHeight * 0.10,
-                                activeFillColor: AppColors.inputFill,
-                                inactiveFillColor: AppColors.inputFill,
-                                selectedFillColor: AppColors.inputFill,
+                                fieldHeight: 70,
+                                fieldWidth: 56,
+                                activeFillColor: AppColors.white,
+                                inactiveFillColor: AppColors.white,
+                                selectedFillColor: AppColors.white,
                                 activeColor: AppColors.primary,
                                 inactiveColor: AppColors.primaryDark,
                                 selectedColor: AppColors.primaryDark,
@@ -124,7 +124,7 @@ class OtpScreen extends GetWidget<OtpController> {
                                 textStyle: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPrimaryDark,
                                 ),
                                 beforeTextPaste: (text) => true,
                               ),

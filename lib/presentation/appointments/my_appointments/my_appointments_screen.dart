@@ -63,7 +63,7 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary
+            color: AppColors.textPrimaryDark
           ),
         ),
       ),
@@ -111,9 +111,9 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
     return TabBarView(
       controller: _tabController,
       children: [
-        _buildAppointmentList("Upcoming"),
-        _buildAppointmentList("Completed"),
-        _buildAppointmentList("History"),
+        _buildAppointmentList("upcoming"),
+        _buildAppointmentList("completed"),
+        _buildAppointmentList("history of"),
       ],
     );
   }
@@ -136,7 +136,10 @@ class _MyAppointmentsScreenState extends State<MyAppointmentsScreen>
             duration: const Duration(milliseconds: 300),
             child: Text(
               'No $status appointments found',
-              style: AppTypography.bodyLarge,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 16,
+              ),
               key: ValueKey('no_appointments_text'),
             ),
           ),

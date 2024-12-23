@@ -21,7 +21,12 @@ class BookAppointmentScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(AppConstants.BOOK_APPOINTMENT_TITLE),
+        title: Text(AppConstants.BOOK_APPOINTMENT_TITLE,
+        style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimaryDark,
+          ),),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -50,7 +55,7 @@ class BookAppointmentScreen extends StatelessWidget {
                 lastDay: DateTime.now().add(Duration(days: 365)),
                 headerStyle: HeaderStyle(
                   titleTextStyle: TextStyle(
-                    color: AppColors.textPrimary,
+                    color: AppColors.textPrimaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -78,7 +83,7 @@ class BookAppointmentScreen extends StatelessWidget {
                     color: AppColors.transparent,
                   ),
                   defaultTextStyle: TextStyle(
-                    color: AppColors.textPrimary,
+                    color: AppColors.textPrimaryDark,
                   ),
                   outsideTextStyle: TextStyle(
                     color: AppColors.textSecondaryDark,
@@ -156,7 +161,7 @@ class BookAppointmentScreen extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: isSelected ? AppColors.primary : AppColors.primaryLight,
-        foregroundColor: isSelected ? Colors.black : Colors.black,
+        foregroundColor: isSelected ? Colors.white : Colors.white,
       ),
       child: Text(label),
     );

@@ -15,11 +15,11 @@ class ViewProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Profile',
-          style: TextStyle(color: AppColors.textPrimary),
+          style: TextStyle(color: AppColors.textPrimaryDark),
         ),
         backgroundColor: AppColors.background,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: AppColors.textPrimaryDark),
       ),
       body: Obx(
         () => controller.isLoading.value
@@ -52,8 +52,8 @@ class ViewProfileScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
-                              ),
+                                color: AppColors.textPrimaryDark,
+                              ),  
                             ),
                             const SizedBox(height: 8),
                             Row(
@@ -171,11 +171,11 @@ class ViewProfileScreen extends StatelessWidget {
 
   Widget _buildMenuButton(String title, IconData icon, VoidCallback onTap, {Color? color}) {
     return ListTile(
-      leading: Icon(icon, color: color ?? AppColors.textPrimary),
+      leading: Icon(icon, color: color ?? AppColors.textPrimaryDark),
       title: Text(
         title,
         style: TextStyle(
-          color: color ?? AppColors.textPrimary,
+          color: color ?? AppColors.textPrimaryDark,
           fontWeight: FontWeight.w500,
         ),
       ),

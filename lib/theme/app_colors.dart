@@ -7,7 +7,7 @@ class AppColors {
 
   // Primary colors
   static const Color primary = Color(0xFF7593D3); // Cool Blue
-  static const Color primaryDark = Color(0xFF7190D2); // Deep Sky Blue
+  static const Color primaryDark = Color.fromARGB(255, 65, 103, 185); // Deep Sky Blue
   static const Color primaryLight = Color(0xFFA8BCE2); // Sky Blue
 
   // Secondary colors
@@ -17,15 +17,15 @@ class AppColors {
 
   // Background colors
   static const Color background = Color(0xFFF8F8F8); // Light Gray
-  static const Color backgroundDark = Color(0xFFFFFFFC); // Cream
+  static const Color backgroundDark = Color.fromARGB(255, 47, 80, 106); // Cream
 
   // Calender Colors
   static const Color weekends = Color.fromARGB(255, 200, 50, 50);
 
   // Text colors
-  static const Color textPrimary = Color.fromARGB(255, 0, 0, 0);
+  static const Color textPrimary = Color.fromARGB(255, 255, 255, 255);
   static const Color textSecondary = Color(0xFF757575);
-  static const Color textPrimaryDark = Color(0xFFFFFFFF);
+  static const Color textPrimaryDark = Color.fromARGB(255, 0, 0, 0);
   static const Color textSecondaryDark = Color(0xFFB3B3B3);
 
   // Error colors
@@ -48,11 +48,11 @@ class AppColors {
 
   // Other colors
   static const Color white = Color(0xFFFFFFFF);
-  static const Color black = Color(0xFFFFFFFB); // Soft Cream
+  static const Color black = Color.fromARGB(255, 0, 0, 0); // Soft Cream
 
   // Input colors
-  static const Color inputFill = Color(0xFFFFFFFD); // Light Beige
-  static const Color inputFillDark = Color(0xFFFFFFFE); // Off-White
-  static const Color inputBorder = Color(0xFFFFFFFF); // White
-  static const Color inputBorderDark = Color(0xFFFFFFFB); // Soft Cream
+  static const Color inputFill = Color.fromARGB(255, 255, 255, 255); // Light Beige
+  static const Color inputFillDark = Color.fromARGB(255, 27, 27, 6); // Off-White
+  static const Color inputBorder = Color.fromARGB(255, 68, 103, 131); // White
+  static const Color inputBorderDark = Color.fromARGB(255, 107, 107, 81); // Soft Cream
 }

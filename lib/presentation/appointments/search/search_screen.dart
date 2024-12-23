@@ -26,7 +26,7 @@ class SearchScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+            color: AppColors.textPrimaryDark,
           ),
         ),
         centerTitle: true,
@@ -39,12 +39,15 @@ class SearchScreen extends StatelessWidget {
             // Search Bar
             TextField(
               onChanged: controller.filterItems,
+              style: TextStyle(
+                color: AppColors.textPrimaryDark,
+              ),
               decoration: InputDecoration(
                 hintText: 'Search',
                 hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
                 filled: true,
-                fillColor: AppColors.inputFill,
+                fillColor: AppColors.white,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: AppColors.primary),
@@ -61,7 +64,7 @@ class SearchScreen extends StatelessWidget {
             Container(
               width: double.infinity, // Same width as search bar
               decoration: BoxDecoration(
-                color: AppColors.inputFill,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.primary),
               ),
@@ -70,7 +73,10 @@ class SearchScreen extends StatelessWidget {
                   value: controller.selectedProfession.value,
                   hint: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Sort by Profession'),
+                    child: Text(
+                      'Sort by Profession',
+                      style: TextStyle(color: AppColors.black),
+                    ),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   borderRadius: BorderRadius.circular(12),
@@ -78,23 +84,23 @@ class SearchScreen extends StatelessWidget {
                   items: const [
                     DropdownMenuItem(
                       value: 'all',
-                      child: Text('All Professionals'),
+                      child: Text('All Professionals',style: TextStyle(color: AppColors.black)),
                     ),
                     DropdownMenuItem(
                       value: 'nurse',
-                      child: Text('Nurses'),
+                      child: Text('Nurses',style: TextStyle(color: AppColors.black)),
                     ),
                     DropdownMenuItem(
                       value: 'physiotherapist',
-                      child: Text('Physiotherapists'),
+                      child: Text('Physiotherapists',style: TextStyle(color: AppColors.black)),
                     ),
                     DropdownMenuItem(
                       value: 'caretaker',
-                      child: Text('Caretakers'),
+                      child: Text('Caretakers',style: TextStyle(color: AppColors.black)),
                     ),
                     DropdownMenuItem(
                       value: 'counsellor',
-                      child: Text('Counsellors'),
+                      child: Text('Counsellors',style: TextStyle(color: AppColors.black)),
                     ),
                   ],
                   onChanged: (value) {
@@ -111,7 +117,7 @@ class SearchScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: AppColors.textPrimaryDark,
               ),
             ),
             const SizedBox(height: 16), // Spacing
@@ -120,19 +126,25 @@ class SearchScreen extends StatelessWidget {
                 () => controller.isLoading.value
                     ? const Center(child: CircularProgressIndicator())  // Show loading indicator
                     : ListView.builder(
-  itemCount: controller.filteredItems.length,
-  itemBuilder: (context, index) {
-    final item = controller.filteredItems[index];
-    return GestureDetector(
-      onTap: () => Get.toNamed(Routes.APPOINTMENT_DETAILS, arguments: item),
-      child: HealthcareProviderCard(
-        provider: item,
-        isAvailable: controller.isAvailable(item.schedule),
-        onTap: () => Get.toNamed(Routes.BOOK_APPOINTMENT, arguments: item.id),
-      ),
-    );
-  },
-)
+                itemCount: controller.filteredItems.length,
+                itemBuilder: (context, index) {
+                  final item = controller.filteredItems[index];
+                  return GestureDetector(
+                    onTap: () => Get.toNamed(Routes.APPOINTMENT_DETAILS, arguments: item),
+                    child: 
+                    Column(
+                      children:[
+                    HealthcareProviderCard(
+                      provider: item,
+                      isAvailable: controller.isAvailable(item.schedule),
+                      onTap: () => Get.toNamed(Routes.BOOK_APPOINTMENT, arguments: item.id),
+                    ),
+                    SizedBox(height: 6,)
+                      ]
+                    ),
+                  );
+                },
+              ),
               ),
             ),
           ],
